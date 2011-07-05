@@ -1,0 +1,8 @@
+ChestRestock is a plugin for Bukkit that allows server ops to set up chests to
+restock automatically with a number of configuration options.
+
+Type /chestrestock or /cr in game.  You will see a list of available
+sub-commands.
+
+For additional help, type /chestrestock help
+For help with a specific subcommand type /chestrestock <subcommand>

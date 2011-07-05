@@ -1,0 +1,13 @@
+name: ChestRestock
+main: com.dumptruckman.chestrestock.ChestRestock
+version: 1.0-beta
+author: dumptruckman
+
+commands:
+  chestrestock:
+    description: Views/sets/changes the settings of the chest you are targetting.
+    usage: |
+           /<command> <subcommand>
+           Subcommands: help, check, set, period, update, periodmode, 
+           restockmode, preserveslots, disable, reload
+    aliases: cr
