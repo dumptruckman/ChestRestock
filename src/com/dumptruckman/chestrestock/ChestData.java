@@ -213,8 +213,7 @@ public class ChestData {
             if (items[i] != null) {
                 String iteminfo = i + " "
                         + Integer.toString(items[i].getTypeId());
-                if (items[i].getData() != null) 
-                    iteminfo += "," + Byte.toString(items[i].getData().getData());
+                iteminfo += "," + items[i].getDurability();
                 iteminfo += " " + Integer.toString(items[i].getAmount());
                 chestContents.add(iteminfo);
             }
@@ -251,8 +250,8 @@ public class ChestData {
             int itemid = Integer.parseInt(item[1].split(",")[0]);
             ItemStack itemstack = new ItemStack(itemid);
             try {
-                itemstack.setData(new MaterialData(itemid, Byte.parseByte(item[1].split(",")[1])));
-            } catch (Exception ignore) {}
+                itemstack.setDurability(Short.parseShort(item[1].split(",")[1]));
+            } catch (Exception ignore) { }
             try {
                 itemstack.setAmount(Integer.parseInt(item[2]));
             } catch (Exception ignore) {

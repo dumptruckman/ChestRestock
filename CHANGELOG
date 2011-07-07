@@ -1,3 +1,6 @@
+Version 1.2-dev
+    Fixed item data issue.  Item data is now given to restocked items!
+
 Version 1.1
     Added option to make chest indestructible to anyone but ops.  This will also cause explosions that hit them to be cancelled completely.
     Added option to make chests lootable only X amount of times by each player.

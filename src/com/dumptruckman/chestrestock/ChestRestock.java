@@ -43,11 +43,13 @@ public class ChestRestock extends JavaPlugin {
 
         // Register event listeners
         this.getServer().getPluginManager().registerEvent(Event.Type.PLAYER_INTERACT, playerListener, Event.Priority.Normal, this);
+        //this.getServer().getPluginManager().registerEvent(Event.Type.PLAYER_INVENTORY, playerListener, Event.Priority.Normal, this);
         this.getServer().getPluginManager().registerEvent(Event.Type.BLOCK_DAMAGE, blockListener, Event.Priority.Highest, this);
         this.getServer().getPluginManager().registerEvent(Event.Type.BLOCK_BREAK, blockListener, Event.Priority.Highest, this);
         this.getServer().getPluginManager().registerEvent(Event.Type.BLOCK_FADE, blockListener, Event.Priority.Highest, this);
         this.getServer().getPluginManager().registerEvent(Event.Type.BLOCK_BURN, blockListener, Event.Priority.Highest, this);
         this.getServer().getPluginManager().registerEvent(Event.Type.ENTITY_EXPLODE, entityListener, Event.Priority.Highest, this);
+
     }
 
     public void onDisable(){
