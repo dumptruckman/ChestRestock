@@ -9,5 +9,5 @@ commands:
     usage: |
            /<command> <subcommand>
            Subcommands: help, check, set, period, update, periodmode, 
-           restockmode, preserveslots, disable, reload
+           restockmode, preserveslots, indestructible, disable, reload
     aliases: cr

@@ -106,6 +106,18 @@ public class ChestData {
         return plugin.config.getString(configPath + ".preserveslots");
     }
 
+    public void setIndestructible(String indestructible) {
+        plugin.config.setProperty(configPath + ".indestructible", indestructible);
+    }
+    public boolean isIndestructible() {
+        String ind = plugin.config.getString(configPath + ".indestructible");
+        if (ind.equalsIgnoreCase("true")) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public void setRestockTimeNow() {
         plugin.config.setProperty(configPath + ".lastrestock",
                 new Date().getTime() / 1000);
@@ -124,6 +136,7 @@ public class ChestData {
         chestMap.put("restockmode", getRestockMode());
         chestMap.put("lastrestock", getLastRestockTime());
         chestMap.put("preserveslots", getPreserveSlots());
+        chestMap.put("indestructible", Boolean.toString(isIndestructible()));
 
         List<String> chestContents = new ArrayList<String>();
 

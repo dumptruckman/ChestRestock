@@ -89,7 +89,11 @@ public class ChestRestockPluginCommand implements CommandExecutor {
                     sender.sendMessage("This will set the default setting for"
                             + " whether or not to preserve the item slots of "
                             + "chests that are restocked.  That is to say, the "
-                            + "position of restocked items will stay the same");
+                            + "position of restocked items will stay the same.");
+                } else if (args[1].equalsIgnoreCase("indestructible")) {
+                    sender.sendMessage("This will cause a chest managed by "
+                            + "ChestRestock to become indestructible except by"
+                            + " ops.");
                 } else {
                     sender.sendMessage("Unknown sub-command!");
                 }
@@ -110,6 +114,7 @@ public class ChestRestockPluginCommand implements CommandExecutor {
                 sender.sendMessage("Chest restock mode: " + chest.getRestockMode());
                 sender.sendMessage("Chest period mode: " + chest.getPeriodMode());
                 sender.sendMessage("Chest will preserve slots: " + chest.getPreserveSlots());
+                sender.sendMessage("Chest is indestructible: " + chest.isIndestructible());
                 return true;
             } else {
                 // Chest isn't configured
@@ -134,6 +139,7 @@ public class ChestRestockPluginCommand implements CommandExecutor {
             chest.setRestockMode(plugin.config.getString("defaults.restockmode"));
             chest.setPeriodMode(plugin.config.getString("defaults.periodmode"));
             chest.setPreserveSlots(plugin.config.getString("defaults.preserveslots"));
+            chest.setIndestructible(plugin.config.getString("defaults.indestructible"));
             chest.setRestockTimeNow();
             chest.setItems();
             plugin.config.save();
@@ -309,6 +315,40 @@ public class ChestRestockPluginCommand implements CommandExecutor {
                     plugin.config.save();
                 } else {
                     sender.sendMessage("Invalid preserve slots setting!");
+                }
+                return true;
+            }
+        } else if (args[0].equalsIgnoreCase("indestructible")) {
+            if (args.length < 2) {
+                sender.sendMessage("The usage is: indestructible <true|false>");
+                sender.sendMessage("You must specify the mode to set, true or "
+                        + "false!");
+                return true;
+            } else {
+                ChestData chest = plugin.getTargetedChest(sender);
+                if (chest == null) {
+                    sender.sendMessage("You must be targetting a chest to use "
+                            + "this command!");
+                    return true;
+                }
+                if (!chest.isInConfig()) {
+                    sender.sendMessage("You must set up this chest with the set"
+                            + " command first!");
+                    return true;
+                }
+                if (args[1].equalsIgnoreCase("true")) {
+                    sender.sendMessage("This chest will now be indestructible "
+                            + "except by ops.");
+                    chest.setIndestructible("true");
+                    plugin.config.save();
+                } else if (args[1].equalsIgnoreCase("false")) {
+                    sender.sendMessage("This chest will will be destroyable by "
+                            + "anyone unless you have further protection against"
+                            + " such things.");
+                    chest.setIndestructible("false");
+                    plugin.config.save();
+                } else {
+                    sender.sendMessage("Invalid indestructible setting!");
                 }
                 return true;
             }

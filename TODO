@@ -1,2 +1,7 @@
 Redstone restocking.
 Nicer formatted in game text.
+Permissions support
+Restock command
+Add option for chests to only restock once for each player (or limited number of times.)
+Add option for ops only to have the chest restock.
+Add option to make ChestRestock chests indestructible. (added in 1.1)

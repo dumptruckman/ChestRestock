@@ -1,6 +1,7 @@
 package com.dumptruckman.chestrestock;
 
 import com.dumptruckman.chestrestock.commands.ChestRestockPluginCommand;
+import com.dumptruckman.chestrestock.listeners.ChestRestockBlockListener;
 import com.dumptruckman.chestrestock.listeners.ChestRestockPlayerListener;
 import java.io.File;
 import org.bukkit.util.config.Configuration;
@@ -20,6 +21,7 @@ public class ChestRestock extends JavaPlugin {
 
     private static final Logger logger = Logger.getLogger("Minecraft.ChestRestock");
     private final ChestRestockPlayerListener playerListener = new ChestRestockPlayerListener(this);
+    private final ChestRestockBlockListener blockListener = new ChestRestockBlockListener(this);
     
     public Configuration config;
 
@@ -38,6 +40,8 @@ public class ChestRestock extends JavaPlugin {
         getCommand("chestrestock").setExecutor(new ChestRestockPluginCommand(this));
 
         this.getServer().getPluginManager().registerEvent(Event.Type.PLAYER_INTERACT, playerListener, Event.Priority.Normal, this);
+        this.getServer().getPluginManager().registerEvent(Event.Type.BLOCK_DAMAGE, blockListener, Event.Priority.Highest, this);
+        this.getServer().getPluginManager().registerEvent(Event.Type.BLOCK_BREAK, blockListener, Event.Priority.Highest, this);
     }
 
     public void onDisable(){
@@ -118,6 +122,28 @@ public class ChestRestock extends JavaPlugin {
                         + config.getString("defaults.preserveslots")
                         + "  Setting to default: false");
                 config.setProperty("defaults.preserveslots", "false");
+            }
+        }
+        if (config.getString("defaults.indestructible") == null) {
+            config.setProperty("defaults.indestructible", "false");
+        } else {
+            if (!config.getString("defaults.indestructible").equalsIgnoreCase("false")
+                    && !config.getString("defaults.indestructible").equalsIgnoreCase("true")) {
+                logger.warning("ChestRestock: invalid indestructible setting: "
+                        + config.getString("defaults.indestructible")
+                        + "  Setting to default: false");
+                config.setProperty("defaults.indestructible", "false");
+            }
+        }
+        if (config.getString("defaults.playerlimit") == null) {
+            config.setProperty("defaults.playerlimit", "1 #");
+        } else {
+            try {
+                config.getProperty(null)
+                logger.warning("ChestRestock: invalid indestructible setting: "
+                        + config.getString("defaults.indestructible")
+                        + "  Setting to default: false");
+                config.setProperty("defaults.indestructible", "false");
             }
         }
 
