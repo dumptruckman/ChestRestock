@@ -1,5 +1,11 @@
-Version 1.1-dev
-    Added option to make chest indestructible to anyone but ops.
+Version 1.1
+    Added option to make chest indestructible to anyone but ops.  This will also cause explosions that hit them to be cancelled completely.
+    Added option to make chests lootable only X amount of times by each player.
+    Added a reload sub-command to reload the config file.
+    Added a restock sub-command to immediately restock a chest.
+    Added better multi-world support.  Unfortunately this WILL break existing configurations.
+    Added ability to give chests a name.  This should make it a little easier to find them in the config file.
+    Fixed bug that caused chests in replace mode to add items instead.
 
 Version 1.0-beta
     Initial release!

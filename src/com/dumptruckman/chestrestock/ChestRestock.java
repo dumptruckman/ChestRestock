@@ -2,6 +2,7 @@ package com.dumptruckman.chestrestock;
 
 import com.dumptruckman.chestrestock.commands.ChestRestockPluginCommand;
 import com.dumptruckman.chestrestock.listeners.ChestRestockBlockListener;
+import com.dumptruckman.chestrestock.listeners.ChestRestockEntityListener;
 import com.dumptruckman.chestrestock.listeners.ChestRestockPlayerListener;
 import java.io.File;
 import org.bukkit.util.config.Configuration;
@@ -22,6 +23,7 @@ public class ChestRestock extends JavaPlugin {
     private static final Logger logger = Logger.getLogger("Minecraft.ChestRestock");
     private final ChestRestockPlayerListener playerListener = new ChestRestockPlayerListener(this);
     private final ChestRestockBlockListener blockListener = new ChestRestockBlockListener(this);
+    private final ChestRestockEntityListener entityListener = new ChestRestockEntityListener(this);
     
     public Configuration config;
 
@@ -39,9 +41,13 @@ public class ChestRestock extends JavaPlugin {
         // Register command executore for main plugin command
         getCommand("chestrestock").setExecutor(new ChestRestockPluginCommand(this));
 
+        // Register event listeners
         this.getServer().getPluginManager().registerEvent(Event.Type.PLAYER_INTERACT, playerListener, Event.Priority.Normal, this);
         this.getServer().getPluginManager().registerEvent(Event.Type.BLOCK_DAMAGE, blockListener, Event.Priority.Highest, this);
         this.getServer().getPluginManager().registerEvent(Event.Type.BLOCK_BREAK, blockListener, Event.Priority.Highest, this);
+        this.getServer().getPluginManager().registerEvent(Event.Type.BLOCK_FADE, blockListener, Event.Priority.Highest, this);
+        this.getServer().getPluginManager().registerEvent(Event.Type.BLOCK_BURN, blockListener, Event.Priority.Highest, this);
+        this.getServer().getPluginManager().registerEvent(Event.Type.ENTITY_EXPLODE, entityListener, Event.Priority.Highest, this);
     }
 
     public void onDisable(){
@@ -125,25 +131,32 @@ public class ChestRestock extends JavaPlugin {
             }
         }
         if (config.getString("defaults.indestructible") == null) {
-            config.setProperty("defaults.indestructible", "false");
+            config.setProperty("defaults.indestructible", "true");
         } else {
             if (!config.getString("defaults.indestructible").equalsIgnoreCase("false")
                     && !config.getString("defaults.indestructible").equalsIgnoreCase("true")) {
                 logger.warning("ChestRestock: invalid indestructible setting: "
                         + config.getString("defaults.indestructible")
-                        + "  Setting to default: false");
-                config.setProperty("defaults.indestructible", "false");
+                        + "  Setting to default: true");
+                config.setProperty("defaults.indestructible", "true");
             }
         }
         if (config.getString("defaults.playerlimit") == null) {
-            config.setProperty("defaults.playerlimit", "1 #");
+            config.setProperty("defaults.playerlimit", "-1");
         } else {
             try {
-                config.getProperty(null)
-                logger.warning("ChestRestock: invalid indestructible setting: "
-                        + config.getString("defaults.indestructible")
-                        + "  Setting to default: false");
-                config.setProperty("defaults.indestructible", "false");
+                int playerlimit = Integer.parseInt(config.getString("defaults.playerlimit"));
+                if (playerlimit < -1) {
+                    logger.warning("ChestRestock: invalid playerlimit setting: "
+                        + config.getString("defaults.playerlimit")
+                        + "  Setting to default: -1");
+                    config.setProperty("defaults.playerlimit", "-1");
+                }
+            } catch (NumberFormatException e) {
+                logger.warning("ChestRestock: invalid playerlimit setting: "
+                        + config.getString("defaults.playerlimit")
+                        + "  Setting to default: -1");
+                config.setProperty("defaults.playerlimit", "-1");
             }
         }
 

@@ -1,6 +1,6 @@
 name: ChestRestock
 main: com.dumptruckman.chestrestock.ChestRestock
-version: 1.0-beta
+version: 1.1
 author: dumptruckman
 
 commands:
@@ -9,5 +9,6 @@ commands:
     usage: |
            /<command> <subcommand>
            Subcommands: help, check, set, period, update, periodmode, 
-           restockmode, preserveslots, indestructible, disable, reload
+           restockmode, preserveslots, indestructible, disable, reload,
+           playerlimit, restock, name
     aliases: cr

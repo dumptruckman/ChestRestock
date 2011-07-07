@@ -3,12 +3,10 @@ package com.dumptruckman.chestrestock.listeners;
 import com.dumptruckman.chestrestock.ChestData;
 import com.dumptruckman.chestrestock.ChestRestock;
 import java.util.Date;
-import java.util.List;
 import org.bukkit.Material;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerListener;
-import org.bukkit.inventory.ItemStack;
 
 /**
  *
@@ -39,6 +37,21 @@ public class ChestRestockPlayerListener extends PlayerListener {
             return;
         }
 
+
+        Integer restockedforplayer = chest.getPlayerRestockCount(event.getPlayer().getName());
+
+        if (restockedforplayer != null) {
+            if (chest.getPlayerLimit() != -1) {
+                if (restockedforplayer >= chest.getPlayerLimit()) {
+                    if (!event.getPlayer().isOp()) {
+                        return;
+                    }
+                }
+            }
+        } else {
+            restockedforplayer = 0;
+        }
+
         Long accesstime = new Date().getTime() / 1000;
         if (accesstime < (chest.getLastRestockTime() +
                 Integer.parseInt(chest.getPeriod()))) {
@@ -65,8 +78,16 @@ public class ChestRestockPlayerListener extends PlayerListener {
         }
 
 
-        for (int i = 0; i < missedperiods; i++) {
+        if (chest.getRestockMode().equalsIgnoreCase("add")) {
+            for (int i = 0; i < missedperiods; i++) {
+                chest.restock();
+            }
+        } else {
             chest.restock();
+        }
+        if (missedperiods != 0) {
+            restockedforplayer++;
+            chest.setPlayerRestockCount(event.getPlayer().getName(), restockedforplayer);
         }
         plugin.config.save();
     }

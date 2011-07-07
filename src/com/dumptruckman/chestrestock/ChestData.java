@@ -11,6 +11,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.Chest;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
+import org.bukkit.util.config.ConfigurationNode;
 
 /**
  *
@@ -32,7 +33,7 @@ public class ChestData {
         chest = (Chest)block.getState();
 
         // Set the path of this chest for the config file
-        configPath = "chests." + chest.getX() + "-" + chest.getY() + "-"
+        configPath = "chests." + chest.getWorld().getName() + "." + chest.getX() + "-" + chest.getY() + "-"
                 + chest.getZ();
 
         // Detect chest pair
@@ -68,6 +69,16 @@ public class ChestData {
 
             } else {
                 inConfig = false;
+            }
+        }
+
+        if (inConfig) {
+            // Ensure new config options are set for existing chest
+            if (isIndestructible() == null) {
+                setIndestructible(plugin.config.getString("defaults.indestructible"));
+            }
+            if (getPlayerLimit() == null) {
+                setPlayerLimit(plugin.config.getString("defaults.playerlimit"));
             }
         }
     }
@@ -109,13 +120,56 @@ public class ChestData {
     public void setIndestructible(String indestructible) {
         plugin.config.setProperty(configPath + ".indestructible", indestructible);
     }
-    public boolean isIndestructible() {
+    public Boolean isIndestructible() {
         String ind = plugin.config.getString(configPath + ".indestructible");
-        if (ind.equalsIgnoreCase("true")) {
+        if (ind == null) {
+            return null;
+        } else if (ind.equalsIgnoreCase("true")) {
             return true;
         } else {
             return false;
         }
+    }
+
+    public void setPlayerLimit(String limit) {
+        plugin.config.setProperty(configPath + ".playerlimit", limit);
+    }
+    public Integer getPlayerLimit() {
+        try {
+            String limit = plugin.config.getString(configPath + ".playerlimit");
+            if (limit == null) {
+                return null;
+            }
+            return Integer.valueOf(limit);
+        } catch (NumberFormatException nfe) {
+            return -1;
+        }
+    }
+
+    public void setPlayerRestockCount(String playername, Integer newcount) {
+        plugin.config.setProperty(configPath + ".players." + playername + ".restockcount", newcount.intValue());
+    }
+    public Integer getPlayerRestockCount(String playername) {
+        String count = plugin.config.getString(configPath + ".players." + playername + ".restockcount");
+        if (count == null) {
+            return null;
+        }
+        try {
+            return Integer.parseInt(count);
+        } catch (NumberFormatException nfe) {
+            return null;
+        }
+    }
+
+    public void setName(String name) {
+        plugin.config.setProperty(configPath + ".name", name);
+    }
+    public String getName() {
+        return plugin.config.getString(configPath + ".name");
+    }
+
+    public List<String> getPlayers() {
+        return plugin.config.getKeys(configPath + ".players");
     }
 
     public void setRestockTimeNow() {
@@ -136,7 +190,21 @@ public class ChestData {
         chestMap.put("restockmode", getRestockMode());
         chestMap.put("lastrestock", getLastRestockTime());
         chestMap.put("preserveslots", getPreserveSlots());
-        chestMap.put("indestructible", Boolean.toString(isIndestructible()));
+        chestMap.put("indestructible", isIndestructible().toString());
+        chestMap.put("playerlimit", getPlayerLimit().toString());
+        if (getName() != null) {
+            chestMap.put("name", getName());
+        }
+        List<String> players = getPlayers();
+        if (players != null) {
+            for(int i = 0; i < players.size(); i++) {
+                Map<String,Object> attributeMap = new HashMap<String,Object>();
+                attributeMap.put("restockcount", getPlayerRestockCount(players.get(i)).intValue());
+                Map<String,Object> playerMap = new HashMap<String,Object>();
+                playerMap.put(players.get(i), attributeMap);
+                chestMap.put("players", playerMap);
+            }
+        }
 
         List<String> chestContents = new ArrayList<String>();
 
@@ -204,4 +272,6 @@ public class ChestData {
             
         }
     }
+
+    
 }
