@@ -20,7 +20,6 @@ import org.bukkit.util.config.ConfigurationNode;
 public class ChestData {
 
     private static final int CHESTSIZE = 27;
-    
     private ChestRestock plugin;
     private Chest chest;
     private Chest chestPair;

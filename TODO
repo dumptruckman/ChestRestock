@@ -4,3 +4,4 @@ Permissions support
 Individual player timing
 Clear chest if player is not allowed a restock
 Open a new inventory with the restocked contents.
+Only restock on server restart option
