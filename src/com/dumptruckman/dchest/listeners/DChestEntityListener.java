@@ -1,7 +1,7 @@
-package com.dumptruckman.chestrestock.listeners;
+package com.dumptruckman.dchest.listeners;
 
-import com.dumptruckman.chestrestock.ChestData;
-import com.dumptruckman.chestrestock.ChestRestock;
+import com.dumptruckman.dchest.ChestData;
+import com.dumptruckman.dchest.DChest;
 import java.util.ArrayList;
 import java.util.List;
 import org.bukkit.Material;
@@ -13,11 +13,11 @@ import org.bukkit.event.entity.EntityListener;
  *
  * @author dumptruckman
  */
-public class ChestRestockEntityListener extends EntityListener {
+public class DChestEntityListener extends EntityListener {
 
-    ChestRestock plugin;
+    DChest plugin;
 
-    public ChestRestockEntityListener(ChestRestock plugin) {
+    public DChestEntityListener(DChest plugin) {
         this.plugin = plugin;
     }
 

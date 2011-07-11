@@ -1,7 +1,7 @@
-package com.dumptruckman.chestrestock.listeners;
+package com.dumptruckman.dchest.listeners;
 
-import com.dumptruckman.chestrestock.ChestData;
-import com.dumptruckman.chestrestock.ChestRestock;
+import com.dumptruckman.dchest.ChestData;
+import com.dumptruckman.dchest.DChest;
 import java.util.Date;
 import org.bukkit.Material;
 import org.bukkit.event.block.Action;
@@ -9,33 +9,34 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerInventoryEvent;
 import org.bukkit.event.player.PlayerListener;
 import org.bukkit.inventory.ItemStack;
+import org.bukkitcontrib.player.ContribPlayer;
+
 
 /**
  *
  * @author dumptruckman
  */
-public class ChestRestockPlayerListener extends PlayerListener {
+public class DChestPlayerListener extends PlayerListener {
 
-    ChestRestock plugin;
+    DChest plugin;
 
-    public ChestRestockPlayerListener(ChestRestock plugin) {
+    public DChestPlayerListener(DChest plugin) {
         this.plugin = plugin;
     }
 
     @Override
     public void onPlayerInteract(PlayerInteractEvent event) {
-        super.onPlayerInteract(event);
-
+        // Discard irrelevant events
         if (!event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
             return;
         }
-
         if (event.getClickedBlock().getType() != Material.CHEST) {
             return;
         }
 
         ChestData chest = new ChestData(event.getClickedBlock(), plugin);
         if (!chest.isInConfig()) {
+            // Discard event if it's not a configured chest
             return;
         }
 
@@ -52,26 +53,41 @@ public class ChestRestockPlayerListener extends PlayerListener {
             timesrestockedforplayer = 0;
         }
 
+        // See if it's been long enough for a restock
         Long accesstime = new Date().getTime() / 1000;
-        if (accesstime < (chest.getLastRestockTime() +
-                Integer.parseInt(chest.getPeriod()))) {
-            return;
+        if (chest.isUnique()) {
+            // Unique access times per player
+            if (accesstime < (chest.getLastPlayerRestockTime(event.getPlayer().getName())
+                    + Integer.parseInt(chest.getPeriod()))) {
+                return;
+            }
+        } else {
+            // General access times
+            if (accesstime < (chest.getLastRestockTime() +
+                    Integer.parseInt(chest.getPeriod()))) {
+                return;
+            }
         }
 
+        // Take over the event
         event.setCancelled(true);
 
-        int missedperiods = 1;
+        ContribPlayer player = (ContribPlayer)event.getPlayer();
+        player.openInventoryWindow(chest.getInventory(chest.isDouble()), chest.getLocation());
+
+        long missedperiods = 1;
         if (chest.getPeriodMode().equalsIgnoreCase("player")) {
-            missedperiods = (int)Math.floor((new Long(accesstime).doubleValue()
-                    - new Long(chest.getLastRestockTime()).doubleValue())
-                    / Integer.parseInt(chest.getPeriod()));
+            if (chest.isUnique()) {
+                missedperiods = (accesstime - chest.getLastRestockTime())
+                        / Integer.parseInt(chest.getPeriod());
+            }
+            missedperiods = (accesstime - chest.getLastRestockTime())
+                    / Integer.parseInt(chest.getPeriod());
             chest.setRestockTime(accesstime);
         } else if (chest.getPeriodMode().equalsIgnoreCase("settime")) {
-            chest.setRestockTime(new Double(Math.floor((
-                    new Long(accesstime).doubleValue()
-                    - new Long(chest.getLastRestockTime()).doubleValue())
+            chest.setRestockTime((((accesstime - chest.getLastRestockTime())
                     / Integer.parseInt(chest.getPeriod()))
-                    * Integer.parseInt(chest.getPeriod())).longValue()
+                    * Integer.parseInt(chest.getPeriod()))
                     + chest.getLastRestockTime());
         }
 
@@ -97,12 +113,6 @@ public class ChestRestockPlayerListener extends PlayerListener {
             timesrestockedforplayer++;
             chest.setPlayerRestockCount(event.getPlayer().getName(), timesrestockedforplayer);
         }
-        plugin.config.save();
+        plugin.saveConfigs();
     }
-
-    //@Override
-    //public void onInventoryOpen(PlayerInventoryEvent event) {
-    //    super.onInventoryOpen(event);
-    //
-    //}
 }

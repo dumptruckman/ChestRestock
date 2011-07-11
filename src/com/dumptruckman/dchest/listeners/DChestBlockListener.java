@@ -3,10 +3,10 @@
  * and open the template in the editor.
  */
 
-package com.dumptruckman.chestrestock.listeners;
+package com.dumptruckman.dchest.listeners;
 
-import com.dumptruckman.chestrestock.ChestData;
-import com.dumptruckman.chestrestock.ChestRestock;
+import com.dumptruckman.dchest.ChestData;
+import com.dumptruckman.dchest.DChest;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -19,11 +19,11 @@ import org.bukkit.event.block.BlockListener;
  *
  * @author dumptruckman
  */
-public class ChestRestockBlockListener extends BlockListener {
+public class DChestBlockListener extends BlockListener {
 
-    ChestRestock plugin;
+    DChest plugin;
 
-    public ChestRestockBlockListener(ChestRestock plugin) {
+    public DChestBlockListener(DChest plugin) {
         this.plugin = plugin;
     }
 
