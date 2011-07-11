@@ -71,4 +71,10 @@
     nbproject/build-impl.xml file. 
 
     -->
+    <target name="-post-jar">
+        <jar jarfile="${dist.jar}" update="true">
+            <zipfileset src="${dist.jar}" includes="**/*.class" />
+            <zipfileset src="${file.reference.dUtil.jar}" includes="**/*.class"/>
+        </jar>
+    </target>
 </project>

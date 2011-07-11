@@ -105,9 +105,7 @@ public class DChestPlayerListener extends PlayerListener {
             chest.restock();
         }
 
-        plugin.getServer().getPluginManager().callEvent(new PlayerInventoryEvent(event.getPlayer(), chest.getChest().getInventory()));
-
-        chest.getChest().getInventory().setContents(oldchestcontents);
+        //chest.getChest().getInventory().setContents(oldchestcontents);
 
         if (missedperiods != 0) {
             timesrestockedforplayer++;

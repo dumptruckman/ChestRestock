@@ -23,12 +23,13 @@ public class DChestPluginCommand implements CommandExecutor {
     }
 
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        //if (!(sender instanceof Player)) {
         if (sender instanceof ConsoleCommandSender) {
-            sender.sendMessage("Only in-game players may use this command!");
+            plugin.sendMessage("commands.ingame", sender);
             return true;
         }
         if (!sender.isOp()) {
-            sender.sendMessage("You do not have permission to access this command!");
+            plugin.sendMessage("commands.noperm", sender);
             return true;
         }
 
@@ -40,119 +41,74 @@ public class DChestPluginCommand implements CommandExecutor {
             // Help command
             if (args.length == 1) {
                 // General help
-                sender.sendMessage("ChestRestock allows you to set chests up to"
-                        + " automatically restock the items currently in them"
-                        + " at specified periods.");
-                sender.sendMessage("Type /chestrestock help [sub-command] to "
-                        + "get information about a specific sub-command.");
+                plugin.sendMessage("commands.help.general", sender);
             } else if (args.length == 2) {
                 if (args[1].equalsIgnoreCase("check")) {
-                    sender.sendMessage("This will check to see if the chest is "
-                            + "managed by ChestRestock and if so will show the"
-                            + " period at which the chest will restock and "
-                            + "the modes of the chest.");
+                    plugin.sendMessage("commands.help.check", sender);
                 } else if (args[1].equalsIgnoreCase("set")) {
-                    sender.sendMessage("This will initialize a chest to restock"
-                            + " at the default period of 15 minutes and with "
-                            + "the items it currently has inside.");
+                    plugin.sendMessage("commands.help.set", sender,
+                            plugin.config.getString("defaults.period"));
                 } else if (args[1].equalsIgnoreCase("period")) {
-                    sender.sendMessage("This will change the period at which "
-                            + "the chest restocks it's contents.");
+                    plugin.sendMessage("commands.help.period", sender);
                 } else if (args[1].equalsIgnoreCase("update")) {
-                    sender.sendMessage("This will make the current contents of "
-                            + "the chest the items it will auto-restock with.");
+                    plugin.sendMessage("commands.help.update", sender);
                 } else if (args[1].equalsIgnoreCase("disable")) {
-                    sender.sendMessage("This will disable auto-matic restocking"
-                            + " of a chest.");
+                    plugin.sendMessage("commands.help.disable", sender);
                 } else if (args[1].equalsIgnoreCase("periodmode")) {
-                    sender.sendMessage("This will change the period mode of the"
-                            + " chest.  Options are \"player\" and "
-                            + "\"settime\".");
-                    sender.sendMessage("Player mode means the chest will "
-                            + "restock every Period amount of seconds after a "
-                            + "player checks a restocked chest.");
-                    sender.sendMessage("SetTime mode means the chest will "
-                            + "restock every Period amount of seconds after "
-                            + "configuration, regardless of player interaction.");
+                    plugin.sendMessage("commands.help.periodmode", sender);
                 } else if (args[1].equalsIgnoreCase("restockmode")) {
-                    sender.sendMessage("This will change the restock mode of "
-                            + "the chest.  Options are \"add\" and \"replace\".");
-                    sender.sendMessage("Add mode means the restock items will"
-                            + "be added to whatever is in the chest.");
-                    sender.sendMessage("Replace mode means the restock items "
-                            + "will replace anything in the chest");
+                    plugin.sendMessage("commands.help.restockmode", sender);
                 } else if (args[1].equalsIgnoreCase("reload")) {
-                    sender.sendMessage("This will reload ChestRestock's config "
-                            + "file.  Use this when you change config values "
-                            + "manually.");
+                    plugin.sendMessage("commands.help.reload", sender);
                 } else if (args[1].equalsIgnoreCase("preserveslots")) {
-                    sender.sendMessage("This will set the default setting for"
-                            + " whether or not to preserve the item slots of "
-                            + "chests that are restocked.  That is to say, the "
-                            + "position of restocked items will stay the same.");
+                    plugin.sendMessage("commands.help.preserveslots", sender);
                 } else if (args[1].equalsIgnoreCase("indestructible")) {
-                    sender.sendMessage("This will cause a chest managed by "
-                            + "ChestRestock to become indestructible except by"
-                            + " ops.");
+                    plugin.sendMessage("commands.help.indestructible", sender);
                 } else if (args[1].equalsIgnoreCase("playerlimit")) {
-                    sender.sendMessage("This will change the number of times "
-                            + "a single player can loot the chest.  Ops will "
-                            + "not be limited.");
-                    sender.sendMessage("-1 = no limit");
-                    sender.sendMessage("0 = ops only");
-                    sender.sendMessage("1 (or greater) = number of times a "
-                            + "chest will restock for a player.");
+                    plugin.sendMessage("commands.help.playerlimit", sender);
                 } else if (args[1].equalsIgnoreCase("restock")) {
-                    sender.sendMessage("Restocks a configured chest "
-                            + "immediately.");
+                    plugin.sendMessage("commands.help.restock", sender);
                 } else if (args[1].equalsIgnoreCase("name")) {
-                    sender.sendMessage("Sets the name of a chest for easier "
-                            + "manipulation through the config file.");
+                    plugin.sendMessage("commands.help.name", sender);
                 } else if (args[1].equalsIgnoreCase("unique")) {
-                    sender.sendMessage("Ensures that the chest is unique per "
-                            + "player.  This means, they will each see a "
-                            + "different set of items per chest");
+                    plugin.sendMessage("commands.help.unique", sender);
                 } else {
-                    sender.sendMessage("Unknown sub-command!");
+                    plugin.sendMessage("commands.help.unknown", sender);
                 }
             } else {
-                sender.sendMessage("The usage is: help [sub-command]");
+                plugin.sendMessage("commands.help.usage", sender);
             }
             return true;
         } else if (args[0].equalsIgnoreCase("check")) {
             // This will display information about the chest
             ChestData chest = plugin.getTargetedChest(sender);
             if (chest == null) {
-                sender.sendMessage("You must be targetting a chest to use this command!");
+                plugin.sendMessage("commands.targetting", sender);
                 return true;
             }
             if (chest.isInConfig()) {
                 // Chest is already configured
                 if (chest.getName() != null) {
-                    sender.sendMessage("Chest name: " + chest.getName());
+                    plugin.sendMessage("chest.name", sender, chest.getName());
                 }
-                sender.sendMessage("Chest restocks every " + chest.getPeriod() + " seconds.");
-                sender.sendMessage("Chest restock mode: " + chest.getRestockMode());
-                sender.sendMessage("Chest period mode: " + chest.getPeriodMode());
-                sender.sendMessage("Chest will preserve slots: " + chest.getPreserveSlots());
-                sender.sendMessage("Chest is indestructible: " + chest.isIndestructible());
-                sender.sendMessage("Chest player limit: " + chest.getPlayerLimit());
+                plugin.sendMessage("commands.check", sender, chest.getPeriod(),
+                        chest.getRestockMode(), chest.getPeriodMode(),
+                        chest.getPreserveSlots(), chest.isIndestructible().toString(),
+                        chest.getPlayerLimit().toString(), chest.isUnique().toString());
                 return true;
             } else {
                 // Chest isn't configured
-                sender.sendMessage("This chest is not configured for auto-restocking.");
+                plugin.sendMessage("chest.noconfig", sender);
                 return true;
             }
         } else if (args[0].equalsIgnoreCase("set")) {
             ChestData chest = plugin.getTargetedChest(sender);
             if (chest == null) {
-                sender.sendMessage("You must be targetting a chest to use this command!");
+                plugin.sendMessage("commands.targetting", sender);
                 return true;
             }
             if (chest.isInConfig()) {
-                sender.sendMessage("This chest is already configured! Make use "
-                        + "of the other sub-commands to change the options for"
-                        + " this chest.");
+                plugin.sendMessage("commands.set.alreadyset", sender);
                 return true;
             }
 
@@ -166,232 +122,195 @@ public class DChestPluginCommand implements CommandExecutor {
             chest.setRestockTimeNow();
             chest.setItems();
             plugin.saveChestConfig();
-            sender.sendMessage("This chest will restock with the items currently"
-                    + " inside of it, every " 
-                    + plugin.config.getString("defaults.period") + " seconds. "
-                    + "(default)");
+            plugin.sendMessage("commands.set.success", sender,
+                    plugin.config.getString("defaults.period"));
             return true;
         } else if (args[0].equalsIgnoreCase("period")) {
             if (args.length < 2) {
-                sender.sendMessage("The usage is: period <time>");
-                sender.sendMessage("You must specify an amount of time in "
-                        + "seconds to restock the chest!");
+                plugin.sendMessage("commands.period.usage", sender);
                 return true;
             } else {
                 ChestData chest = plugin.getTargetedChest(sender);
                 if (chest == null) {
-                    sender.sendMessage("You must be targetting a chest to use "
-                            + "this command!");
+                    plugin.sendMessage("commands.targetting", sender);
                     return true;
                 }
                 if (!chest.isInConfig()) {
-                    sender.sendMessage("You must set up this chest with the set "
-                            + "command first!");
+                    plugin.sendMessage("chest.noconfig", sender);
                     return true;
                 }
                 try {
-                    Integer.parseInt(args[1]);
+                    if (Integer.parseInt(args[1]) <= 0)
+                        throw new NumberFormatException();
                     chest.setPeriod(args[1]);
                     chest.setRestockTimeNow();
                     plugin.saveChestConfig();
-                    sender.sendMessage("Chest will now restock every " + args[1]
-                            + " seconds.");
+                    plugin.sendMessage("commands.period.success", sender, args[1]);
                     return true;
                 } catch (NumberFormatException ignore) {
-                    sender.sendMessage("You must specify a number of seconds!");
+                    plugin.sendMessage("commands.period.inalid", sender);
                     return true;
                 }
             }
         } else if (args[0].equalsIgnoreCase("update")) {
             ChestData chest = plugin.getTargetedChest(sender);
             if (chest == null) {
-                sender.sendMessage("You must be targetting a chest to use "
-                        + "this command!");
+                plugin.sendMessage("commands.targetting", sender);
                 return true;
             }
             if (!chest.isInConfig()) {
-                sender.sendMessage("You must set up this chest with the set "
-                        + "command first!");
+                plugin.sendMessage("chest.noconfig", sender);
                 return true;
             }
             chest.setRestockTimeNow();
             chest.setItems();
             plugin.saveChestConfig();
-            sender.sendMessage("Chest will now restock with what is currently "
-                    + "inside of it.");
+            plugin.sendMessage("commands.update.success", sender);
             return true;
         } else if (args[0].equalsIgnoreCase("disable")) {
             ChestData chest = plugin.getTargetedChest(sender);
             if (chest == null) {
-                sender.sendMessage("You must be targetting a chest to use "
-                        + "this command!");
+                plugin.sendMessage("commands.targetting", sender);
                 return true;
             }
             if (!chest.isInConfig()) {
-                sender.sendMessage("This chest is not already set up to "
-                        + "auto-restock!");
+                plugin.sendMessage("chest.noconfig", sender);
                 return true;
             }
             chest.disable();
             plugin.saveChestConfig();
-            sender.sendMessage("Chest will no longer be automatically "
-                    + "restocked.");
+            plugin.sendMessage("commands.disable.success", sender);
             return true;
         } else if (args[0].equalsIgnoreCase("periodmode")) {
             if (args.length < 2) {
-                sender.sendMessage("The usage is: periodmode <player|settime>");
-                sender.sendMessage("You must specify the mode to set, player or"
-                        + " settime!");
+                plugin.sendMessage("commands.periodmode.usage", sender);
+                plugin.sendMessage("commands.nomode", sender);
                 return true;
             } else {
                 ChestData chest = plugin.getTargetedChest(sender);
                 if (chest == null) {
-                    sender.sendMessage("You must be targetting a chest to use "
-                            + "this command!");
+                    plugin.sendMessage("commands.targetting", sender);
                     return true;
                 }
                 if (!chest.isInConfig()) {
-                    sender.sendMessage("You must set up this chest with the set"
-                            + " command first!");
+                    plugin.sendMessage("chest.noconfig", sender);
                     return true;
                 }
                 if (args[1].equalsIgnoreCase("player")) {
-                    sender.sendMessage("This chest will now restock every "
-                            + chest.getPeriod() + " seconds after a player has"
-                            + "checked it.");
                     chest.setPeriodMode("player");
                     plugin.saveChestConfig();
+                    plugin.sendMessage("commands.periodmode.player", sender,
+                            chest.getPeriod());
                 } else if (args[1].equalsIgnoreCase("settime")) {
-                    sender.sendMessage("This chest will now restock every "
-                            + chest.getPeriod() + " seconds, regardless of "
-                            + "player interaction.");
                     chest.setPeriodMode("settime");
                     plugin.saveChestConfig();
+                    plugin.sendMessage("commands.periodmode.settime", sender,
+                            chest.getPeriod());
                 } else {
-                    sender.sendMessage("Invalid period mode!");
+                    plugin.sendMessage("commands.periodmode.invalid", sender);
                 }
                 return true;
             }
         } else if (args[0].equalsIgnoreCase("restockmode")) {
             if (args.length < 2) {
-                sender.sendMessage("The usage is: restockmode <add|replace>");
-                sender.sendMessage("You must specify the mode to set, add or "
-                        + "replace!");
+                plugin.sendMessage("commands.restockmode.usage", sender);
+                plugin.sendMessage("commands.nomode", sender);
                 return true;
             } else {
                 ChestData chest = plugin.getTargetedChest(sender);
                 if (chest == null) {
-                    sender.sendMessage("You must be targetting a chest to use "
-                            + "this command!");
+                    plugin.sendMessage("commands.targetting", sender);
                     return true;
                 }
                 if (!chest.isInConfig()) {
-                    sender.sendMessage("You must set up this chest with the set"
-                            + " command first!");
+                    plugin.sendMessage("chest.noconfig", sender);
                     return true;
                 }
                 if (args[1].equalsIgnoreCase("add")) {
-                    sender.sendMessage("When restocking, items will be ADDED to"
-                            + " this chest.");
                     chest.setRestockMode("add");
                     plugin.saveChestConfig();
+                    plugin.sendMessage("commands.restockmode.add", sender);
                 } else if (args[1].equalsIgnoreCase("replace")) {
-                    sender.sendMessage("When restocking, items will be REPLACED"
-                            + " in this chest.");
                     chest.setRestockMode("replace");
                     plugin.saveChestConfig();
+                    plugin.sendMessage("commands.restockmode.replace", sender);
                 } else {
-                    sender.sendMessage("Invalid restock mode!");
+                    plugin.sendMessage("commands.restockmode.invalid", sender);
                 }
                 return true;
             }
         } else if (args[0].equalsIgnoreCase("reload")) {
             plugin.reload(true);
-            sender.sendMessage("Reloaded ChestRestock configuration/data");
+            plugin.sendMessage("commands.restockmode.invalid", sender);
             return true;
         } else if (args[0].equalsIgnoreCase("preserveslots")) {
             if (args.length < 2) {
-                sender.sendMessage("The usage is: preserveslots <true|false>");
-                sender.sendMessage("You must specify the mode to set, true or "
-                        + "false!");
+                plugin.sendMessage("commands.preserveslots.usage", sender);
+                plugin.sendMessage("commands.nomode", sender);
                 return true;
             } else {
                 ChestData chest = plugin.getTargetedChest(sender);
                 if (chest == null) {
-                    sender.sendMessage("You must be targetting a chest to use "
-                            + "this command!");
+                    plugin.sendMessage("commands.targetting", sender);
                     return true;
                 }
                 if (!chest.isInConfig()) {
-                    sender.sendMessage("You must set up this chest with the set"
-                            + " command first!");
+                    plugin.sendMessage("chest.noconfig", sender);
                     return true;
                 }
                 if (args[1].equalsIgnoreCase("true")) {
-                    sender.sendMessage("This chest will now keep the position "
-                            + "of each item intact when it restocks.");
                     chest.setPreserveSlots("true");
                     plugin.saveChestConfig();
+                    plugin.sendMessage("commands.preserveslots.true", sender);
                 } else if (args[1].equalsIgnoreCase("false")) {
-                    sender.sendMessage("This chest will not try to keep the "
-                            + "position of each item intact when it restocks.");
                     chest.setPreserveSlots("false");
                     plugin.saveChestConfig();
+                    plugin.sendMessage("commands.preserveslots.false", sender);
                 } else {
-                    sender.sendMessage("Invalid preserve slots setting!");
+                    plugin.sendMessage("commands.preserveslots.invalid", sender);
                 }
                 return true;
             }
         } else if (args[0].equalsIgnoreCase("indestructible")) {
             if (args.length < 2) {
-                sender.sendMessage("The usage is: indestructible <true|false>");
-                sender.sendMessage("You must specify the mode to set, true or "
-                        + "false!");
+                plugin.sendMessage("commands.indestructible.usage", sender);
+                plugin.sendMessage("commands.nomode", sender);
                 return true;
             } else {
                 ChestData chest = plugin.getTargetedChest(sender);
                 if (chest == null) {
-                    sender.sendMessage("You must be targetting a chest to use "
-                            + "this command!");
+                    plugin.sendMessage("commands.targetting", sender);
                     return true;
                 }
                 if (!chest.isInConfig()) {
-                    sender.sendMessage("You must set up this chest with the set"
-                            + " command first!");
+                    plugin.sendMessage("chest.noconfig", sender);
                     return true;
                 }
                 if (args[1].equalsIgnoreCase("true")) {
-                    sender.sendMessage("This chest will now be indestructible "
-                            + "except by ops.");
                     chest.setIndestructible("true");
                     plugin.saveChestConfig();
+                    plugin.sendMessage("commands.indestructible.true", sender);
                 } else if (args[1].equalsIgnoreCase("false")) {
-                    sender.sendMessage("This chest will will be destroyable by "
-                            + "anyone unless you have further protection against"
-                            + " such things.");
                     chest.setIndestructible("false");
                     plugin.saveChestConfig();
+                    plugin.sendMessage("commands.indestructible.false", sender);
                 } else {
-                    sender.sendMessage("Invalid indestructible setting!");
+                    plugin.sendMessage("commands.indestructible.invalid", sender);
                 }
                 return true;
             }
         } else if (args[0].equalsIgnoreCase("playerlimit")) {
             if (args.length < 2) {
-                sender.sendMessage("The usage is: playerlimit <-1|0|X> (where X"
-                        + " is a positive integer.)");
-                sender.sendMessage("You must specify the limit!");
+                plugin.sendMessage("commands.playerlimit.usage", sender);
                 return true;
             } else {
                 ChestData chest = plugin.getTargetedChest(sender);
                 if (chest == null) {
-                    sender.sendMessage("You must be targetting a chest to use "
-                            + "this command!");
+                    plugin.sendMessage("commands.targetting", sender);
                     return true;
                 }
                 if (!chest.isInConfig()) {
-                    sender.sendMessage("You must set up this chest with the set"
-                            + " command first!");
+                    plugin.sendMessage("chest.noconfig", sender);
                     return true;
                 }
                 try {
@@ -400,96 +319,80 @@ public class DChestPluginCommand implements CommandExecutor {
                         throw new NumberFormatException();
                     }
                     if (limit == -1) {
-                        sender.sendMessage("Player limit has been removed for "
-                                + "this chest!");
+                        plugin.sendMessage("commands.playerlimit.unlimited", sender);
                     } else {
-                        sender.sendMessage("This chest will restock " + limit +
-                                " times for each player!");
+                        plugin.sendMessage("commands.playerlimit.limited", sender, args[1]);
                     }
                     chest.setPlayerLimit(args[1]);
                     plugin.saveChestConfig();
                 } catch (NumberFormatException nfe) {
-                    sender.sendMessage("You must specify an integer! -1, 0, or "
-                            + "anything greater than 0.");
+                    plugin.sendMessage("commands.playerlimit.invalid", sender);
                 }
                 return true;
             }
         } else if (args[0].equalsIgnoreCase("restock")) {
             ChestData chest = plugin.getTargetedChest(sender);
             if (chest == null) {
-                sender.sendMessage("You must be targetting a chest to use "
-                        + "this command!");
+                plugin.sendMessage("commands.targetting", sender);
                 return true;
             }
             if (!chest.isInConfig()) {
-                sender.sendMessage("This chest is not already set up to "
-                        + "auto-restock!  It must be configured first with the "
-                        + "set subcommand.");
+                plugin.sendMessage("chest.noconfig", sender);
                 return true;
             }
             chest.restock();
-            sender.sendMessage("Chest has been restocked!");
+            plugin.sendMessage("commands.restock", sender);
             return true;
         } else if (args[0].equalsIgnoreCase("name")) {
             if (args.length < 2) {
-                sender.sendMessage("The usage is: name <chestname>");
-                sender.sendMessage("You must specify the name only!");
+                plugin.sendMessage("commands.name.usage", sender);
                 return true;
             } else {
                 ChestData chest = plugin.getTargetedChest(sender);
                 if (chest == null) {
-                    sender.sendMessage("You must be targetting a chest to use "
-                            + "this command!");
+                    plugin.sendMessage("commands.targetting", sender);
                     return true;
                 }
                 if (!chest.isInConfig()) {
-                    sender.sendMessage("You must set up this chest with the set"
-                            + " command first!");
+                    plugin.sendMessage("chest.noconfig", sender);
                     return true;
                 }
                 chest.setName(args[1]);
-                sender.sendMessage("Chest renamed to: " + args[1]);
+                plugin.sendMessage("commands.name.success", sender, args[1]);
                 plugin.saveChestConfig();
                 return true;
             }
         } else if (args[0].equalsIgnoreCase("unique")) {
             if (args.length < 2) {
-                sender.sendMessage("The usage is: unique <true|false>");
-                sender.sendMessage("You must specify the mode to set, true or "
-                        + "false!");
+                plugin.sendMessage("commands.unqiue.usage", sender);
+                plugin.sendMessage("commands.nomode", sender);
                 return true;
             } else {
                 ChestData chest = plugin.getTargetedChest(sender);
                 if (chest == null) {
-                    sender.sendMessage("You must be targetting a chest to use "
-                            + "this command!");
+                    plugin.sendMessage("commands.targetting", sender);
                     return true;
                 }
                 if (!chest.isInConfig()) {
-                    sender.sendMessage("You must set up this chest with the set"
-                            + " command first!");
+                    plugin.sendMessage("chest.noconfig", sender);
                     return true;
                 }
                 if (args[1].equalsIgnoreCase("true")) {
-                    sender.sendMessage("Players will each receive a unique "
-                            + "version of this chest.  They will not see the "
-                            + "loot due for other players.");
                     chest.setUnique("true");
                     plugin.saveChestConfig();
+                    plugin.sendMessage("commands.unqiue.true", sender);
                 } else if (args[1].equalsIgnoreCase("false")) {
-                    sender.sendMessage("Players will share the loot of this "
-                            + "chest!");
                     chest.setUnique("false");
                     plugin.saveChestConfig();
+                    plugin.sendMessage("commands.unqiue.false", sender);
                 } else {
-                    sender.sendMessage("Invalid indestructible setting!");
+                    plugin.sendMessage("commands.unqiue.invalid", sender);
                 }
                 return true;
             }
         }
-
+        
         return false;
     }
-
 
 }

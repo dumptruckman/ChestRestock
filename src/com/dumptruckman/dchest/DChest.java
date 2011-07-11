@@ -1,9 +1,12 @@
 package com.dumptruckman.dchest;
 
+import com.dumptruckman.util.io.ConfigIO;
 import com.dumptruckman.dchest.commands.DChestPluginCommand;
 import com.dumptruckman.dchest.listeners.DChestBlockListener;
 import com.dumptruckman.dchest.listeners.DChestEntityListener;
 import com.dumptruckman.dchest.listeners.DChestPlayerListener;
+import com.dumptruckman.util.locale.Language;
+import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -12,9 +15,12 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.util.List;
+import java.util.Timer;
+import java.util.jar.JarFile;
 import org.bukkit.util.config.Configuration;
 import org.bukkit.plugin.java.JavaPlugin;
 import java.util.logging.Logger;
+import java.util.zip.ZipEntry;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
@@ -31,6 +37,7 @@ public class DChest extends JavaPlugin {
 
     public static final Logger logger = Logger.getLogger("Minecraft.dChest");
     public static final String plugname = "dChest";
+
     private final DChestPlayerListener playerListener = new DChestPlayerListener(this);
     private final DChestBlockListener blockListener = new DChestBlockListener(this);
     private final DChestEntityListener entityListener = new DChestEntityListener(this);
@@ -39,24 +46,75 @@ public class DChest extends JavaPlugin {
     public Configuration chestConfig;
     public Configuration chestData;
 
+    private Language lang;
+    private Timer timer;
+
     public void onEnable(){
         // Make the data folders that dChest uses
         getDataFolder().mkdirs();
 
+        // Grab the PluginManager
+        final PluginManager pm = getServer().getPluginManager();
+
         // Loads the configuration file
         reload(false);
+
+        // Start save timer
+        timer = new Timer();
+        timer.scheduleAtFixedRate(new SaveTimer(this),
+                config.getInt("settings.datasavetimer", 300) * 1000,
+                config.getInt("settings.datasavetimer", 300) * 1000);
+
+        // Extracts default english language file
+        try {
+            JarFile jar = new JarFile(DChest.class.getProtectionDomain()
+                    .getCodeSource().getLocation().getPath());
+            ZipEntry entry = jar.getEntry("english.yml");
+            File efile = new File(getDataFolder(), entry.getName());
+
+            InputStream in =
+                    new BufferedInputStream(jar.getInputStream(entry));
+            OutputStream out =
+                    new BufferedOutputStream(new FileOutputStream(efile));
+            byte[] buffer = new byte[2048];
+            for (;;)  {
+                int nBytes = in.read(buffer);
+                if (nBytes <= 0) break;
+                out.write(buffer, 0, nBytes);
+            }
+            out.flush();
+            out.close();
+            in.close();
+        } catch (IOException e) {
+            logger.warning("Could not extract default language file!");
+            if (config.getString("settings.languagefile")
+                    .equalsIgnoreCase("english.yml")) {
+                logger.severe("No alternate language file set!  Disabling "
+                        + plugname);
+                pm.disablePlugin(this);
+                return;
+            }
+        }
+
+        // Load up language file
+        lang = new Language(new File(this.getDataFolder(),
+                config.getString("settings.languagefile")));
 
         // Register command executor for main plugin command
         getCommand("dchest").setExecutor(new DChestPluginCommand(this));
 
-        final PluginManager pm = getServer().getPluginManager();
         if (pm.getPlugin("BukkitContrib") == null) {
             try {
-                download(logger, new URL("http://bit.ly/autoupdateBukkitContrib"), new File("plugins/BukkitContrib.jar"));
+                download(logger, new URL("http://bit.ly/autoupdateBukkitContrib"),
+                        new File("plugins/BukkitContrib.jar"));
                 pm.loadPlugin(new File("plugins/BukkitContrib.jar"));
                 pm.enablePlugin(pm.getPlugin("BukkitContrib"));
             } catch (final Exception ex) {
-                logger.warning("[" + plugname + "] Failed to install BukkitContrib, you may have to restart your server or install it manually.");
+                logger.warning("[" + plugname + "] Failed to install BukkitContrib, "
+                        + "you may have to restart your server or install it manually.");
+                logger.severe(plugname + " relies on BukkitContrib. Disabling!");
+                pm.disablePlugin(this);
+                return;
             }
         }
 
@@ -73,6 +131,7 @@ public class DChest extends JavaPlugin {
     }
 
     public void onDisable(){
+        timer.cancel();
         saveFiles();
         logger.info(plugname + " " + getDescription().getVersion() + " disabled.");
     }
@@ -104,18 +163,15 @@ public class DChest extends JavaPlugin {
     }
 
     public void saveConfig() {
-        //new DChestIO(new File(this.getDataFolder(), "config.yml")).save();
-        new DChestIO(config).save();
+        new ConfigIO(config).save();
     }
 
     public void saveChestData() {
-        //new DChestIO(new File(this.getDataFolder(), "chestdata.yml")).save();
-        new DChestIO(chestData).save();
+        new ConfigIO(chestData).save();
     }
 
     public void saveChestConfig() {
-        //new DChestIO(new File(this.getDataFolder(), "chestconfig.yml")).save();
-        new DChestIO(chestConfig).save();
+        new ConfigIO(chestConfig).save();
     }
 
     public void saveConfigs() {
@@ -144,9 +200,11 @@ public class DChest extends JavaPlugin {
     }
 
     public void reload(boolean notify) {
-        config = new DChestIO(new File(this.getDataFolder(), "config.yml")).load();
-        chestConfig = new DChestIO(new File(this.getDataFolder(), "chestconfig.yml")).load();
-        chestData = new DChestIO(new File(this.getDataFolder(), "chestdata.yml")).load();
+        config = new ConfigIO(new File(this.getDataFolder(), "config.yml")).load();
+        chestConfig = new ConfigIO(new File(this.getDataFolder(), "chestconfig.yml")).load();
+        if (!notify) {
+            chestData = new ConfigIO(new File(this.getDataFolder(), "chestdata.yml")).load();
+        }
 
         // Set/Verifies defaults
         if (config.getString("defaults.period") == null) {
@@ -234,6 +292,12 @@ public class DChest extends JavaPlugin {
                 config.setProperty("defaults.unique", "true");
             }
         }
+        if (config.getString("settings.languagefile") == null) {
+            config.setProperty("settings.languagefile", "english.yml");
+        }
+        if (config.getString("settings.datasavetimer") == null) {
+            config.setProperty("settings.datasavetimer", 300);
+        }
 
         convertOldConfig();
 
@@ -242,6 +306,10 @@ public class DChest extends JavaPlugin {
         if (notify) {
             logger.info("[" + plugname + "] reloaded configuration/data!");
         }
+    }
+
+    public void sendMessage(String path, CommandSender sender, String... args) {
+        lang.sendMessage(lang.lang(path, args), sender);
     }
 
     public void convertOldConfig() {
