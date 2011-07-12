@@ -8,7 +8,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Chest;
-import org.bukkit.entity.Item;
+import org.bukkit.craftbukkit.block.CraftChest;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.config.Configuration;
@@ -24,6 +24,7 @@ public class ChestData {
     private static final int CHESTSIZE = 27;
     private DChest plugin;
     private Chest chest;
+    private Block block;
     private Chest chestPair;
     private String configPath;
     private String configName;
@@ -32,6 +33,7 @@ public class ChestData {
     public ChestData(Block block, DChest plugin) {
         //this.block = block;
         this.plugin = plugin;
+        this.block = block;
         chest = (Chest)block.getState();
 
         // Set the path of this chest for the config file
@@ -92,11 +94,12 @@ public class ChestData {
     }
 
     public Inventory getInventory(boolean giveDouble) {
+        CraftChest craftchest = new CraftChest(block);
         if (giveDouble) {
-            ContribChest contribchest = (ContribChest)chest;
+            ContribChest contribchest = craftchest;
             return contribchest.getFullInventory();
         } else {
-            return chest.getInventory();
+            return craftchest.getInventory();
         }
     }
 
@@ -161,6 +164,32 @@ public class ChestData {
         return getItemsByPath(plugin.chestConfig, configPath + ".items");
     }
 
+    public Inventory getRestockedInventory(List<ItemData> items) {
+        Inventory inventory = getFullInventory();
+        if (getRestockMode().equalsIgnoreCase("replace")) {
+            inventory.clear();
+        }
+        for (int i = 0; i < items.size(); i++) {
+            if (getPreserveSlots().equalsIgnoreCase("true")) {
+                if (getRestockMode().equalsIgnoreCase("add")) {
+                    if (items.get(i).getType().equals(inventory
+                            .getItem(items.get(i).getSlot()).getType()) &&
+                            items.get(i).getDurability() == inventory
+                            .getItem(items.get(i).getSlot()).getDurability()) {
+                        int newamount = items.get(i).getAmount() + inventory
+                            .getItem(items.get(i).getSlot()).getAmount();
+                        if (newamount > 64) newamount = 64;
+                        items.get(i).setAmount(newamount);
+                    }
+                }
+                inventory.setItem(items.get(i).getSlot(), items.get(i));
+            } else {
+                inventory.addItem(items.get(i));
+            }
+        }
+        return inventory;
+    }
+    
     public void restock(List<ItemData> items) {
         for (int i = 0; i < items.size(); i++) {
             if (getPreserveSlots().equalsIgnoreCase("true")) {
@@ -264,7 +293,7 @@ public class ChestData {
                 }
             }
         }
-        plugin.chestConfig.setProperty(configPath + ".items", items);
+        plugin.chestConfig.setProperty(configPath + ".items", chestContents);
         //chestConfig.put("items", chestContents);
 
         //plugin.chestConfig.setProperty(configPath, chestConfig);
@@ -389,14 +418,22 @@ public class ChestData {
     public void setPlayerRestockTime(String name, long time) {
         plugin.chestData.setProperty(configPath + ".players." + name + ".lastrestock", time);
     }
-    public long getLastPlayerRestockTime(String name) {
-        Long time = Long.parseLong(plugin.chestData.getString(configPath + ".players." + name + ".lastrestock"));
-        if (time == null) {
+    public Long getLastPlayerRestockTime(String name) {
+        String temp = plugin.chestData.getString(configPath + ".players." + name + ".lastrestock");
+        if (temp == null) {
+            Long time;
             time = getLastRestockTime();
             setPlayerRestockTime(name, time);
             return time;
         } else {
-            return time;
+            try {
+                return Long.parseLong(temp);
+            } catch (NumberFormatException e) {
+                Long time;
+                time = getLastRestockTime();
+                setPlayerRestockTime(name, time);
+                return time;
+            }
         }
     }
 
@@ -407,7 +444,32 @@ public class ChestData {
             return null;
         }
     }
-    public void setPlayerItems(String name) {
-        // complete
+    public void setPlayerItems(String name, Inventory inventory, Inventory inventory2) {
+        List<String> chestContents = new ArrayList<String>();
+        ItemStack[] items = inventory.getContents();
+        for (int i = 0; i < items.length; i++) {
+            if (items[i] != null) {
+                String iteminfo = i + " "
+                        + Integer.toString(items[i].getTypeId());
+                iteminfo += "," + items[i].getDurability();
+                iteminfo += " " + Integer.toString(items[i].getAmount());
+                chestContents.add(iteminfo);
+            }
+        }
+        if (inventory2 != null) {
+            items = inventory2.getContents();
+            for (int i = 0; i < items.length; i++) {
+                if (items[i] != null) {
+                    int slot = i + CHESTSIZE;
+                    String iteminfo = slot + " "
+                            + Integer.toString(items[i].getTypeId());
+                    if (items[i].getData() != null)
+                        iteminfo += "," + Byte.toString(items[i].getData().getData());
+                    iteminfo += " " + Integer.toString(items[i].getAmount());
+                    chestContents.add(iteminfo);
+                }
+            }
+        }
+        plugin.chestData.setProperty(configPath + ".players." + name + ".items", chestContents);
     }
 }

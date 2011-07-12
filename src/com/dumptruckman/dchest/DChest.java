@@ -4,6 +4,7 @@ import com.dumptruckman.util.io.ConfigIO;
 import com.dumptruckman.dchest.commands.DChestPluginCommand;
 import com.dumptruckman.dchest.listeners.DChestBlockListener;
 import com.dumptruckman.dchest.listeners.DChestEntityListener;
+import com.dumptruckman.dchest.listeners.DChestInventoryListener;
 import com.dumptruckman.dchest.listeners.DChestPlayerListener;
 import com.dumptruckman.util.locale.Language;
 import java.io.BufferedInputStream;
@@ -39,9 +40,9 @@ public class DChest extends JavaPlugin {
     public static final Logger logger = Logger.getLogger("Minecraft.dChest");
     public static final String plugname = "dChest";
 
-    private final DChestPlayerListener playerListener = new DChestPlayerListener(this);
+    //private final DChestPlayerListener playerListener = new DChestPlayerListener(this);
     private final DChestBlockListener blockListener = new DChestBlockListener(this);
-    private final DChestEntityListener entityListener = new DChestEntityListener(this);
+    //private final DChestEntityListener entityListener = new DChestEntityListener(this);
     
     public Configuration config;
     public Configuration chestConfig;
@@ -120,12 +121,13 @@ public class DChest extends JavaPlugin {
         }
 
         // Register event listeners
-        pm.registerEvent(Type.PLAYER_INTERACT, playerListener, Priority.Highest, this);
+        pm.registerEvent(Type.CUSTOM_EVENT, new DChestInventoryListener(this), Priority.Normal, this);
+        pm.registerEvent(Type.PLAYER_INTERACT, new DChestPlayerListener(this), Priority.Highest, this);
         pm.registerEvent(Type.BLOCK_DAMAGE, blockListener, Priority.Highest, this);
         pm.registerEvent(Type.BLOCK_BREAK, blockListener, Priority.Highest, this);
         pm.registerEvent(Type.BLOCK_FADE, blockListener, Priority.Highest, this);
         pm.registerEvent(Type.BLOCK_BURN, blockListener, Priority.Highest, this);
-        pm.registerEvent(Type.ENTITY_EXPLODE, entityListener, Priority.Highest, this);
+        pm.registerEvent(Type.ENTITY_EXPLODE, new DChestEntityListener(this), Priority.Highest, this);
 
         // Display enable message/version info
         logger.info(plugname + " " + getDescription().getVersion() + " enabled.");
@@ -368,8 +370,8 @@ public class DChest extends JavaPlugin {
         }
     }
 
-    public Inventory getRestockedInventory(ChestData chest, List<ItemData> items) {
-        Inventory inventory = chest.getFullInventory();
+    public void restockInventory(Inventory inventory, ChestData chest, List<ItemData> items) {
+        //Inventory inventory = chest.getFullInventory();
         if (chest.getRestockMode().equalsIgnoreCase("replace")) {
             inventory.clear();
         }
@@ -391,7 +393,7 @@ public class DChest extends JavaPlugin {
                 inventory.addItem(items.get(i));
             }
         }
-        return inventory;
+        //return inventory;
     }
 
     public Inventory getInventoryWithItems(Inventory inventory, List<ItemData> items) {
