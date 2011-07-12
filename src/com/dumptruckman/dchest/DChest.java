@@ -27,6 +27,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event.Priority;
 import org.bukkit.event.Event.Type;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.PluginManager;
 
 /**
@@ -119,7 +120,7 @@ public class DChest extends JavaPlugin {
         }
 
         // Register event listeners
-        pm.registerEvent(Type.PLAYER_INTERACT, playerListener, Priority.Normal, this);
+        pm.registerEvent(Type.PLAYER_INTERACT, playerListener, Priority.Highest, this);
         pm.registerEvent(Type.BLOCK_DAMAGE, blockListener, Priority.Highest, this);
         pm.registerEvent(Type.BLOCK_BREAK, blockListener, Priority.Highest, this);
         pm.registerEvent(Type.BLOCK_FADE, blockListener, Priority.Highest, this);
@@ -365,5 +366,38 @@ public class DChest extends JavaPlugin {
                 }
             }
         }
+    }
+
+    public Inventory getRestockedInventory(ChestData chest, List<ItemData> items) {
+        Inventory inventory = chest.getFullInventory();
+        if (chest.getRestockMode().equalsIgnoreCase("replace")) {
+            inventory.clear();
+        }
+        for (int i = 0; i < items.size(); i++) {
+            if (chest.getPreserveSlots().equalsIgnoreCase("true")) {
+                if (chest.getRestockMode().equalsIgnoreCase("add")) {
+                    if (items.get(i).getType().equals(inventory
+                            .getItem(items.get(i).getSlot()).getType()) &&
+                            items.get(i).getDurability() == inventory
+                            .getItem(items.get(i).getSlot()).getDurability()) {
+                        int newamount = items.get(i).getAmount() + inventory
+                            .getItem(items.get(i).getSlot()).getAmount();
+                        if (newamount > 64) newamount = 64;
+                        items.get(i).setAmount(newamount);
+                    }
+                }
+                inventory.setItem(items.get(i).getSlot(), items.get(i));
+            } else {
+                inventory.addItem(items.get(i));
+            }
+        }
+        return inventory;
+    }
+
+    public Inventory getInventoryWithItems(Inventory inventory, List<ItemData> items) {
+        for (int i = 0; i < items.size(); i++) {
+            inventory.setItem(items.get(i).getSlot(), items.get(i));
+        }
+        return inventory;
     }
 }

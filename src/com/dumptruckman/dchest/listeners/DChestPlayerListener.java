@@ -2,13 +2,13 @@ package com.dumptruckman.dchest.listeners;
 
 import com.dumptruckman.dchest.ChestData;
 import com.dumptruckman.dchest.DChest;
-import java.util.Date;
+import com.dumptruckman.dchest.ItemData;
+import java.util.List;
 import org.bukkit.Material;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerInventoryEvent;
 import org.bukkit.event.player.PlayerListener;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.Inventory;
 import org.bukkitcontrib.player.ContribPlayer;
 
 
@@ -27,19 +27,30 @@ public class DChestPlayerListener extends PlayerListener {
     @Override
     public void onPlayerInteract(PlayerInteractEvent event) {
         // Discard irrelevant events
-        if (!event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
-            return;
-        }
-        if (event.getClickedBlock().getType() != Material.CHEST) {
-            return;
-        }
+        if (!event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) return;
+        if (event.getClickedBlock().getType() != Material.CHEST) return;
 
         ChestData chest = new ChestData(event.getClickedBlock(), plugin);
         if (!chest.isInConfig()) {
             // Discard event if it's not a configured chest
             return;
         }
+        
+        ContribPlayer player = (ContribPlayer)event.getPlayer();
+        event.setCancelled(true);
 
+        Inventory inventory = chest.getFullInventory();
+        // Clear the inventory and replace with old items if player is not op
+        if (!player.isOp()) {
+            List<ItemData> items = chest.getPlayerItems(player.getName());
+            inventory.clear();
+            // Item data for player not set
+            if (items != null) {
+                inventory = plugin.getInventoryWithItems(inventory, items);
+            }
+        }
+        /*
+        // Check to make sure player will still be allowed to have a restock
         Integer timesrestockedforplayer = chest.getPlayerRestockCount(event.getPlayer().getName());
         if (timesrestockedforplayer != null) {
             if (chest.getPlayerLimit() != -1) {
@@ -111,6 +122,6 @@ public class DChestPlayerListener extends PlayerListener {
             timesrestockedforplayer++;
             chest.setPlayerRestockCount(event.getPlayer().getName(), timesrestockedforplayer);
         }
-        plugin.saveConfigs();
+        plugin.saveConfigs();*/
     }
 }

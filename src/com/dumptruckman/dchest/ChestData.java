@@ -2,16 +2,16 @@ package com.dumptruckman.dchest;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Chest;
+import org.bukkit.entity.Item;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.config.Configuration;
 import org.bukkitcontrib.block.ContribChest;
 
 
@@ -100,6 +100,11 @@ public class ChestData {
         }
     }
 
+    public Inventory getFullInventory() {
+        ContribChest contribchest = (ContribChest)chest;
+        return contribchest.getFullInventory();
+    }
+
     public Inventory getInventory() {
         return getInventory(false);
     }
@@ -129,7 +134,53 @@ public class ChestData {
         }
     }
 
-    public void restock() {
+    public List<ItemData> getItemsByPath(Configuration config, String path) {
+        List<Object> items = config.getList(path);
+        List<ItemData> itemstack = new ArrayList<ItemData>();
+        for (int i = 0; i < items.size(); i++) {
+            String[] item = items.get(i).toString().split("\\s");
+            int itemid = Integer.parseInt(item[1].split(",")[0]);
+            ItemData itemdata = new ItemData(itemid);
+            try {
+                itemdata.setSlot(Integer.parseInt(item[0]));
+            } catch (Exception ignore) { }
+            try {
+                itemdata.setDurability(Short.parseShort(item[1].split(",")[1]));
+            } catch (Exception ignore) { }
+            try {
+                itemdata.setAmount(Integer.parseInt(item[2]));
+            } catch (Exception ignore) {
+                itemdata.setAmount(1);
+            }
+            itemstack.add(itemdata);
+        }
+        return itemstack;
+    }
+
+    public List<ItemData> getItems() {
+        return getItemsByPath(plugin.chestConfig, configPath + ".items");
+    }
+
+    public void restock(List<ItemData> items) {
+        for (int i = 0; i < items.size(); i++) {
+            if (getPreserveSlots().equalsIgnoreCase("true")) {
+                if (getRestockMode().equalsIgnoreCase("add")) {
+                    if (items.get(i).getType().equals(chest.getInventory()
+                            .getItem(items.get(i).getSlot()).getType()) && 
+                            items.get(i).getDurability() == chest.getInventory()
+                            .getItem(items.get(i).getSlot()).getDurability()) {
+                        int newamount = items.get(i).getAmount() + chest.getInventory()
+                            .getItem(items.get(i).getSlot()).getAmount();
+                        if (newamount > 64) newamount = 64;
+                        items.get(i).setAmount(newamount);
+                    }
+                }
+                chest.getInventory().setItem(items.get(i).getSlot(), items.get(i));
+            } else {
+                chest.getInventory().addItem(items.get(i));
+            }
+        }
+        /*
         List<Object> items = plugin.chestConfig.getList(configPath + ".items");
         for (int i = 0; i < items.size(); i++) {
             String[] item = items.get(i).toString().split("\\s");
@@ -154,8 +205,7 @@ public class ChestData {
             } else {
                 chest.getInventory().addItem(itemstack);
             }
-
-        }
+        }*/
     }
 
     /*
@@ -337,10 +387,10 @@ public class ChestData {
         setPlayerRestockTime(name, new Date().getTime() / 1000);
     }
     public void setPlayerRestockTime(String name, long time) {
-        plugin.chestData.setProperty(configPath + "." + name + ".lastrestock", time);
+        plugin.chestData.setProperty(configPath + ".players." + name + ".lastrestock", time);
     }
     public long getLastPlayerRestockTime(String name) {
-        Long time = Long.parseLong(plugin.chestData.getString(configPath + "." + name + ".lastrestock"));
+        Long time = Long.parseLong(plugin.chestData.getString(configPath + ".players." + name + ".lastrestock"));
         if (time == null) {
             time = getLastRestockTime();
             setPlayerRestockTime(name, time);
@@ -348,5 +398,16 @@ public class ChestData {
         } else {
             return time;
         }
+    }
+
+    public List<ItemData> getPlayerItems(String name) {
+        if (plugin.chestData.getString(configPath + ".players." + name + ".items") != null) {
+            return getItemsByPath(plugin.chestData, configPath + ".players." + name + ".items");
+        } else {
+            return null;
+        }
+    }
+    public void setPlayerItems(String name) {
+        // complete
     }
 }

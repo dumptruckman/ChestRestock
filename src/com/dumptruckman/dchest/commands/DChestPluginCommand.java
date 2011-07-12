@@ -340,7 +340,7 @@ public class DChestPluginCommand implements CommandExecutor {
                 plugin.sendMessage("chest.noconfig", sender);
                 return true;
             }
-            chest.restock();
+            chest.restock(chest.getItems());
             plugin.sendMessage("commands.restock", sender);
             return true;
         } else if (args[0].equalsIgnoreCase("name")) {
