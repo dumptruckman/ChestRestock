@@ -21,7 +21,8 @@ import org.bukkitcontrib.block.ContribChest;
  */
 public class ChestData {
 
-    private static final int CHESTSIZE = 27;
+    public static final int CHESTSIZE = 27;
+    
     private DChest plugin;
     private Chest chest;
     private Block block;
@@ -94,12 +95,11 @@ public class ChestData {
     }
 
     public Inventory getInventory(boolean giveDouble) {
-        CraftChest craftchest = new CraftChest(block);
         if (giveDouble) {
-            ContribChest contribchest = craftchest;
+            ContribChest contribchest = (ContribChest)chest;
             return contribchest.getFullInventory();
         } else {
-            return craftchest.getInventory();
+            return chest.getInventory();
         }
     }
 
