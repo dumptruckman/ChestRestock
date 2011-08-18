@@ -48,7 +48,8 @@ public class DChestPlayerListener extends PlayerListener {
                 //Inventory inventory = new ContribCraftInventory(wrapper.getHandle());
                 Inventory inventory = chest.getInventory(chest.isDouble());
                 // Clear the inventory and replace with old items if player is not op
-                if (!player.isOp() && chest.isUnique()) {
+                //OP exclusion from unique?no 
+                if (/*!player.isOp() && */chest.isUnique()) {
                     List<ItemData> items = chest.getPlayerItems(player.getName());
                     inventory.clear();
                     // Item data for player not set
@@ -62,7 +63,8 @@ public class DChestPlayerListener extends PlayerListener {
                 if (timesrestockedforplayer != null) {
                     if (chest.getPlayerLimit() != -1) {
                         if (timesrestockedforplayer >= chest.getPlayerLimit()) {
-                            if (!event.getPlayer().isOp()) {
+                            //TODO Permissions
+                            if (!event.getPlayer().isOp()||!plugin.permissionHandler.has(event.getPlayer(), "dChest.infinite")) {
                                 // Not time for a restock, just display the inventory as is.
                                 player.openInventoryWindow(inventory, chest.getLocation());
                                 return;

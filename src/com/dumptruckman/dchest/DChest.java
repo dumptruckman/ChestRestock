@@ -30,6 +30,9 @@ import org.bukkit.event.Event.Priority;
 import org.bukkit.event.Event.Type;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.PluginManager;
+import com.nijiko.permissions.PermissionHandler;
+import com.nijikokun.bukkit.Permissions.Permissions;
+import org.bukkit.plugin.Plugin;
 
 /**
  *
@@ -39,6 +42,7 @@ public class DChest extends JavaPlugin {
 
     public static final Logger logger = Logger.getLogger("Minecraft.dChest");
     public static final String plugname = "dChest";
+    public static PermissionHandler permissionHandler;
 
     //private final DChestPlayerListener playerListener = new DChestPlayerListener(this);
     private final DChestBlockListener blockListener = new DChestBlockListener(this);
@@ -57,7 +61,7 @@ public class DChest extends JavaPlugin {
 
         // Grab the PluginManager
         final PluginManager pm = getServer().getPluginManager();
-
+        setupPermissions();
         // Loads the configuration file
         reload(false);
 
@@ -138,7 +142,14 @@ public class DChest extends JavaPlugin {
         saveFiles();
         logger.info(plugname + " " + getDescription().getVersion() + " disabled.");
     }
-
+    public boolean hasPerm(Player player, String perm){
+        if(permissionHandler.has(player,perm)){ 
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
     public static void download(Logger log, URL url, File file) throws IOException {
         if (!file.getParentFile().exists())
             file.getParentFile().mkdir();
@@ -401,5 +412,21 @@ public class DChest extends JavaPlugin {
             inventory.setItem(items.get(i).getSlot(), items.get(i));
         }
         return inventory;
+    }
+
+    private void setupPermissions() {
+        if (permissionHandler != null) {
+            return;
+        }
+    
+        Plugin permissionsPlugin = this.getServer().getPluginManager().getPlugin("Permissions");
+    
+        if (permissionsPlugin == null) {
+            //log("Permission system not detected, defaulting to OP");
+            return;
+        }
+    
+        permissionHandler = ((Permissions) permissionsPlugin).getHandler();
+        //log("Found and will use plugin "+((Permissions)permissionsPlugin).getDescription().getFullName());
     }
 }
