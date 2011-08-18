@@ -42,8 +42,7 @@ public class DChestBlockListener extends BlockListener {
         if (!chest.isInConfig()) {
             return;
         }
-
-        if (!event.getPlayer().isOp()) {
+        if (!event.getPlayer().isOp()||plugin.hasPerm(event.getPlayer(),"dChest.break")) {
             event.setCancelled(chest.isIndestructible());
         } else {
             event.setCancelled(false);
@@ -94,8 +93,7 @@ public class DChestBlockListener extends BlockListener {
         if (!chest.isInConfig()) {
             return;
         }
-
-        if (!event.getPlayer().isOp()) {
+        if (!(event.getPlayer().isOp()||DChest.permissionHandler.has(event.getPlayer(),"dChest.break"))) {
             event.setCancelled(chest.isIndestructible());
         } else {
             event.setCancelled(false);
