@@ -8,11 +8,10 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Chest;
-import org.bukkit.craftbukkit.block.CraftChest;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.config.Configuration;
-import org.bukkitcontrib.block.ContribChest;
+import org.getspout.spoutapi.block.SpoutChest;
 
 
 /**
@@ -96,7 +95,7 @@ public class ChestData {
 
     public Inventory getInventory(boolean giveDouble) {
         if (giveDouble) {
-            ContribChest contribchest = (ContribChest)chest;
+            SpoutChest contribchest = (SpoutChest)chest;
             return contribchest.getFullInventory();
         } else {
             return chest.getInventory();
@@ -104,7 +103,7 @@ public class ChestData {
     }
 
     public Inventory getFullInventory() {
-        ContribChest contribchest = (ContribChest)chest;
+        SpoutChest contribchest = (SpoutChest)chest;
         return contribchest.getFullInventory();
     }
 

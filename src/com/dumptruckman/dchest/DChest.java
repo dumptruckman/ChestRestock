@@ -109,19 +109,8 @@ public class DChest extends JavaPlugin {
         // Register command executor for main plugin command
         getCommand("dchest").setExecutor(new DChestPluginCommand(this));
 
-        if (pm.getPlugin("BukkitContrib") == null) {
-            try {
-                download(logger, new URL("http://bit.ly/autoupdateBukkitContrib"),
-                        new File("plugins/BukkitContrib.jar"));
-                pm.loadPlugin(new File("plugins/BukkitContrib.jar"));
-                pm.enablePlugin(pm.getPlugin("BukkitContrib"));
-            } catch (final Exception ex) {
-                logger.warning("[" + plugname + "] Failed to install BukkitContrib, "
-                        + "you may have to restart your server or install it manually.");
-                logger.severe(plugname + " relies on BukkitContrib. Disabling!");
-                pm.disablePlugin(this);
-                return;
-            }
+        if (pm.getPlugin("Pail") == null) {
+            logger.info("Cannot find Spout. Disabling dChest");
         }
 
         // Register event listeners
