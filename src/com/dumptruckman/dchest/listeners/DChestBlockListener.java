@@ -93,6 +93,7 @@ public class DChestBlockListener extends BlockListener {
         if (!chest.isInConfig()) {
             return;
         }
+
         if (!DChest.hasPerm(event.getPlayer(),"dChest.break")){
             event.setCancelled(chest.isIndestructible());
         }

@@ -30,6 +30,7 @@ import org.bukkit.event.Event.Priority;
 import org.bukkit.event.Event.Type;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.Plugin;
 
 /**
  *
