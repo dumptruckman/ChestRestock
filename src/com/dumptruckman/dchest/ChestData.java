@@ -8,6 +8,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Chest;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.config.Configuration;
@@ -52,7 +53,7 @@ public class ChestData {
             chestPair = (Chest)block.getRelative(BlockFace.WEST).getState();
             
         // See if the chest is present in the config
-        if (plugin.chestConfig.getNode(configPath) != null) {
+        if (plugin.chestConfig.get(configPath) != null) {
             inConfig = true;
         } else {
             // If there's a pair, check for it in the config
@@ -61,7 +62,7 @@ public class ChestData {
                         + chestPair.getY() + "-" + chestPair.getZ();
                 String chestpairconfigpath = chestPair.getWorld().getName()
                         + "." + chestpairconfigname;
-                if (plugin.chestConfig.getNode(chestpairconfigpath) != null) {
+                if (plugin.chestConfig.get(chestpairconfigpath) != null) {
                     // And switch with the original chest info if found
                     Chest temp = chest;
                     chest = chestPair;
@@ -131,12 +132,12 @@ public class ChestData {
 
     public void disable() {
         if (isInConfig()) {
-            plugin.chestConfig.removeProperty(configPath);
-            plugin.chestData.removeProperty(configPath);
+            plugin.chestConfig.set(configPath, null);
+            plugin.chestData.set(configPath, null);
         }
     }
 
-    public List<ItemData> getItemsByPath(Configuration config, String path) {
+    public List<ItemData> getItemsByPath(YamlConfiguration config, String path) {
         List<Object> items = config.getList(path);
         List<ItemData> itemstack = new ArrayList<ItemData>();
         for (int i = 0; i < items.size(); i++) {
@@ -292,7 +293,7 @@ public class ChestData {
                 }
             }
         }
-        plugin.chestConfig.setProperty(configPath + ".items", chestContents);
+        plugin.chestConfig.set(configPath + ".items", chestContents);
         //chestConfig.put("items", chestContents);
 
         //plugin.chestConfig.setProperty(configPath, chestConfig);
@@ -302,35 +303,35 @@ public class ChestData {
     }
 
     public void setPeriod(String newperiod) {
-        plugin.chestConfig.setProperty(configPath + ".period", newperiod);
+        plugin.chestConfig.set(configPath + ".period", newperiod);
     }
     public String getPeriod() {
         return plugin.chestConfig.getString(configPath + ".period");
     }
 
     public void setPeriodMode(String newperiodmode) {
-        plugin.chestConfig.setProperty(configPath + ".periodmode", newperiodmode);
+        plugin.chestConfig.set(configPath + ".periodmode", newperiodmode);
     }
     public String getPeriodMode() {
         return plugin.chestConfig.getString(configPath + ".periodmode");
     }
 
     public void setRestockMode(String newrestockmode) {
-        plugin.chestConfig.setProperty(configPath + ".restockmode", newrestockmode);
+        plugin.chestConfig.set(configPath + ".restockmode", newrestockmode);
     }
     public String getRestockMode() {
         return plugin.chestConfig.getString(configPath + ".restockmode");
     }
 
     public void setPreserveSlots(String preserveslots) {
-        plugin.chestConfig.setProperty(configPath + ".preserveslots", preserveslots);
+        plugin.chestConfig.set(configPath + ".preserveslots", preserveslots);
     }
     public String getPreserveSlots() {
         return plugin.chestConfig.getString(configPath + ".preserveslots");
     }
 
     public void setIndestructible(String indestructible) {
-        plugin.chestConfig.setProperty(configPath + ".indestructible", indestructible);
+        plugin.chestConfig.set(configPath + ".indestructible", indestructible);
     }
     public Boolean isIndestructible() {
         String ind = plugin.chestConfig.getString(configPath + ".indestructible");
@@ -344,7 +345,7 @@ public class ChestData {
     }
 
     public void setPlayerLimit(String limit) {
-        plugin.chestConfig.setProperty(configPath + ".playerlimit", limit);
+        plugin.chestConfig.set(configPath + ".playerlimit", limit);
     }
     public Integer getPlayerLimit() {
         try {
@@ -359,14 +360,14 @@ public class ChestData {
     }
 
     public void setName(String name) {
-        plugin.chestConfig.setProperty(configPath + ".name", name);
+        plugin.chestConfig.set(configPath + ".name", name);
     }
     public String getName() {
         return plugin.chestConfig.getString(configPath + ".name");
     }
 
     public void setUnique(String unique) {
-        plugin.chestConfig.setProperty(configPath + ".unique", unique);
+        plugin.chestConfig.set(configPath + ".unique", unique);
     }
     public Boolean isUnique() {
         String unique = plugin.chestConfig.getString(configPath + ".unique");
@@ -383,7 +384,7 @@ public class ChestData {
      * The following methods all deal with setting chest data
      */
     public void setPlayerRestockCount(String playername, Integer newcount) {
-        plugin.chestData.setProperty(configPath + ".players." + playername + ".restockcount", newcount.intValue());
+        plugin.chestData.set(configPath + ".players." + playername + ".restockcount", newcount.intValue());
     }
     public Integer getPlayerRestockCount(String playername) {
         String count = plugin.chestData.getString(configPath + ".players." + playername + ".restockcount");
@@ -398,14 +399,14 @@ public class ChestData {
     }
 
     public List<String> getPlayers() {
-        return plugin.chestData.getKeys(configPath + ".players");
+        return plugin.chestData.getList(configPath + ".players");
     }
 
     public void setRestockTimeNow() {
         setRestockTime(new Date().getTime() / 1000);
     }
     public void setRestockTime(long time) {
-        plugin.chestData.setProperty(configPath + ".lastrestock", time);
+        plugin.chestData.set(configPath + ".lastrestock", time);
     }
     public long getLastRestockTime() {
         return Long.parseLong(plugin.chestData.getString(configPath + ".lastrestock"));
@@ -415,7 +416,7 @@ public class ChestData {
         setPlayerRestockTime(name, new Date().getTime() / 1000);
     }
     public void setPlayerRestockTime(String name, long time) {
-        plugin.chestData.setProperty(configPath + ".players." + name + ".lastrestock", time);
+        plugin.chestData.set(configPath + ".players." + name + ".lastrestock", time);
     }
     public Long getLastPlayerRestockTime(String name) {
         String temp = plugin.chestData.getString(configPath + ".players." + name + ".lastrestock");
@@ -469,6 +470,6 @@ public class ChestData {
                 }
             }
         }
-        plugin.chestData.setProperty(configPath + ".players." + name + ".items", chestContents);
+        plugin.chestData.set(configPath + ".players." + name + ".items", chestContents);
     }
 }

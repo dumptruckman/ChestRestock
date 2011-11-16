@@ -50,7 +50,8 @@ public class DChestBlockListener extends BlockListener {
 
         if (!event.isCancelled()) {
             chest.disable();
-            plugin.config.save();
+            
+            plugin.saveConfigFile();
         }
     }
 
@@ -74,7 +75,7 @@ public class DChestBlockListener extends BlockListener {
 
         if (!event.isCancelled()) {
             chest.disable();
-            plugin.config.save();
+            plugin.saveConfigFile();
         }
     }
 
@@ -93,7 +94,6 @@ public class DChestBlockListener extends BlockListener {
         if (!chest.isInConfig()) {
             return;
         }
-
         if (!DChest.hasPerm(event.getPlayer(),"dChest.break")){
             event.setCancelled(chest.isIndestructible());
         }
@@ -102,7 +102,7 @@ public class DChestBlockListener extends BlockListener {
         }
         if (!event.isCancelled()) {
             chest.disable();
-            plugin.config.save();
+            plugin.saveConfigFile();
         }
     }
 
@@ -126,7 +126,7 @@ public class DChestBlockListener extends BlockListener {
 
         if (!event.isCancelled()) {
             chest.disable();
-            plugin.config.save();
+            plugin.saveConfigFile();
         }
     }
 }
