@@ -10,9 +10,8 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerListener;
 import org.bukkit.inventory.Inventory;
-import org.bukkitcontrib.inventory.ContribCraftInventory;
-import org.bukkitcontrib.inventory.ContribInventory;
-import org.bukkitcontrib.player.ContribPlayer;
+import org.getspout.spoutapi.player.SpoutPlayer;
+
 
 
 /**
@@ -36,7 +35,7 @@ public class DChestPlayerListener extends PlayerListener {
         final ChestData chest = new ChestData(evt.getClickedBlock(), plugin);
         if (!chest.isInConfig()) return; // Discard event if it's not a configured chest
         
-        final ContribPlayer player = (ContribPlayer)evt.getPlayer();
+        final SpoutPlayer player = (SpoutPlayer)evt.getPlayer();
         evt.setCancelled(true);
         
         final PlayerInteractEvent event = evt;
@@ -44,11 +43,10 @@ public class DChestPlayerListener extends PlayerListener {
         
         //Thread inventoryopen = new Thread() {
         //    @Override public void run() {
-                //ContribInventory wrapper = chest.getInventory(chest.isDouble());
-                //Inventory inventory = new ContribCraftInventory(wrapper.getHandle());
                 Inventory inventory = chest.getInventory(chest.isDouble());
                 // Clear the inventory and replace with old items if player is not op
-                if (!player.isOp() && chest.isUnique()) {
+                //OP exclusion from unique?no 
+                if (/*!player.isOp() && */chest.isUnique()) {
                     List<ItemData> items = chest.getPlayerItems(player.getName());
                     inventory.clear();
                     // Item data for player not set
@@ -62,7 +60,7 @@ public class DChestPlayerListener extends PlayerListener {
                 if (timesrestockedforplayer != null) {
                     if (chest.getPlayerLimit() != -1) {
                         if (timesrestockedforplayer >= chest.getPlayerLimit()) {
-                            if (!event.getPlayer().isOp()) {
+                            if (!DChest.hasPerm(event.getPlayer(), "dChest.infinite")) {
                                 // Not time for a restock, just display the inventory as is.
                                 player.openInventoryWindow(inventory, chest.getLocation());
                                 return;

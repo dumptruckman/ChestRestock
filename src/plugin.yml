@@ -2,6 +2,8 @@ name: dChest
 main: com.dumptruckman.dchest.DChest
 version: 2.0
 author: dumptruckman
+softdepend: [Permissions]
+depend: [Spout]
 
 commands:
   dchest:

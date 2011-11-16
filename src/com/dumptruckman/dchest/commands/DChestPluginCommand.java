@@ -2,8 +2,6 @@ package com.dumptruckman.dchest.commands;
 
 import com.dumptruckman.dchest.ChestData;
 import com.dumptruckman.dchest.DChest;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -28,15 +26,14 @@ public class DChestPluginCommand implements CommandExecutor {
             plugin.sendMessage("commands.ingame", sender);
             return true;
         }
-        if (!sender.isOp()) {
-            plugin.sendMessage("commands.noperm", sender);
-            return true;
-        }
-
+        
         if (args.length == 0) {
             return false;
         }
-
+        else if(!DChest.hasPerm((Player)sender,"dChest."+args[0].toLowerCase())){
+            plugin.sendMessage("commands.noperm", sender);
+            return true;
+        }
         if (args[0].equalsIgnoreCase("help")) {
             // Help command
             if (args.length == 1) {
@@ -364,7 +361,7 @@ public class DChestPluginCommand implements CommandExecutor {
             }
         } else if (args[0].equalsIgnoreCase("unique")) {
             if (args.length < 2) {
-                plugin.sendMessage("commands.unqiue.usage", sender);
+                plugin.sendMessage("commands.unique.usage", sender);
                 plugin.sendMessage("commands.nomode", sender);
                 return true;
             } else {
@@ -380,13 +377,13 @@ public class DChestPluginCommand implements CommandExecutor {
                 if (args[1].equalsIgnoreCase("true")) {
                     chest.setUnique("true");
                     plugin.saveChestConfig();
-                    plugin.sendMessage("commands.unqiue.true", sender);
+                    plugin.sendMessage("commands.unique.true", sender);
                 } else if (args[1].equalsIgnoreCase("false")) {
                     chest.setUnique("false");
                     plugin.saveChestConfig();
-                    plugin.sendMessage("commands.unqiue.false", sender);
+                    plugin.sendMessage("commands.unique.false", sender);
                 } else {
-                    plugin.sendMessage("commands.unqiue.invalid", sender);
+                    plugin.sendMessage("commands.unique.invalid", sender);
                 }
                 return true;
             }

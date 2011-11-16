@@ -45,7 +45,7 @@ public class DChestEntityListener extends EntityListener {
             for (int i = 0; i < chests.size(); i++) {
                 chests.get(i).disable();
             }
-            plugin.config.save();
+            plugin.saveConfigFile();
         }
     }
 }

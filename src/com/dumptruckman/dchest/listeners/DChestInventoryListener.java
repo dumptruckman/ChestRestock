@@ -4,8 +4,9 @@ import com.dumptruckman.dchest.ChestData;
 import com.dumptruckman.dchest.DChest;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkitcontrib.event.inventory.InventoryCloseEvent;
-import org.bukkitcontrib.event.inventory.InventoryListener;
+import org.getspout.spoutapi.event.inventory.InventoryCloseEvent;
+import org.getspout.spoutapi.event.inventory.InventoryListener;
+
 
 /**
  *

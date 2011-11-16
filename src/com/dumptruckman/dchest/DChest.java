@@ -10,6 +10,7 @@ import com.dumptruckman.util.locale.Language;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,6 +19,9 @@ import java.net.URL;
 import java.util.List;
 import java.util.Timer;
 import java.util.jar.JarFile;
+import java.util.logging.Level;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.util.config.Configuration;
 import org.bukkit.plugin.java.JavaPlugin;
 import java.util.logging.Logger;
@@ -25,12 +29,12 @@ import java.util.zip.ZipEntry;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event.Priority;
 import org.bukkit.event.Event.Type;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.PluginManager;
-
 /**
  *
  * @author dumptruckman
@@ -44,9 +48,9 @@ public class DChest extends JavaPlugin {
     private final DChestBlockListener blockListener = new DChestBlockListener(this);
     //private final DChestEntityListener entityListener = new DChestEntityListener(this);
     
-    public Configuration config;
-    public Configuration chestConfig;
-    public Configuration chestData;
+    public YamlConfiguration config;
+    public YamlConfiguration chestConfig;
+    public YamlConfiguration chestData;
 
     private Language lang;
     private Timer timer;
@@ -57,7 +61,7 @@ public class DChest extends JavaPlugin {
 
         // Grab the PluginManager
         final PluginManager pm = getServer().getPluginManager();
-
+            
         // Loads the configuration file
         reload(false);
 
@@ -89,35 +93,22 @@ public class DChest extends JavaPlugin {
             in.close();
         } catch (IOException e) {
             logger.warning("Could not extract default language file!");
-            if (config.getString("settings.languagefile")
-                    .equalsIgnoreCase("english.yml")) {
-                logger.severe("No alternate language file set!  Disabling "
-                        + plugname);
+            if (config.getString("settings.languagefile").equalsIgnoreCase("english.yml")) {
+                logger.severe("No alternate language file set!  Disabling " + plugname);
                 pm.disablePlugin(this);
                 return;
             }
         }
 
         // Load up language file
-        lang = new Language(new File(this.getDataFolder(),
-                config.getString("settings.languagefile")));
+        lang = new Language(new File(this.getDataFolder(), config.getString("settings.languagefile")));
 
         // Register command executor for main plugin command
         getCommand("dchest").setExecutor(new DChestPluginCommand(this));
 
-        if (pm.getPlugin("BukkitContrib") == null) {
-            try {
-                download(logger, new URL("http://bit.ly/autoupdateBukkitContrib"),
-                        new File("plugins/BukkitContrib.jar"));
-                pm.loadPlugin(new File("plugins/BukkitContrib.jar"));
-                pm.enablePlugin(pm.getPlugin("BukkitContrib"));
-            } catch (final Exception ex) {
-                logger.warning("[" + plugname + "] Failed to install BukkitContrib, "
-                        + "you may have to restart your server or install it manually.");
-                logger.severe(plugname + " relies on BukkitContrib. Disabling!");
-                pm.disablePlugin(this);
-                return;
-            }
+        if (pm.getPlugin("Spout") == null) {
+            logger.info("Cannot find Spout. Disabling dChest");
+            return;
         }
 
         // Register event listeners
@@ -138,43 +129,37 @@ public class DChest extends JavaPlugin {
         saveFiles();
         logger.info(plugname + " " + getDescription().getVersion() + " disabled.");
     }
-
-    public static void download(Logger log, URL url, File file) throws IOException {
-        if (!file.getParentFile().exists())
-            file.getParentFile().mkdir();
-        if (file.exists())
-            file.delete();
-        file.createNewFile();
-        final int size = url.openConnection().getContentLength();
-        log.info("[" + plugname + "] Downloading " + file.getName() + " (" + size / 1024 + "kb) ...");
-        final InputStream in = url.openStream();
-        final OutputStream out = new BufferedOutputStream(new FileOutputStream(file));
-        final byte[] buffer = new byte[1024];
-        int len, downloaded = 0, msgs = 0;
-        final long start = System.currentTimeMillis();
-        while ((len = in.read(buffer)) >= 0) {
-            out.write(buffer, 0, len);
-            downloaded += len;
-            if ((int)((System.currentTimeMillis() - start) / 500) > msgs) {
-                log.info((int)((double)downloaded / (double)size * 100d) + "%");
-                msgs++;
-            }
+    public static boolean hasPerm(Player player, String perm){
+        if(player.hasPermission(perm)){
+            return true;
         }
-        in.close();
-        out.close();
-        log.info("Download finished");
+        else{
+            return false;
+        }
     }
 
-    public void saveConfig() {
-        new ConfigIO(config).save();
+    public void saveConfigFile() {
+        try {
+            config.save(new File(this.getDataFolder(), "config.yml"));
+        } catch (IOException ex) {
+            logger.severe(ex.getMessage());
+        }
     }
 
     public void saveChestData() {
-        new ConfigIO(chestData).save();
+        try {
+            chestData.save(new File(this.getDataFolder(), "chestdata.yml"));
+        } catch (IOException ex) {
+            logger.severe(ex.getMessage());
+        }
     }
 
     public void saveChestConfig() {
-        new ConfigIO(chestConfig).save();
+        try {
+            chestConfig.save(new File(this.getDataFolder(), "chestconfig.yml"));
+        } catch (IOException ex) {
+            logger.severe(ex.getMessage());
+        }
     }
 
     public void saveConfigs() {
@@ -203,13 +188,19 @@ public class DChest extends JavaPlugin {
     }
 
     public void reload(boolean notify) {
-        config = new ConfigIO(new File(this.getDataFolder(), "config.yml")).load();
-        chestConfig = new ConfigIO(new File(this.getDataFolder(), "chestconfig.yml")).load();
-        if (!notify) {
-            chestData = new ConfigIO(new File(this.getDataFolder(), "chestdata.yml")).load();
+        try{
+            config.load(new File(this.getDataFolder(), "config.yml"));
+            chestConfig.load(new File(this.getDataFolder(), "chestconfig.yml"));
+            if (!notify) {
+                chestData.load(new File(this.getDataFolder(), "chestdata.yml"));
+            }
         }
-
+        catch(Exception e){
+            logger.severe(e.getMessage());
+        }
         // Set/Verifies defaults
+        //TODO delete code broken after update, and now is not needed
+        /*
         if (config.getString("defaults.period") == null) {
             config.setProperty("defaults.period", "900");
         } else {
@@ -301,7 +292,7 @@ public class DChest extends JavaPlugin {
         if (config.getString("settings.datasavetimer") == null) {
             config.setProperty("settings.datasavetimer", 300);
         }
-
+         */
         convertOldConfig();
 
         saveFiles();
@@ -316,55 +307,45 @@ public class DChest extends JavaPlugin {
     }
 
     public void convertOldConfig() {
-        if (config.getKeys().contains("chests")) {
+        if (config.contains("chests")) {
             logger.info("[" + plugname + "] Converting old data");
-            List<String> worlds = config.getKeys("chests");
+            List<String> worlds = (List<String>) config.getConfigurationSection("chests").getKeys(false);
             if (worlds == null) return;
             for (int i = 0; i < worlds.size(); i++) {
-                List<String> chests = config.getKeys("chests." + worlds.get(i));
+                List<String> chests = (List<String>) config.getConfigurationSection("chests"+worlds.get(i)).getKeys(false);
                 if (chests == null) break;
                 for (int j = 0; j < chests.size(); j++) {
                     String chest = worlds.get(i) + "." + chests.get(i) + ".";
-                    try {
-                        chestConfig.setProperty(chest + "preserveslots", config.getString("chests." + chest + "preserveslots"));
-                        config.removeProperty("chests." + chest + "preserveslots");
-                    } catch (NullPointerException e) { }
-                    try {
-                        chestConfig.setProperty(chest + "playerlimit", config.getProperty("chests." + chest + "playerlimit"));
-                        config.removeProperty("chests." + chest + "playerlimit");
-                    } catch (NullPointerException e) { }
-                    try {
-                        chestData.setProperty(chest + "lastrestock", config.getProperty("chests." + chest + "lastrestock"));
-                        config.removeProperty("chests." + chest + "lastrestock");
-                    } catch (NullPointerException e) { }
-                    try {
-                        chestConfig.setProperty(chest + "items", config.getProperty("chests." + chest + "items"));
-                        config.removeProperty("chests." + chest + "items");
-                    } catch (NullPointerException e) { }
-                    try {
-                        chestConfig.setProperty(chest + "restockmode", config.getProperty("chests." + chest + "restockmode"));
-                        config.removeProperty("chests." + chest + "restockmode");
-                    } catch (NullPointerException e) { }
-                    try {
-                        chestConfig.setProperty(chest + "period", config.getProperty("chests." + chest + "period"));
-                        config.removeProperty("chests." + chest + "period");
-                    } catch (NullPointerException e) { }
-                    try {
-                        chestConfig.setProperty(chest + "indestructible", config.getProperty("chests." + chest + "indestructible"));
-                        config.removeProperty("chests." + chest + "indestructible");
-                    } catch (NullPointerException e) { }
-                    try {
-                        chestConfig.setProperty(chest + "periodmode", config.getProperty("chests." + chest + "periodmode"));
-                        config.removeProperty("chests." + chest + "periodmode");
-                    } catch (NullPointerException e) { }
-                    try {
-                        chestData.setProperty(chest + "players", config.getProperty("chests." + chest + "players"));
-                        config.removeProperty("chests." + chest + "players");
-                    } catch (NullPointerException e) { }
-                    try {
-                        chestConfig.setProperty(chest + "name", config.getProperty("chests." + chest + "name"));
-                        config.removeProperty("chests." + chest + "name");
-                    } catch (NullPointerException e) { }
+                    
+                    chestConfig.set(chest + "preserveslots", config.getString("chests." + chest + "preserveslots"));
+                    config.set("chests." + chest + "preserveslots", null);
+                    
+                    chestConfig.set(chest + "playerlimit", config.getString("chests." + chest + "playerlimit"));
+                    config.set("chests." + chest + "playerlimit", null);
+                    
+                    chestConfig.set(chest + "lastrestock", config.getString("chests." + chest + "lastrestock"));
+                    config.set("chests." + chest + "lastrestock", null);
+
+                    chestConfig.set(chest + "items", config.getString("chests." + chest + "items"));
+                    config.set("chests." + chest + "items", null);
+
+                    chestConfig.set(chest + "restockmode", config.getString("chests." + chest + "restockmode"));
+                    config.set("chests." + chest + "restockmode", null);
+
+                    chestConfig.set(chest + "period", config.getString("chests." + chest + "period"));
+                    config.set("chests." + chest + "period", null);
+
+                    chestConfig.set(chest + "indestructible", config.getString("chests." + chest + "indestructible"));
+                    config.set("chests." + chest + "indestructible", null);
+
+                    chestConfig.set(chest + "periodmode", config.getString("chests." + chest + "periodmode"));
+                    config.set("chests." + chest + "periodmode", null);
+
+                    chestConfig.set(chest + "players", config.getString("chests." + chest + "players"));
+                    config.set("chests." + chest + "players", null);
+
+                    chestConfig.set(chest + "name", config.getString("chests." + chest + "name"));
+                    config.set("chests." + chest + "name", null);
                 }
             }
         }
