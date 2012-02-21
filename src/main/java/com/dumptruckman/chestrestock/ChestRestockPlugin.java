@@ -6,8 +6,10 @@ import com.dumptruckman.chestrestock.api.Config;
 
 import java.util.List;
 
+import com.dumptruckman.chestrestock.util.CommentedConfig;
 import com.dumptruckman.chestrestock.util.Logging;
 import com.dumptruckman.chestrestock.util.Perm;
+import com.dumptruckman.chestrestock.util.YamlChestData;
 import com.dumptruckman.chestrestock.util.locale.Messager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.command.CommandSender;
@@ -20,11 +22,23 @@ import org.bukkit.plugin.PluginManager;
  */
 public class ChestRestockPlugin extends JavaPlugin implements ChestRestock {
 
+    Config config = null;
+    ChestData data = null;
+    
     public void onLoad() { }
 
     public void onEnable() {
         Logging.init(this);
         Perm.register(this);
+        
+        if (getSettings() == null) {
+            // Could not load config.
+            return;
+        }
+        if (getData() == null) {
+            // Could not load data.
+            return;
+        }
 
         // Grab the PluginManager
         final PluginManager pm = getServer().getPluginManager();
@@ -140,19 +154,39 @@ public class ChestRestockPlugin extends JavaPlugin implements ChestRestock {
 
     public Inventory getInventoryWithItems(Inventory inventory, List<DefaultChestItem> items) {
         for (int i = 0; i < items.size(); i++) {
-            inventory.setItem(items.get(i).getSlot(), items.get(i));
+            inventory.setItem(items.get(i).getSlot(), items.get(i).getItem());
         }
         return inventory;
     }
 
     @Override
     public Config getSettings() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        if (config == null) {
+            try {
+                config = new CommentedConfig(this);
+            } catch (Exception e) {
+                Logging.severe("Could not load config!");
+                e.printStackTrace();
+                getServer().getPluginManager().disablePlugin(this);
+                return null;
+            }
+        }
+        return config;
     }
 
     @Override
     public ChestData getData() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        if (data == null) {
+            try {
+                data = new YamlChestData(this);
+            } catch (Exception e) {
+                Logging.severe("Could not load data!");
+                e.printStackTrace();
+                getServer().getPluginManager().disablePlugin(this);
+                return null;
+            }
+        }
+        return data;
     }
 
     @Override
