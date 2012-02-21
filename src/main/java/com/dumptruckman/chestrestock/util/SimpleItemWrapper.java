@@ -10,15 +10,15 @@ import java.util.Map;
 /**
  * This is meant to wrap an ItemStack so that it can easily be serialized/deserialized in String format.
  */
-public class ItemWrapper {
+public class SimpleItemWrapper {
 
     private ItemStack item;
 
-    public ItemWrapper(ItemStack item) {
+    public SimpleItemWrapper(ItemStack item) {
         this.item = item;
     }
 
-    public ItemWrapper(String itemString) {
+    public SimpleItemWrapper(String itemString) {
         int type = 0;
         short damage = 0;
         int amount = 1;
