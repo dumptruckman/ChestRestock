@@ -3,30 +3,14 @@ package com.dumptruckman.chestrestock;
 import com.dumptruckman.chestrestock.api.ChestData;
 import com.dumptruckman.chestrestock.api.ChestRestock;
 import com.dumptruckman.chestrestock.api.Config;
-import com.dumptruckman.chestrestock.commands.DChestPluginCommand;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URL;
 import java.util.List;
-import java.util.Timer;
-import java.util.jar.JarFile;
 
 import com.dumptruckman.chestrestock.util.Logging;
 import com.dumptruckman.chestrestock.util.Perm;
 import com.dumptruckman.chestrestock.util.locale.Messager;
 import org.bukkit.plugin.java.JavaPlugin;
-import java.util.logging.Logger;
-import java.util.zip.ZipEntry;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.PluginManager;
 
@@ -128,7 +112,7 @@ public class ChestRestockPlugin extends JavaPlugin implements ChestRestock {
         }
     }*/
 
-    public void restockInventory(Inventory inventory, DefaultRestockChest chest, List<ChestItem> items) {
+    public void restockInventory(Inventory inventory, DefaultRestockChest chest, List<DefaultChestItem> items) {
        /* //Inventory inventory = chest.getFullInventory();
         if (chest.getRestockMode().equalsIgnoreCase("replace")) {
             inventory.clear();
@@ -154,7 +138,7 @@ public class ChestRestockPlugin extends JavaPlugin implements ChestRestock {
         //return inventory;*/
     }
 
-    public Inventory getInventoryWithItems(Inventory inventory, List<ChestItem> items) {
+    public Inventory getInventoryWithItems(Inventory inventory, List<DefaultChestItem> items) {
         for (int i = 0; i < items.size(); i++) {
             inventory.setItem(items.get(i).getSlot(), items.get(i));
         }
