@@ -152,18 +152,18 @@ public class ChestRestockPluginCommand implements CommandExecutor {
                 return true;
             }
 
-            chest.setPeriod(plugin.config.getString("defaults.period"));
-            chest.setRestockMode(plugin.config.getString("defaults.restockmode"));
-            chest.setPeriodMode(plugin.config.getString("defaults.periodmode"));
-            chest.setPreserveSlots(plugin.config.getString("defaults.preserveslots"));
-            chest.setIndestructible(plugin.config.getString("defaults.indestructible"));
-            chest.setPlayerLimit(plugin.config.getString("defaults.playerlimit"));
+            chest.setPeriod(plugin.getConfig().getString("defaults.period"));
+            chest.setRestockMode(plugin.getConfig().getString("defaults.restockmode"));
+            chest.setPeriodMode(plugin.getConfig().getString("defaults.periodmode"));
+            chest.setPreserveSlots(plugin.getConfig().getString("defaults.preserveslots"));
+            chest.setIndestructible(plugin.getConfig().getString("defaults.indestructible"));
+            chest.setPlayerLimit(plugin.getConfig().getString("defaults.playerlimit"));
             chest.setRestockTimeNow();
             chest.setItems();
-            plugin.config.save();
+            plugin.saveConfig();
             sender.sendMessage("This chest will restock with the items currently"
                     + " inside of it, every " 
-                    + plugin.config.getString("defaults.period") + " seconds. "
+                    + plugin.getConfig().getString("defaults.period") + " seconds. "
                     + "(default)");
             return true;
         } else if (args[0].equalsIgnoreCase("period")) {
@@ -188,7 +188,7 @@ public class ChestRestockPluginCommand implements CommandExecutor {
                     Integer.parseInt(args[1]);
                     chest.setPeriod(args[1]);
                     chest.setRestockTimeNow();
-                    plugin.config.save();
+                    plugin.saveConfig();
                     sender.sendMessage("Chest will now restock every " + args[1]
                             + " seconds.");
                     return true;
@@ -211,7 +211,7 @@ public class ChestRestockPluginCommand implements CommandExecutor {
             }
             chest.setRestockTimeNow();
             chest.setItems();
-            plugin.config.save();
+            plugin.saveConfig();
             sender.sendMessage("Chest will now restock with what is currently "
                     + "inside of it.");
             return true;
@@ -228,7 +228,7 @@ public class ChestRestockPluginCommand implements CommandExecutor {
                 return true;
             }
             chest.disable();
-            plugin.config.save();
+            plugin.saveConfig();
             sender.sendMessage("Chest will no longer be automatically "
                     + "restocked.");
             return true;
@@ -255,13 +255,13 @@ public class ChestRestockPluginCommand implements CommandExecutor {
                             + chest.getPeriod() + " seconds after a player has"
                             + "checked it.");
                     chest.setPeriodMode("player");
-                    plugin.config.save();
+                    plugin.saveConfig();
                 } else if (args[1].equalsIgnoreCase("settime")) {
                     sender.sendMessage("This chest will now restock every "
                             + chest.getPeriod() + " seconds, regardless of "
                             + "player interaction.");
                     chest.setPeriodMode("settime");
-                    plugin.config.save();
+                    plugin.saveConfig();
                 } else {
                     sender.sendMessage("Invalid period mode!");
                 }
@@ -289,12 +289,12 @@ public class ChestRestockPluginCommand implements CommandExecutor {
                     sender.sendMessage("When restocking, items will be ADDED to"
                             + " this chest.");
                     chest.setRestockMode("add");
-                    plugin.config.save();
+                    plugin.saveConfig();
                 } else if (args[1].equalsIgnoreCase("replace")) {
                     sender.sendMessage("When restocking, items will be REPLACED"
                             + " in this chest.");
                     chest.setRestockMode("replace");
-                    plugin.config.save();
+                    plugin.saveConfig();
                 } else {
                     sender.sendMessage("Invalid restock mode!");
                 }
@@ -326,12 +326,12 @@ public class ChestRestockPluginCommand implements CommandExecutor {
                     sender.sendMessage("This chest will now keep the position "
                             + "of each item intact when it restocks.");
                     chest.setPreserveSlots("true");
-                    plugin.config.save();
+                    plugin.saveConfig();
                 } else if (args[1].equalsIgnoreCase("false")) {
                     sender.sendMessage("This chest will not try to keep the "
                             + "position of each item intact when it restocks.");
                     chest.setPreserveSlots("false");
-                    plugin.config.save();
+                    plugin.saveConfig();
                 } else {
                     sender.sendMessage("Invalid preserve slots setting!");
                 }
@@ -359,13 +359,13 @@ public class ChestRestockPluginCommand implements CommandExecutor {
                     sender.sendMessage("This chest will now be indestructible "
                             + "except by ops.");
                     chest.setIndestructible("true");
-                    plugin.config.save();
+                    plugin.saveConfig();
                 } else if (args[1].equalsIgnoreCase("false")) {
                     sender.sendMessage("This chest will will be destroyable by "
                             + "anyone unless you have further protection against"
                             + " such things.");
                     chest.setIndestructible("false");
-                    plugin.config.save();
+                    plugin.saveConfig();
                 } else {
                     sender.sendMessage("Invalid indestructible setting!");
                 }
@@ -402,7 +402,7 @@ public class ChestRestockPluginCommand implements CommandExecutor {
                                 " times for each player!");
                     }
                     chest.setPlayerLimit(args[1]);
-                    plugin.config.save();
+                    plugin.saveConfig();
                 } catch (NumberFormatException nfe) {
                     sender.sendMessage("You must specify an integer! -1, 0, or "
                             + "anything greater than 0.");
@@ -444,7 +444,7 @@ public class ChestRestockPluginCommand implements CommandExecutor {
                 }
                 chest.setName(args[1]);
                 sender.sendMessage("Chest renamed to: " + args[1]);
-                plugin.config.save();
+                plugin.saveConfig();
                 return true;
             }
         }

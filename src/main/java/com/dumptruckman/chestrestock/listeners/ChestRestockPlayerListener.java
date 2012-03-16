@@ -4,17 +4,18 @@ import com.dumptruckman.chestrestock.ChestData;
 import com.dumptruckman.chestrestock.ChestRestock;
 import java.util.Date;
 import org.bukkit.Material;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerInventoryEvent;
-import org.bukkit.event.player.PlayerListener;
 import org.bukkit.inventory.ItemStack;
 
 /**
  *
  * @author dumptruckman
  */
-public class ChestRestockPlayerListener extends PlayerListener {
+public class ChestRestockPlayerListener implements Listener {
 
     ChestRestock plugin;
 
@@ -22,9 +23,8 @@ public class ChestRestockPlayerListener extends PlayerListener {
         this.plugin = plugin;
     }
 
-    @Override
+    @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
-        super.onPlayerInteract(event);
 
         if (!event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
             return;
@@ -61,7 +61,7 @@ public class ChestRestockPlayerListener extends PlayerListener {
         event.setCancelled(true);
 
         int missedperiods = 1;
-        if (chest.getPeriodMode().equalsIgnoreCase("player")) {
+        if (chest.getPeriodMode() != null && chest.getPeriodMode().equalsIgnoreCase("player")) {
             missedperiods = (int)Math.floor((new Long(accesstime).doubleValue()
                     - new Long(chest.getLastRestockTime()).doubleValue())
                     / Integer.parseInt(chest.getPeriod()));
@@ -97,7 +97,7 @@ public class ChestRestockPlayerListener extends PlayerListener {
             timesrestockedforplayer++;
             chest.setPlayerRestockCount(event.getPlayer().getName(), timesrestockedforplayer);
         }
-        plugin.config.save();
+        plugin.saveConfig();
     }
 
     //@Override

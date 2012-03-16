@@ -9,17 +9,19 @@ import com.dumptruckman.chestrestock.ChestData;
 import com.dumptruckman.chestrestock.ChestRestock;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.event.block.BlockFadeEvent;
-import org.bukkit.event.block.BlockListener;
 
 /**
  *
  * @author dumptruckman
  */
-public class ChestRestockBlockListener extends BlockListener {
+public class ChestRestockBlockListener implements Listener {
 
     ChestRestock plugin;
 
@@ -27,7 +29,7 @@ public class ChestRestockBlockListener extends BlockListener {
         this.plugin = plugin;
     }
 
-    @Override
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onBlockBreak(BlockBreakEvent event) {
         if (event.isCancelled()) {
             return;
@@ -51,11 +53,12 @@ public class ChestRestockBlockListener extends BlockListener {
 
         if (!event.isCancelled()) {
             chest.disable();
-            plugin.config.save();
+
+            plugin.saveConfig();
         }
     }
 
-    @Override
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onBlockBurn(BlockBurnEvent event) {
         if (event.isCancelled()) {
             return;
@@ -75,11 +78,11 @@ public class ChestRestockBlockListener extends BlockListener {
 
         if (!event.isCancelled()) {
             chest.disable();
-            plugin.config.save();
+            plugin.saveConfig();
         }
     }
 
-    @Override
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onBlockDamage(BlockDamageEvent event) {
         if (event.isCancelled()) {
             return;
@@ -102,11 +105,11 @@ public class ChestRestockBlockListener extends BlockListener {
         }
         if (!event.isCancelled()) {
             chest.disable();
-            plugin.config.save();
+            plugin.saveConfig();
         }
     }
 
-    @Override
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onBlockFade(BlockFadeEvent event) {
         if (event.isCancelled()) {
             return;
@@ -126,7 +129,7 @@ public class ChestRestockBlockListener extends BlockListener {
 
         if (!event.isCancelled()) {
             chest.disable();
-            plugin.config.save();
+            plugin.saveConfig();
         }
     }
 }

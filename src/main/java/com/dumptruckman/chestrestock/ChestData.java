@@ -5,13 +5,14 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Chest;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.material.MaterialData;
-import org.bukkit.util.config.ConfigurationNode;
 
 /**
  *
@@ -47,14 +48,14 @@ public class ChestData {
             chestPair = (Chest)block.getRelative(BlockFace.WEST).getState();
             
         // See if the chest is present in the config
-        if (plugin.config.getNode(configPath) != null) {
+        if (plugin.getConfig().get(configPath) != null) {
             inConfig = true;
         } else {
             // If there's a pair, check for it in the config
             if (chestPair != null) {
                 String chestpairconfigname = "chests." + chestPair.getX()
                         + "-" + chestPair.getY() + "-" + chestPair.getZ();
-                if (plugin.config.getNode(chestpairconfigname) != null) {
+                if (plugin.getConfig().get(chestpairconfigname) != null) {
                     // And switch with the original chest info if found
                     Chest temp = chest;
                     chest = chestPair;
@@ -74,10 +75,10 @@ public class ChestData {
         if (inConfig) {
             // Ensure new config options are set for existing chest
             if (isIndestructible() == null) {
-                setIndestructible(plugin.config.getString("defaults.indestructible"));
+                setIndestructible(plugin.getConfig().getString("defaults.indestructible"));
             }
             if (getPlayerLimit() == null) {
-                setPlayerLimit(plugin.config.getString("defaults.playerlimit"));
+                setPlayerLimit(plugin.getConfig().getString("defaults.playerlimit"));
             }
         }
     }
@@ -89,38 +90,38 @@ public class ChestData {
     public boolean isInConfig() { return inConfig; }
 
     public void setPeriod(String newperiod) {
-        plugin.config.setProperty(configPath + ".period", newperiod);
+        plugin.getConfig().set(configPath + ".period", newperiod);
     }
     public String getPeriod() {
-        return plugin.config.getString(configPath + ".period");
+        return plugin.getConfig().getString(configPath + ".period");
     }
 
     public void setPeriodMode(String newperiodmode) {
-        plugin.config.setProperty(configPath + ".periodmode", newperiodmode);
+        plugin.getConfig().set(configPath + ".periodmode", newperiodmode);
     }
     public String getPeriodMode() {
-        return plugin.config.getString(configPath + ".periodmode");
+        return plugin.getConfig().getString(configPath + ".periodmode");
     }
 
     public void setRestockMode(String newrestockmode) {
-        plugin.config.setProperty(configPath + ".restockmode", newrestockmode);
+        plugin.getConfig().set(configPath + ".restockmode", newrestockmode);
     }
     public String getRestockMode() {
-        return plugin.config.getString(configPath + ".restockmode");
+        return plugin.getConfig().getString(configPath + ".restockmode");
     }
 
     public void setPreserveSlots(String preserveslots) {
-        plugin.config.setProperty(configPath + ".preserveslots", preserveslots);
+        plugin.getConfig().set(configPath + ".preserveslots", preserveslots);
     }
     public String getPreserveSlots() {
-        return plugin.config.getString(configPath + ".preserveslots");
+        return plugin.getConfig().getString(configPath + ".preserveslots");
     }
 
     public void setIndestructible(String indestructible) {
-        plugin.config.setProperty(configPath + ".indestructible", indestructible);
+        plugin.getConfig().set(configPath + ".indestructible", indestructible);
     }
     public Boolean isIndestructible() {
-        String ind = plugin.config.getString(configPath + ".indestructible");
+        String ind = plugin.getConfig().getString(configPath + ".indestructible");
         if (ind == null) {
             return null;
         } else if (ind.equalsIgnoreCase("true")) {
@@ -131,11 +132,11 @@ public class ChestData {
     }
 
     public void setPlayerLimit(String limit) {
-        plugin.config.setProperty(configPath + ".playerlimit", limit);
+        plugin.getConfig().set(configPath + ".playerlimit", limit);
     }
     public Integer getPlayerLimit() {
         try {
-            String limit = plugin.config.getString(configPath + ".playerlimit");
+            String limit = plugin.getConfig().getString(configPath + ".playerlimit");
             if (limit == null) {
                 return null;
             }
@@ -146,10 +147,10 @@ public class ChestData {
     }
 
     public void setPlayerRestockCount(String playername, Integer newcount) {
-        plugin.config.setProperty(configPath + ".players." + playername + ".restockcount", newcount.intValue());
+        plugin.getConfig().set(configPath + ".players." + playername + ".restockcount", newcount.intValue());
     }
     public Integer getPlayerRestockCount(String playername) {
-        String count = plugin.config.getString(configPath + ".players." + playername + ".restockcount");
+        String count = plugin.getConfig().getString(configPath + ".players." + playername + ".restockcount");
         if (count == null) {
             return null;
         }
@@ -161,25 +162,25 @@ public class ChestData {
     }
 
     public void setName(String name) {
-        plugin.config.setProperty(configPath + ".name", name);
+        plugin.getConfig().set(configPath + ".name", name);
     }
     public String getName() {
-        return plugin.config.getString(configPath + ".name");
+        return plugin.getConfig().getString(configPath + ".name");
     }
 
     public List<String> getPlayers() {
-        return plugin.config.getKeys(configPath + ".players");
+        return plugin.getConfig().getStringList(configPath + ".players");
     }
 
     public void setRestockTimeNow() {
-        plugin.config.setProperty(configPath + ".lastrestock",
+        plugin.getConfig().set(configPath + ".lastrestock",
                 new Date().getTime() / 1000);
     }
     public void setRestockTime(long time) {
-        plugin.config.setProperty(configPath + ".lastrestock", time);
+        plugin.getConfig().set(configPath + ".lastrestock", time);
     }
     public long getLastRestockTime() {
-        return Long.parseLong(plugin.config.getString(configPath + ".lastrestock"));
+        return Long.parseLong(plugin.getConfig().getString(configPath + ".lastrestock"));
     }
 
     public void setItems() {
@@ -196,11 +197,11 @@ public class ChestData {
         }
         List<String> players = getPlayers();
         if (players != null) {
-            for(int i = 0; i < players.size(); i++) {
+            for (String player : players) {
                 Map<String,Object> attributeMap = new HashMap<String,Object>();
-                attributeMap.put("restockcount", getPlayerRestockCount(players.get(i)).intValue());
+                attributeMap.put("restockcount", getPlayerRestockCount(player));
                 Map<String,Object> playerMap = new HashMap<String,Object>();
-                playerMap.put(players.get(i), attributeMap);
+                playerMap.put(player, attributeMap);
                 chestMap.put("players", playerMap);
             }
         }
@@ -233,17 +234,17 @@ public class ChestData {
         }
         chestMap.put("items", chestContents);
 
-        plugin.config.setProperty(configPath, chestMap);
+        plugin.getConfig().set(configPath, chestMap);
     }
 
     public void disable() {
         if (isInConfig()) {
-            plugin.config.removeProperty(configPath);
+            plugin.getConfig().set(configPath, null);
         }
     }
 
     public void restock() {
-        List<Object> items = plugin.config.getList(configPath + ".items");
+        List items = plugin.getConfig().getList(configPath + ".items");
         for (int i = 0; i < items.size(); i++) {
             String[] item = items.get(i).toString().split("\\s");
             int itemid = Integer.parseInt(item[1].split(",")[0]);

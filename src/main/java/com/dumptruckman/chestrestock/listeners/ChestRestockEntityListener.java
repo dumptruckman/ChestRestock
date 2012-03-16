@@ -6,14 +6,16 @@ import java.util.ArrayList;
 import java.util.List;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityExplodeEvent;
-import org.bukkit.event.entity.EntityListener;
 
 /**
  *
  * @author dumptruckman
  */
-public class ChestRestockEntityListener extends EntityListener {
+public class ChestRestockEntityListener implements Listener {
 
     ChestRestock plugin;
 
@@ -21,7 +23,7 @@ public class ChestRestockEntityListener extends EntityListener {
         this.plugin = plugin;
     }
 
-    @Override
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onEntityExplode(EntityExplodeEvent event) {
     if (event.isCancelled()) {
             return;
@@ -45,7 +47,7 @@ public class ChestRestockEntityListener extends EntityListener {
             for (int i = 0; i < chests.size(); i++) {
                 chests.get(i).disable();
             }
-            plugin.config.save();
+            plugin.saveConfig();
         }
     }
 }
