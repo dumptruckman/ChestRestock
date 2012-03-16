@@ -1,8 +1,7 @@
 package com.dumptruckman.chestrestock.util;
 
 import com.dumptruckman.chestrestock.api.ChestData;
-import com.dumptruckman.chestrestock.api.RestockChest;
-import org.bukkit.configuration.ConfigurationSection;
+import com.dumptruckman.chestrestock.api.RestockableChest;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -84,7 +83,7 @@ public class YamlChestData implements ChestData {
      * {@inheritDoc}
      */
     @Override
-    public RestockChest getChest(BlockLocation blockLocation) {
+    public RestockableChest getChest(BlockLocation blockLocation) {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
@@ -92,7 +91,7 @@ public class YamlChestData implements ChestData {
      * {@inheritDoc}
      */
     @Override
-    public void updateChest(RestockChest chest) {
+    public void updateChest(RestockableChest chest) {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
@@ -100,7 +99,7 @@ public class YamlChestData implements ChestData {
      * {@inheritDoc}
      */
     @Override
-    public void removeChest(RestockChest chest) {
+    public void removeChest(RestockableChest chest) {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 }

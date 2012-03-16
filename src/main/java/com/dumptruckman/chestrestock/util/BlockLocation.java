@@ -1,5 +1,6 @@
 package com.dumptruckman.chestrestock.util;
 
+import com.dumptruckman.minecraft.pluginbase.util.Logging;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -26,7 +27,7 @@ public class BlockLocation {
         this.x = x;
         this.y = y;
         this.z = z;
-        this.stringForm = this.world + "~" + this.x + "~" + this.y + "~" + this.z;
+        this.stringForm = this.world + "-" + this.x + "-" + this.y + "-" + this.z;
     }
 
     public final String getWorldName() {

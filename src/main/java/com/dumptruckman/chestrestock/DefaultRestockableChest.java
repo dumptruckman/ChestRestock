@@ -1,20 +1,19 @@
 package com.dumptruckman.chestrestock;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import com.dumptruckman.chestrestock.api.RestockableChest;
+import com.dumptruckman.minecraft.pluginbase.config.AbstractYamlConfig;
+import com.dumptruckman.minecraft.pluginbase.plugin.BukkitPlugin;
 
-import com.dumptruckman.chestrestock.api.RestockChest;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
-import org.bukkit.block.Chest;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
+import java.io.File;
+import java.io.IOException;
 
-public class DefaultRestockChest implements RestockChest {
-/*
+class DefaultRestockableChest extends AbstractYamlConfig<RestockableChest> implements RestockableChest {
+
+    DefaultRestockableChest(BukkitPlugin plugin, File configFile, Class<? extends RestockableChest>... configClasses) throws IOException {
+        super(plugin, false, configFile, configClasses);
+    }
+
+    /*
     public static final int CHESTSIZE = 27;
     
     private ChestRestockPlugin plugin;
@@ -25,7 +24,7 @@ public class DefaultRestockChest implements RestockChest {
     private String configName;
     private boolean inConfig;
 
-    public DefaultRestockChest(Block block, ChestRestockPlugin plugin) {
+    public DefaultRestockableChest(Block block, ChestRestockPlugin plugin) {
         //this.block = block;
         this.plugin = plugin;
         this.block = block;

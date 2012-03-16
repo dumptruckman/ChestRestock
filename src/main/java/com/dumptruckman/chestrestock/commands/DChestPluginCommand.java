@@ -1,11 +1,9 @@
 package com.dumptruckman.chestrestock.commands;
 
-import com.dumptruckman.chestrestock.DefaultRestockChest;
 import com.dumptruckman.chestrestock.ChestRestockPlugin;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.ConsoleCommandSender;
 
 /**
  *
@@ -79,7 +77,7 @@ public class DChestPluginCommand implements CommandExecutor {
             return true;
         } else if (args[0].equalsIgnoreCase("check")) {
             // This will display information about the chest
-            DefaultRestockChest chest = plugin.getTargetedChest(sender);
+            DefaultRestockableChest chest = plugin.getTargetedChest(sender);
             if (chest == null) {
                 plugin.sendMessage("commands.targetting", sender);
                 return true;
@@ -100,7 +98,7 @@ public class DChestPluginCommand implements CommandExecutor {
                 return true;
             }
         } else if (args[0].equalsIgnoreCase("set")) {
-            DefaultRestockChest chest = plugin.getTargetedChest(sender);
+            DefaultRestockableChest chest = plugin.getTargetedChest(sender);
             if (chest == null) {
                 plugin.sendMessage("commands.targetting", sender);
                 return true;
@@ -128,7 +126,7 @@ public class DChestPluginCommand implements CommandExecutor {
                 plugin.sendMessage("commands.period.usage", sender);
                 return true;
             } else {
-                DefaultRestockChest chest = plugin.getTargetedChest(sender);
+                DefaultRestockableChest chest = plugin.getTargetedChest(sender);
                 if (chest == null) {
                     plugin.sendMessage("commands.targetting", sender);
                     return true;
@@ -151,7 +149,7 @@ public class DChestPluginCommand implements CommandExecutor {
                 }
             }
         } else if (args[0].equalsIgnoreCase("update")) {
-            DefaultRestockChest chest = plugin.getTargetedChest(sender);
+            DefaultRestockableChest chest = plugin.getTargetedChest(sender);
             if (chest == null) {
                 plugin.sendMessage("commands.targetting", sender);
                 return true;
@@ -166,7 +164,7 @@ public class DChestPluginCommand implements CommandExecutor {
             plugin.sendMessage("commands.update.success", sender);
             return true;
         } else if (args[0].equalsIgnoreCase("disable")) {
-            DefaultRestockChest chest = plugin.getTargetedChest(sender);
+            DefaultRestockableChest chest = plugin.getTargetedChest(sender);
             if (chest == null) {
                 plugin.sendMessage("commands.targetting", sender);
                 return true;
@@ -185,7 +183,7 @@ public class DChestPluginCommand implements CommandExecutor {
                 plugin.sendMessage("commands.nomode", sender);
                 return true;
             } else {
-                DefaultRestockChest chest = plugin.getTargetedChest(sender);
+                DefaultRestockableChest chest = plugin.getTargetedChest(sender);
                 if (chest == null) {
                     plugin.sendMessage("commands.targetting", sender);
                     return true;
@@ -215,7 +213,7 @@ public class DChestPluginCommand implements CommandExecutor {
                 plugin.sendMessage("commands.nomode", sender);
                 return true;
             } else {
-                DefaultRestockChest chest = plugin.getTargetedChest(sender);
+                DefaultRestockableChest chest = plugin.getTargetedChest(sender);
                 if (chest == null) {
                     plugin.sendMessage("commands.targetting", sender);
                     return true;
@@ -247,7 +245,7 @@ public class DChestPluginCommand implements CommandExecutor {
                 plugin.sendMessage("commands.nomode", sender);
                 return true;
             } else {
-                DefaultRestockChest chest = plugin.getTargetedChest(sender);
+                DefaultRestockableChest chest = plugin.getTargetedChest(sender);
                 if (chest == null) {
                     plugin.sendMessage("commands.targetting", sender);
                     return true;
@@ -275,7 +273,7 @@ public class DChestPluginCommand implements CommandExecutor {
                 plugin.sendMessage("commands.nomode", sender);
                 return true;
             } else {
-                DefaultRestockChest chest = plugin.getTargetedChest(sender);
+                DefaultRestockableChest chest = plugin.getTargetedChest(sender);
                 if (chest == null) {
                     plugin.sendMessage("commands.targetting", sender);
                     return true;
@@ -302,7 +300,7 @@ public class DChestPluginCommand implements CommandExecutor {
                 plugin.sendMessage("commands.playerlimit.usage", sender);
                 return true;
             } else {
-                DefaultRestockChest chest = plugin.getTargetedChest(sender);
+                DefaultRestockableChest chest = plugin.getTargetedChest(sender);
                 if (chest == null) {
                     plugin.sendMessage("commands.targetting", sender);
                     return true;
@@ -329,7 +327,7 @@ public class DChestPluginCommand implements CommandExecutor {
                 return true;
             }
         } else if (args[0].equalsIgnoreCase("restock")) {
-            DefaultRestockChest chest = plugin.getTargetedChest(sender);
+            DefaultRestockableChest chest = plugin.getTargetedChest(sender);
             if (chest == null) {
                 plugin.sendMessage("commands.targetting", sender);
                 return true;
@@ -346,7 +344,7 @@ public class DChestPluginCommand implements CommandExecutor {
                 plugin.sendMessage("commands.name.usage", sender);
                 return true;
             } else {
-                DefaultRestockChest chest = plugin.getTargetedChest(sender);
+                DefaultRestockableChest chest = plugin.getTargetedChest(sender);
                 if (chest == null) {
                     plugin.sendMessage("commands.targetting", sender);
                     return true;
@@ -366,7 +364,7 @@ public class DChestPluginCommand implements CommandExecutor {
                 plugin.sendMessage("commands.nomode", sender);
                 return true;
             } else {
-                DefaultRestockChest chest = plugin.getTargetedChest(sender);
+                DefaultRestockableChest chest = plugin.getTargetedChest(sender);
                 if (chest == null) {
                     plugin.sendMessage("commands.targetting", sender);
                     return true;

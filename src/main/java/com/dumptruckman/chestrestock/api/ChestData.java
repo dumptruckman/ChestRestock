@@ -4,9 +4,9 @@ import com.dumptruckman.chestrestock.util.BlockLocation;
 
 public interface ChestData {
     
-    public RestockChest getChest(BlockLocation blockLocation);
+    public RestockableChest getChest(BlockLocation blockLocation);
     
-    public void updateChest(RestockChest chest);
+    public void updateChest(RestockableChest chest);
     
-    public void removeChest(RestockChest chest);
+    public void removeChest(RestockableChest chest);
 }
