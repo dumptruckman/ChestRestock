@@ -140,16 +140,13 @@ and adjust the build number accordingly -->
                         <configuration>
                             <artifactSet>
                                 <includes>
-                                    <include>com.pneumaticraft.commandhandler:CommandHandler</include>
-                                    <include>com.dumptruckman:ActionMenu2</include>
+                                    <include>com.dumptruckman.minecraft:BukkitPlugin</include>
                                 </includes>
                             </artifactSet>
                             <relocations>
                                 <relocation>
-                                    <pattern>com.pneumaticraft.commandhandler</pattern>
-                                    <shadedPattern>com.pneumaticraft.commandhandler.chestrestock</shadedPattern>
-                                    <pattern>com.dumptruckman.actionmenu2</pattern>
-                                    <shadedPattern>com.dumptruckman.actionmenu2.chestrestock</shadedPattern>
+                                    <pattern>com.dumptruckman.minecraft</pattern>
+                                    <shadedPattern>com.dumptruckman.chestrestock.pluginbase</shadedPattern>
                                 </relocation>
                             </relocations>
                         </configuration>
@@ -177,15 +174,6 @@ and adjust the build number accordingly -->
             <scope>compile</scope>
         </dependency>
         <!-- End of CommandHandler Dependency -->
-        <!-- Start of ActionMenu2 Dependency -->
-        <dependency>
-            <groupId>com.dumptruckman</groupId>
-            <artifactId>ActionMenu2</artifactId>
-            <version>dev-SNAPSHOT</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
-        <!-- End of ActionMenu2 Dependency -->
         <!-- Start of Test Dependencies -->
         <dependency>
             <groupId>junit</groupId>

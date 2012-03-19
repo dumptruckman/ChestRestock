@@ -1,12 +1,16 @@
 package com.dumptruckman.chestrestock.api;
 
-import com.dumptruckman.actionmenu2.api.Menu;
 import com.dumptruckman.chestrestock.util.BlockLocation;
+import com.dumptruckman.minecraft.pluginbase.config.AdvancedConfigEntry;
 import com.dumptruckman.minecraft.pluginbase.config.Config;
 import com.dumptruckman.minecraft.pluginbase.config.ConfigEntry;
 import com.dumptruckman.minecraft.pluginbase.config.SimpleConfigEntry;
+import org.bukkit.block.Chest;
+import org.bukkit.inventory.ItemStack;
 
 public interface RestockableChest extends Config {
+    
+    final int CHEST_SIZE = 54;
 
     ConfigEntry<Boolean> PRESERVE_SLOTS = new SimpleConfigEntry<Boolean>(Boolean.class,
             "preserve_slots", true);
@@ -40,12 +44,25 @@ public interface RestockableChest extends Config {
             return value.equalsIgnoreCase("add") || value.equalsIgnoreCase("replace");
         }
     };
-
-    Menu getMenu();
     
-    String getOwner();
+    ConfigEntry<ItemStack[]> ITEMS = new AdvancedConfigEntry<ItemStack[]>(ItemStack[].class,
+            "items", new ItemStack[CHEST_SIZE]) {
+        @Override
+        public Object serialize(ItemStack[] itemStacks) {
+            return DataStrings.valueOf(itemStacks);
+        }
+
+        @Override
+        public ItemStack[] deserialize(Object o) {
+            return DataStrings.parseInventory(o.toString(), CHEST_SIZE);
+        }
+    };
 
     BlockLocation getLocation();
 
+    boolean isDouble();
 
+    Chest getChest();
+
+    void update();
 }

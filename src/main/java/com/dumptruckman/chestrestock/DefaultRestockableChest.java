@@ -1,123 +1,74 @@
 package com.dumptruckman.chestrestock;
 
+import com.dumptruckman.chestrestock.api.ChestRestock;
 import com.dumptruckman.chestrestock.api.RestockableChest;
+import com.dumptruckman.chestrestock.util.BlockLocation;
+import com.dumptruckman.chestrestock.util.InventoryTools;
 import com.dumptruckman.minecraft.pluginbase.config.AbstractYamlConfig;
-import com.dumptruckman.minecraft.pluginbase.plugin.BukkitPlugin;
+import org.bukkit.block.Block;
+import org.bukkit.block.Chest;
+import org.bukkit.inventory.DoubleChestInventory;
+import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
 import java.io.IOException;
 
 class DefaultRestockableChest extends AbstractYamlConfig<RestockableChest> implements RestockableChest {
+    
+    private ChestRestock plugin;
+    private BlockLocation location;
+    private boolean doubleChest = false;
 
-    DefaultRestockableChest(BukkitPlugin plugin, File configFile, Class<? extends RestockableChest>... configClasses) throws IOException {
+    DefaultRestockableChest(ChestRestock plugin, BlockLocation location, File configFile, Class<? extends RestockableChest>... configClasses) throws IOException {
         super(plugin, false, configFile, configClasses);
+        this.plugin = plugin;
+        this.location = location;
+        Block block = location.getBlock();
+        if (block == null) {
+            throw new IllegalStateException("The world '" + location.getWorldName() + "' is not loaded!");
+        }
+        if (!(block.getState() instanceof Chest)) {
+            plugin.getChestManager().removeChest(location);
+            throw new IllegalStateException("The location '" + location.toString() + "' is not a chest!");
+        }
+        if (((Chest) block.getState()).getInventory() instanceof DoubleChestInventory) {
+            doubleChest = true;
+        }
+        save();
+    }
+
+    @Override
+    public BlockLocation getLocation() {
+        return location;
+    }
+
+    @Override
+    public boolean isDouble() {
+        return doubleChest;
+    }
+
+    public Chest getChest() {
+        Block block = getLocation().getBlock();
+        if (block == null || !(block.getState() instanceof Chest)) {
+            plugin.getChestManager().removeChest(getLocation());
+            return null;
+        }
+        return (Chest) block.getState();
+    }
+    
+    public void update() {
+        Chest chest = getChest();
+        if (chest == null) {
+            return;
+        }
+        ItemStack[] items = InventoryTools.fillWithAir(new ItemStack[CHEST_SIZE]);
+        ItemStack[] chestContents = chest.getInventory().getContents();
+        System.arraycopy(chestContents, 0, items, 0, chestContents.length);
+        set(ITEMS, items);
+        save();
     }
 
     /*
-    public static final int CHESTSIZE = 27;
-    
-    private ChestRestockPlugin plugin;
-    private Chest chest;
-    private Block block;
-    private Chest chestPair;
-    private String configPath;
-    private String configName;
-    private boolean inConfig;
-
-    public DefaultRestockableChest(Block block, ChestRestockPlugin plugin) {
-        //this.block = block;
-        this.plugin = plugin;
-        this.block = block;
-        chest = (Chest)block.getState();
-
-        // Set the path of this chest for the config file
-        configName = chest.getX() + "-" + chest.getY() + "-" + chest.getZ();
-        configPath = chest.getWorld().getName() + "." + configName;
-
-        // Detect chest pair
-        chestPair = null;
-        if (block.getRelative(BlockFace.NORTH).getType() == Material.CHEST)
-            chestPair = (Chest)block.getRelative(BlockFace.NORTH).getState();
-        if (block.getRelative(BlockFace.EAST).getType() == Material.CHEST)
-            chestPair = (Chest)block.getRelative(BlockFace.EAST).getState();
-        if (block.getRelative(BlockFace.SOUTH).getType() == Material.CHEST)
-            chestPair = (Chest)block.getRelative(BlockFace.SOUTH).getState();
-        if (block.getRelative(BlockFace.WEST).getType() == Material.CHEST)
-            chestPair = (Chest)block.getRelative(BlockFace.WEST).getState();
-            
-        // See if the chest is present in the config
-        if (plugin.chestConfig.getNode(configPath) != null) {
-            inConfig = true;
-        } else {
-            // If there's a pair, check for it in the config
-            if (chestPair != null) {
-                String chestpairconfigname = chestPair.getX() + "-" 
-                        + chestPair.getY() + "-" + chestPair.getZ();
-                String chestpairconfigpath = chestPair.getWorld().getName()
-                        + "." + chestpairconfigname;
-                if (plugin.chestConfig.getNode(chestpairconfigpath) != null) {
-                    // And switch with the original chest info if found
-                    Chest temp = chest;
-                    chest = chestPair;
-                    chestPair = temp;
-                    configName = chestpairconfigname;
-                    configPath = chestpairconfigpath;
-                    inConfig = true;
-                } else {
-                    inConfig = false;
-                }
-                // See if the items are considered to be in the other chest's inventory
-
-            } else {
-                inConfig = false;
-            }
-        }
-
-        if (inConfig) {
-            // Ensure new config options are set for existing chest
-            if (isIndestructible() == null) {
-                setIndestructible(plugin.config.getString("defaults.indestructible"));
-            }
-            if (getPlayerLimit() == null) {
-                setPlayerLimit(plugin.config.getString("defaults.playerlimit"));
-            }
-            if (isUnique() == null) {
-                setUnique(plugin.config.getString("defaults.unique"));
-            }
-        }
-    }
-
-    public Inventory getInventory(boolean giveDouble) {
-        if (giveDouble) {
-            ContribChest contribchest = (ContribChest)chest;
-            return contribchest.getFullInventory();
-        } else {
-            return chest.getInventory();
-        }
-    }
-
-    public Inventory getFullInventory() {
-        ContribChest contribchest = (ContribChest)chest;
-        return contribchest.getFullInventory();
-    }
-
-    public Inventory getInventory() {
-        return getInventory(false);
-    }
-
-    public Location getLocation() {
-        return chest.getBlock().getLocation();
-    }
-
-    public Chest getChest() { return chest; }
-
-    public boolean isDouble() {
-        if (chestPair != null) {
-            return true;
-        } else {
-            return false;
-        }
-    }
     
     public String getConfigPath() { return configPath; }
 

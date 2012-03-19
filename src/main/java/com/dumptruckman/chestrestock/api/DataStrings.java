@@ -1,5 +1,10 @@
 package com.dumptruckman.chestrestock.api;
 
+import com.dumptruckman.chestrestock.util.InventoryTools;
+import com.dumptruckman.chestrestock.util.ItemWrapper;
+import com.dumptruckman.minecraft.pluginbase.util.Logging;
+import org.bukkit.inventory.ItemStack;
+
 /**
  * This class handles the formatting of strings for data i/o.
  */
@@ -85,6 +90,49 @@ public class DataStrings {
      */
     public static String createEntry(Object key, Object value) {
         return key + VALUE_DELIMITER + value;
+    }
+
+    /**
+     * @param inventoryString An inventory in string for to be parsed into an ItemStack array.
+     * @param inventorySize The number of item slots in the inventory.
+     * @return an ItemStack array containing the inventory contents parsed from inventoryString.
+     */
+    public static ItemStack[] parseInventory(String inventoryString, int inventorySize) {
+        String[] inventoryArray = inventoryString.split(DataStrings.ITEM_DELIMITER);
+        ItemStack[] invContents = InventoryTools.fillWithAir(new ItemStack[inventorySize]);
+        for (String itemString : inventoryArray) {
+            String[] itemValues = DataStrings.splitEntry(itemString);
+            try {
+                ItemWrapper itemWrapper = ItemWrapper.wrap(itemValues[1]);
+                invContents[Integer.valueOf(itemValues[0])] = itemWrapper.getItem();
+                //Logging.debug("ItemString '" + itemString + "' unwrapped as: " + itemWrapper.getItem().toString());
+            } catch (Exception e) {
+                if (!itemString.isEmpty()) {
+                    Logging.fine("Could not parse item string: " + itemString);
+                    Logging.fine(e.getMessage());
+                }
+            }
+        }
+        return invContents;
+    }
+
+    /**
+     * Converts an ItemStack array into a String for easy persistence.
+     *
+     * @param items The items you wish to "string-i-tize".
+     * @return A string representation of an inventory.
+     */
+    public static String valueOf(ItemStack[] items) {
+        StringBuilder builder = new StringBuilder();
+        for (Integer i = 0; i < items.length; i++) {
+            if (items[i] != null && items[i].getTypeId() != 0) {
+                if (!builder.toString().isEmpty()) {
+                    builder.append(DataStrings.ITEM_DELIMITER);
+                }
+                builder.append(DataStrings.createEntry(i, ItemWrapper.wrap(items[i]).toString()));
+            }
+        }
+        return builder.toString();
     }
 }
 

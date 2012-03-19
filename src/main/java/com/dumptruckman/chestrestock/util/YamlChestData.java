@@ -2,6 +2,7 @@ package com.dumptruckman.chestrestock.util;
 
 import com.dumptruckman.chestrestock.api.ChestData;
 import com.dumptruckman.chestrestock.api.RestockableChest;
+import com.dumptruckman.minecraft.pluginbase.util.Logging;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;

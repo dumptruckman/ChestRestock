@@ -39,7 +39,11 @@ public class BlockLocation {
     }
     
     public final Block getBlock() {
-        return getWorld().getBlockAt(getX(), getY(), getZ());
+        World world = getWorld();
+        if (world == null) {
+            return null;
+        }
+        return world.getBlockAt(getX(), getY(), getZ());
     }
 
     public final int getX() {

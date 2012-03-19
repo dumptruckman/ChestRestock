@@ -1,127 +1,9 @@
 package com.dumptruckman.chestrestock.commands;
 
-import com.dumptruckman.chestrestock.ChestRestockPlugin;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
+public abstract class ChestRestockCommand {
 
-/**
- *
- * @author dumptruckman
- */
-public class DChestPluginCommand implements CommandExecutor {
-
-    private final ChestRestockPlugin plugin;
-
-    public DChestPluginCommand(ChestRestockPlugin plugin) {
-        this.plugin = plugin;
-    }
-
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-
-        /*//if (!(sender instanceof Player)) {
-        if (sender instanceof ConsoleCommandSender) {
-            plugin.sendMessage("commands.ingame", sender);
-            return true;
-        }
-        if (!sender.isOp()) {
-            plugin.sendMessage("commands.noperm", sender);
-            return true;
-        }
-
-        if (args.length == 0) {
-            return false;
-        }
-
-        if (args[0].equalsIgnoreCase("help")) {
-            // Help command
-            if (args.length == 1) {
-                // General help
-                plugin.sendMessage("commands.help.general", sender);
-            } else if (args.length == 2) {
-                if (args[1].equalsIgnoreCase("check")) {
-                    plugin.sendMessage("commands.help.check", sender);
-                } else if (args[1].equalsIgnoreCase("set")) {
-                    plugin.sendMessage("commands.help.set", sender,
-                            plugin.config.getString("defaults.period"));
-                } else if (args[1].equalsIgnoreCase("period")) {
-                    plugin.sendMessage("commands.help.period", sender);
-                } else if (args[1].equalsIgnoreCase("update")) {
-                    plugin.sendMessage("commands.help.update", sender);
-                } else if (args[1].equalsIgnoreCase("disable")) {
-                    plugin.sendMessage("commands.help.disable", sender);
-                } else if (args[1].equalsIgnoreCase("periodmode")) {
-                    plugin.sendMessage("commands.help.periodmode", sender);
-                } else if (args[1].equalsIgnoreCase("restockmode")) {
-                    plugin.sendMessage("commands.help.restockmode", sender);
-                } else if (args[1].equalsIgnoreCase("reload")) {
-                    plugin.sendMessage("commands.help.reload", sender);
-                } else if (args[1].equalsIgnoreCase("preserveslots")) {
-                    plugin.sendMessage("commands.help.preserveslots", sender);
-                } else if (args[1].equalsIgnoreCase("indestructible")) {
-                    plugin.sendMessage("commands.help.indestructible", sender);
-                } else if (args[1].equalsIgnoreCase("playerlimit")) {
-                    plugin.sendMessage("commands.help.playerlimit", sender);
-                } else if (args[1].equalsIgnoreCase("restock")) {
-                    plugin.sendMessage("commands.help.restock", sender);
-                } else if (args[1].equalsIgnoreCase("name")) {
-                    plugin.sendMessage("commands.help.name", sender);
-                } else if (args[1].equalsIgnoreCase("unique")) {
-                    plugin.sendMessage("commands.help.unique", sender);
-                } else {
-                    plugin.sendMessage("commands.help.unknown", sender);
-                }
-            } else {
-                plugin.sendMessage("commands.help.usage", sender);
-            }
-            return true;
-        } else if (args[0].equalsIgnoreCase("check")) {
-            // This will display information about the chest
-            DefaultRestockableChest chest = plugin.getTargetedChest(sender);
-            if (chest == null) {
-                plugin.sendMessage("commands.targetting", sender);
-                return true;
-            }
-            if (chest.isInConfig()) {
-                // Chest is already configured
-                if (chest.getName() != null) {
-                    plugin.sendMessage("chest.name", sender, chest.getName());
-                }
-                plugin.sendMessage("commands.check", sender, chest.getPeriod(),
-                        chest.getRestockMode(), chest.getPeriodMode(),
-                        chest.getPreserveSlots(), chest.isIndestructible().toString(),
-                        chest.getPlayerLimit().toString(), chest.isUnique().toString());
-                return true;
-            } else {
-                // Chest isn't configured
-                plugin.sendMessage("chest.noconfig", sender);
-                return true;
-            }
-        } else if (args[0].equalsIgnoreCase("set")) {
-            DefaultRestockableChest chest = plugin.getTargetedChest(sender);
-            if (chest == null) {
-                plugin.sendMessage("commands.targetting", sender);
-                return true;
-            }
-            if (chest.isInConfig()) {
-                plugin.sendMessage("commands.set.alreadyset", sender);
-                return true;
-            }
-
-            chest.setPeriod(plugin.config.getString("defaults.period"));
-            chest.setRestockMode(plugin.config.getString("defaults.restockmode"));
-            chest.setPeriodMode(plugin.config.getString("defaults.periodmode"));
-            chest.setPreserveSlots(plugin.config.getString("defaults.preserveslots"));
-            chest.setIndestructible(plugin.config.getString("defaults.indestructible"));
-            chest.setPlayerLimit(plugin.config.getString("defaults.playerlimit"));
-            chest.setUnique(plugin.config.getString("defaults.unique"));
-            chest.setRestockTimeNow();
-            chest.setItems();
-            plugin.saveChestConfig();
-            plugin.sendMessage("commands.set.success", sender,
-                    plugin.config.getString("defaults.period"));
-            return true;
-        } else if (args[0].equalsIgnoreCase("period")) {
+        /*
+        else if (args[0].equalsIgnoreCase("period")) {
             if (args.length < 2) {
                 plugin.sendMessage("commands.period.usage", sender);
                 return true;
@@ -148,21 +30,6 @@ public class DChestPluginCommand implements CommandExecutor {
                     return true;
                 }
             }
-        } else if (args[0].equalsIgnoreCase("update")) {
-            DefaultRestockableChest chest = plugin.getTargetedChest(sender);
-            if (chest == null) {
-                plugin.sendMessage("commands.targetting", sender);
-                return true;
-            }
-            if (!chest.isInConfig()) {
-                plugin.sendMessage("chest.noconfig", sender);
-                return true;
-            }
-            chest.setRestockTimeNow();
-            chest.setItems();
-            plugin.saveChestConfig();
-            plugin.sendMessage("commands.update.success", sender);
-            return true;
         } else if (args[0].equalsIgnoreCase("disable")) {
             DefaultRestockableChest chest = plugin.getTargetedChest(sender);
             if (chest == null) {
@@ -387,8 +254,5 @@ public class DChestPluginCommand implements CommandExecutor {
                 return true;
             }
         }*/
-        
-        return false;
-    }
 
 }
