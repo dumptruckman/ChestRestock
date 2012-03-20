@@ -33,7 +33,7 @@ commands:
     disable:
     - 'This will remove the chest from the dChest config.  It will cease to restock.'
     periodmode:
-    - 'This will change the period mode of the chest.  Options are "player" and "settime".'
+    - 'This will change the period mode of the chest.  Options are "player" and "fixed".'
     - 'Player mode means the chest will restock every Period amount of seconds after a player checks a restocked chest.'
     - 'SetTime mode means the chest will restock every Period amount of seconds after configuration, regardless of player interaction.'
     restockmode:

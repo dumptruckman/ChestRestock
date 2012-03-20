@@ -32,7 +32,7 @@ public class CheckCommand extends TargetedChestRestockCommand {
             messager.normal(Language.CMD_NOT_RCHEST, player);
             return;
         }
-        messager.normal(Language.CMD_CHECK_SUCCESS, player,
+        messager.normal(Language.CMD_CHECK_SUCCESS, player, rChest.get(NAME),
                 rChest.get(PERIOD), rChest.get(RESTOCK_MODE), rChest.get(PERIOD_MODE),
                 rChest.get(PRESERVE_SLOTS), rChest.get(INDESTRUCTIBLE), rChest.get(PLAYER_LIMIT),
                 rChest.get(UNIQUE));

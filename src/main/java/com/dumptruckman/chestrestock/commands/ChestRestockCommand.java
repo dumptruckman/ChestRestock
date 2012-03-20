@@ -193,19 +193,6 @@ public abstract class ChestRestockCommand {
                 }
                 return true;
             }
-        } else if (args[0].equalsIgnoreCase("restock")) {
-            DefaultRestockableChest chest = plugin.getTargetedChest(sender);
-            if (chest == null) {
-                plugin.sendMessage("commands.targetting", sender);
-                return true;
-            }
-            if (!chest.isInConfig()) {
-                plugin.sendMessage("chest.noconfig", sender);
-                return true;
-            }
-            chest.restock(chest.getItems());
-            plugin.sendMessage("commands.restock", sender);
-            return true;
         } else if (args[0].equalsIgnoreCase("name")) {
             if (args.length < 2) {
                 plugin.sendMessage("commands.name.usage", sender);
@@ -225,34 +212,7 @@ public abstract class ChestRestockCommand {
                 plugin.saveChestConfig();
                 return true;
             }
-        } else if (args[0].equalsIgnoreCase("unique")) {
-            if (args.length < 2) {
-                plugin.sendMessage("commands.unqiue.usage", sender);
-                plugin.sendMessage("commands.nomode", sender);
-                return true;
-            } else {
-                DefaultRestockableChest chest = plugin.getTargetedChest(sender);
-                if (chest == null) {
-                    plugin.sendMessage("commands.targetting", sender);
-                    return true;
-                }
-                if (!chest.isInConfig()) {
-                    plugin.sendMessage("chest.noconfig", sender);
-                    return true;
-                }
-                if (args[1].equalsIgnoreCase("true")) {
-                    chest.setUnique("true");
-                    plugin.saveChestConfig();
-                    plugin.sendMessage("commands.unqiue.true", sender);
-                } else if (args[1].equalsIgnoreCase("false")) {
-                    chest.setUnique("false");
-                    plugin.saveChestConfig();
-                    plugin.sendMessage("commands.unqiue.false", sender);
-                } else {
-                    plugin.sendMessage("commands.unqiue.invalid", sender);
-                }
-                return true;
-            }
-        }*/
+        }
+}*/
 
 }

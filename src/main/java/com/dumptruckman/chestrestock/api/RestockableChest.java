@@ -12,20 +12,72 @@ public interface RestockableChest extends Config {
     
     final int CHEST_SIZE = 54;
 
-    ConfigEntry<Boolean> PRESERVE_SLOTS = new SimpleConfigEntry<Boolean>(Boolean.class,
-            "preserve_slots", true);
+    ConfigEntry<Boolean> PRESERVE_SLOTS = new AdvancedConfigEntry<Boolean>(Boolean.class,
+            "preserve_slots", true) {
+        @Override
+        public Object serialize(Boolean b) {
+            return b.toString();
+        }
 
-    ConfigEntry<Boolean> INDESTRUCTIBLE = new SimpleConfigEntry<Boolean>(Boolean.class,
-            "indestructible", true);
+        @Override
+        public Boolean deserialize(Object o) {
+            return Boolean.valueOf(o.toString());
+        }
+    };
 
-    ConfigEntry<Integer> PLAYER_LIMIT = new SimpleConfigEntry<Integer>(Integer.class,
-            "player_loot_limit", -1);
+    ConfigEntry<Boolean> INDESTRUCTIBLE = new AdvancedConfigEntry<Boolean>(Boolean.class,
+            "indestructible", true) {
+        @Override
+        public Object serialize(Boolean b) {
+            return b.toString();
+        }
 
-    ConfigEntry<Boolean> UNIQUE = new SimpleConfigEntry<Boolean>(Boolean.class,
-            "unique", true);
+        @Override
+        public Boolean deserialize(Object o) {
+            return Boolean.valueOf(o.toString());
+        }
+    };
 
-    ConfigEntry<Integer> PERIOD = new SimpleConfigEntry<Integer>(Integer.class,
-            "period", 900);
+    ConfigEntry<Integer> PLAYER_LIMIT = new AdvancedConfigEntry<Integer>(Integer.class,
+            "player_limit", -1) {
+        @Override
+        public Object serialize(Integer i) {
+            return i.toString();
+        }
+
+        @Override
+        public Integer deserialize(Object o) {
+            return Integer.valueOf(o.toString());
+        }
+    };
+
+    ConfigEntry<Boolean> UNIQUE = new AdvancedConfigEntry<Boolean>(Boolean.class,
+            "unique", true) {
+        @Override
+        public Object serialize(Boolean b) {
+            return b.toString();
+        }
+
+        @Override
+        public Boolean deserialize(Object o) {
+            return Boolean.valueOf(o.toString());
+        }
+    };
+
+    ConfigEntry<Integer> PERIOD = new AdvancedConfigEntry<Integer>(Integer.class,
+            "period", 900) {
+        @Override
+        public Object serialize(Integer i) {
+            return i.toString();
+        }
+
+        @Override
+        public Integer deserialize(Object o) {
+            return Integer.valueOf(o.toString());
+        }
+    };
+
+    ConfigEntry<String> NAME = new SimpleConfigEntry<String>(String.class, "name", "");
 
     ConfigEntry<String> PERIOD_MODE = new SimpleConfigEntry<String>(String.class,
             "period_mode", "player") {
