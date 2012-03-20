@@ -38,6 +38,16 @@ public class Language {
     public static final Message CMD_UPDATE_SUCCESS = new Message("cmd.update.success",
             "Chest will now restock with the items currently inside of it.");
 
+    public static final Message CMD_DISABLE_NAME = new Message("cmd.disable.name",
+            "Disables restocking for a chest.");
+    public static final Message CMD_DISABLE_SUCCESS = new Message("cmd.disable.success",
+            "Chest will no longer be managed by ChestRestock.");
+
+    public static final Message CMD_RESTOCK_NAME = new Message("cmd.restock.name",
+            "Restocks a chest immediately.");
+    public static final Message CMD_RESTOCK_SUCCESS = new Message("cmd.restock.success",
+            "Chest has been restocked!");
+
     public static final Message CMD_SET_NAME = new Message("cmd.set.name",
             "Sets a property of a restock chest.");
     public static final Message CMD_SET_NEW_CMD = new Message("cmd.set.new_cmd",
