@@ -5,8 +5,12 @@ import com.dumptruckman.minecraft.pluginbase.config.AdvancedConfigEntry;
 import com.dumptruckman.minecraft.pluginbase.config.Config;
 import com.dumptruckman.minecraft.pluginbase.config.ConfigEntry;
 import com.dumptruckman.minecraft.pluginbase.config.SimpleConfigEntry;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public interface CRChest extends Config {
     
@@ -96,7 +100,19 @@ public interface CRChest extends Config {
             return value.equalsIgnoreCase("add") || value.equalsIgnoreCase("replace");
         }
     };
-    
+
+    ConfigEntry<Map> PLAYERS = new AdvancedConfigEntry<Map>(Map.class, "players", new HashMap<String, Object>()) {
+        @Override
+        public Object serialize(Map map) {
+            return
+        }
+
+        @Override
+        public Map deserialize(Object o) {
+            return null;  //To change body of implemented methods use File | Settings | File Templates.
+        }
+    }
+
     ConfigEntry<ItemStack[]> ITEMS = new AdvancedConfigEntry<ItemStack[]>(ItemStack[].class,
             "items", new ItemStack[MAX_SIZE]) {
         @Override
@@ -115,4 +131,12 @@ public interface CRChest extends Config {
     InventoryHolder getInventoryHolder();
 
     void update();
+
+    void openInventory(HumanEntity player);
+    
+    Integer getLootCount(HumanEntity player);
+
+    Long getLastAccess(HumanEntity player);
+    
+    Long getLastAccess();
 }

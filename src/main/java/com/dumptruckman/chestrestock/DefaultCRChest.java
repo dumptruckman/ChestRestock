@@ -6,6 +6,7 @@ import com.dumptruckman.chestrestock.util.BlockLocation;
 import com.dumptruckman.chestrestock.util.InventoryTools;
 import com.dumptruckman.minecraft.pluginbase.config.AbstractYamlConfig;
 import org.bukkit.block.Block;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 
@@ -37,6 +38,7 @@ class DefaultCRChest extends AbstractYamlConfig<CRChest> implements CRChest {
         return location;
     }
 
+    @Override
     public InventoryHolder getInventoryHolder() {
         Block block = getLocation().getBlock();
         if (block == null || !(block.getState() instanceof InventoryHolder)) {
@@ -45,7 +47,8 @@ class DefaultCRChest extends AbstractYamlConfig<CRChest> implements CRChest {
         }
         return (InventoryHolder) block.getState();
     }
-    
+
+    @Override
     public void update() {
         InventoryHolder holder = getInventoryHolder();
         if (holder == null) {
@@ -56,6 +59,68 @@ class DefaultCRChest extends AbstractYamlConfig<CRChest> implements CRChest {
         System.arraycopy(chestContents, 0, items, 0, chestContents.length);
         set(ITEMS, items);
         save();
+    }
+
+    @Override
+    public void openInventory(HumanEntity player) {
+        int playerRestockCount = chest.getPlayerRestockCount(event.getPlayer().getName());
+        if (timesrestockedforplayer != null) {
+            if (chest.getPlayerLimit() != -1) {
+                if (timesrestockedforplayer >= chest.getPlayerLimit()) {
+                    if (!event.getPlayer().isOp()) {
+                        return;
+                    }
+                }
+            }
+        } else {
+            timesrestockedforplayer = 0;
+        }
+
+        Long accesstime = new Date().getTime() / 1000;
+        if (accesstime < (chest.getLastRestockTime() +
+                Integer.parseInt(chest.getPeriod()))) {
+            return;
+        }
+
+        event.setCancelled(true);
+
+        int missedperiods = 1;
+        if (chest.getPeriodMode() != null && chest.getPeriodMode().equalsIgnoreCase("player")) {
+            missedperiods = (int)Math.floor((new Long(accesstime).doubleValue()
+                    - new Long(chest.getLastRestockTime()).doubleValue())
+                    / Integer.parseInt(chest.getPeriod()));
+            chest.setRestockTime(accesstime);
+        } else if (chest.getPeriodMode().equalsIgnoreCase("settime")) {
+            chest.setRestockTime(new Double(Math.floor((
+                    new Long(accesstime).doubleValue()
+                            - new Long(chest.getLastRestockTime()).doubleValue())
+                    / Integer.parseInt(chest.getPeriod()))
+                    * Integer.parseInt(chest.getPeriod())).longValue()
+                    + chest.getLastRestockTime());
+        }
+
+        ItemStack[] oldchestcontents = chest.getChest().getInventory().getContents();
+
+        if (chest.getRestockMode().equalsIgnoreCase("replace")) {
+            chest.getChest().getInventory().clear();
+        }
+
+        if (chest.getRestockMode().equalsIgnoreCase("add")) {
+            for (int i = 0; i < missedperiods; i++) {
+                chest.restock();
+            }
+        } else {
+            chest.restock();
+        }
+
+        plugin.getServer().getPluginManager().callEvent(new PlayerInventoryEvent(event.getPlayer(), chest.getChest().getInventory()));
+
+        chest.getChest().getInventory().setContents(oldchestcontents);
+
+        if (missedperiods != 0) {
+            timesrestockedforplayer++;
+            chest.setPlayerRestockCount(event.getPlayer().getName(), timesrestockedforplayer);
+        }
     }
 
     /*

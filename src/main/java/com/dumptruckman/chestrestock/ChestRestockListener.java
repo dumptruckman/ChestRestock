@@ -4,6 +4,7 @@ import com.dumptruckman.chestrestock.api.CRChest;
 import com.dumptruckman.chestrestock.api.ChestManager;
 import com.dumptruckman.chestrestock.util.Perms;
 import com.dumptruckman.minecraft.pluginbase.locale.Messager;
+import com.dumptruckman.minecraft.pluginbase.util.Logging;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -34,7 +35,22 @@ public class ChestRestockListener implements Listener {
         if (event.isCancelled()) {
             return;
         }
-        //event.getInventory().getType() == InventoryType.CHEST
+        Block block = event.getPlayer().getTargetBlock(null, 100);
+        if (!(block.getState() instanceof InventoryHolder)) {
+            return;
+        }
+        InventoryHolder holder = (InventoryHolder) block.getState();
+        if (!event.getInventory().getHolder().equals(holder)) {
+            Logging.finest("player opened inventory not related to target block");
+            return;
+        }
+        CRChest rChest = chestManager.getChest(block, holder);
+        if (rChest == null) {
+            Logging.finest("chest not configured");
+            return;
+        }
+        event.setCancelled(true);
+        rChest.openInventory(event.getPlayer());
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
