@@ -9,34 +9,33 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 
-public class SetCommand extends TargetedChestRestockCommand {
+public class CreateCommand extends TargetedChestRestockCommand {
 
-    public SetCommand(ChestRestockPlugin plugin) {
+    public CreateCommand(ChestRestockPlugin plugin) {
         super(plugin);
-        this.setName(messager.getMessage(Language.CMD_SET_NAME));
-        this.setCommandUsage(plugin.getCommandPrefixes().get(0) + " set");
+        this.setName(messager.getMessage(Language.CMD_CREATE_NAME));
+        this.setCommandUsage(plugin.getCommandPrefixes().get(0) + " create");
         this.setArgRange(0, 0);
         for (String prefix : plugin.getCommandPrefixes()) {
-            this.addKey(prefix + " set");
             this.addKey(prefix + " create");
         }
-        this.addCommandExample("/" + plugin.getCommandPrefixes().get(0) + " set");
-        this.setPermission(Perms.CMD_SET.getPermission());
+        this.addCommandExample("/" + plugin.getCommandPrefixes().get(0) + " create");
+        this.setPermission(Perms.CMD_CREATE.getPermission());
     }
 
     @Override
     public void runCommand(Player player, Chest chest, List<String> strings) {
         RestockableChest rChest = chestManager.getChest(chest);
         if (rChest != null) {
-            messager.normal(Language.CMD_SET_ALREADY_SET, player);
+            messager.normal(Language.CMD_CREATE_ALREADY_MADE, player);
             return;
         }
         rChest = chestManager.newChest(chest);
         if (rChest == null) {
-            messager.bad(Language.CMD_SET_ERROR, player);
+            messager.bad(Language.CMD_CREATE_ERROR, player);
             return;
         }
         rChest.update();
-        messager.good(Language.CMD_SET_SUCCESS, player, rChest.get(RestockableChest.PERIOD));
+        messager.good(Language.CMD_CREATE_SUCCESS, player, rChest.get(RestockableChest.PERIOD));
     }
 }
