@@ -47,4 +47,7 @@ public interface CRConfig extends BaseConfig {
             return value.equalsIgnoreCase("add") || value.equalsIgnoreCase("replace");
         }
     };
+
+    ConfigEntry<String> NAME = new SimpleConfigEntry<String>(String.class, "defaults.name", "",
+            "# The default name for new chests.  This is used for permissions if not left blank.");
 }

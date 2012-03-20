@@ -1,7 +1,7 @@
 package com.dumptruckman.chestrestock;
 
+import com.dumptruckman.chestrestock.api.CRChest;
 import com.dumptruckman.chestrestock.api.ChestManager;
-import com.dumptruckman.chestrestock.api.RestockableChest;
 import com.dumptruckman.chestrestock.util.BlockLocation;
 import com.dumptruckman.chestrestock.util.Language;
 import com.dumptruckman.minecraft.pluginbase.util.Logging;
@@ -9,6 +9,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.DoubleChestInventory;
+import org.bukkit.inventory.InventoryHolder;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,7 +21,7 @@ class DefaultChestManager implements ChestManager {
     private ChestRestockPlugin plugin;
     private File chestsFile;
     
-    private Map<BlockLocation, RestockableChest> chestsMap = new HashMap<BlockLocation, RestockableChest>();
+    private Map<BlockLocation, CRChest> chestsMap = new HashMap<BlockLocation, CRChest>();
     
     DefaultChestManager(ChestRestockPlugin plugin) {
         this.plugin = plugin;
@@ -35,21 +36,21 @@ class DefaultChestManager implements ChestManager {
     }
 
     @Override
-    public RestockableChest getChest(Chest chest) {
-        BlockLocation location = BlockLocation.get(chest.getBlock());
-        RestockableChest rChest = chestsMap.get(location);
+    public CRChest getChest(Block block, InventoryHolder holder) {
+        BlockLocation location = BlockLocation.get(block);
+        CRChest rChest = chestsMap.get(location);
         if (rChest != null) {
             Logging.finer("Got cached chest at " + location);
             return rChest;
         }
         File chestFile = getChestFile(location);
         if (!chestFile.exists()) {
-            if (!(chest.getInventory() instanceof DoubleChestInventory)) {
+            if (!(holder.getInventory() instanceof DoubleChestInventory)) {
                 Logging.finest("No file for single chest found.");
                 return null;
             }
             Logging.finer("Searching for other side of double chest...");
-            Chest otherSide = getOtherSide(chest.getBlock());
+            Chest otherSide = getOtherSide(block);
             if (otherSide == null) {
                 Logging.fine("Chest claims to be double but other side not found!");
                 return null;
@@ -72,8 +73,8 @@ class DefaultChestManager implements ChestManager {
     //public void removeChest()
 
     @Override
-    public RestockableChest newChest(Chest chest) {
-        return loadChest(getChestFile(BlockLocation.get(chest.getBlock())));
+    public CRChest newChest(Block block, InventoryHolder holder) {
+        return loadChest(getChestFile(BlockLocation.get(block)));
     }
 
     @Override
@@ -101,11 +102,11 @@ class DefaultChestManager implements ChestManager {
         return false;
     }
 
-    private RestockableChest loadChest(File chestFile) {
+    private CRChest loadChest(File chestFile) {
         try {
             BlockLocation location = BlockLocation.get(
                     chestFile.getName().substring(0, chestFile.getName().indexOf(".yml")));
-            return new DefaultRestockableChest(plugin, location, chestFile, RestockableChest.class);
+            return new DefaultCRChest(plugin, location, chestFile, CRChest.class);
         } catch (IOException e) {
             e.printStackTrace();
             return null;
@@ -134,11 +135,11 @@ class DefaultChestManager implements ChestManager {
     }
 
     @Override
-    public Chest getTargetedChest(Player player) throws IllegalStateException {
+    public Block getTargetedInventoryHolder(Player player) throws IllegalStateException {
         Block block = player.getTargetBlock(null, 100);
-        if (block == null || !(block.getState() instanceof Chest)) {
+        if (block == null || !(block.getState() instanceof InventoryHolder)) {
             throw new IllegalStateException(plugin.getMessager().getMessage(Language.TARGETING));
         }
-        return (Chest) block.getState();
+        return block;
     }
 }

@@ -1,12 +1,13 @@
 package com.dumptruckman.chestrestock.command;
 
 import com.dumptruckman.chestrestock.ChestRestockPlugin;
-import com.dumptruckman.chestrestock.api.RestockableChest;
+import com.dumptruckman.chestrestock.api.CRChest;
 import com.dumptruckman.chestrestock.util.Language;
 import com.dumptruckman.chestrestock.util.Perms;
 import com.dumptruckman.minecraft.pluginbase.config.ConfigEntry;
-import org.bukkit.block.Chest;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.InventoryHolder;
 
 import java.util.HashMap;
 import java.util.List;
@@ -31,14 +32,14 @@ public class SetCommand extends TargetedChestRestockCommand {
         this.addCommandExample("/" + plugin.getCommandPrefixes().get(0) + " set restockmode fixed");
         this.setPermission(Perms.CMD_SET.getPermission());
 
-        propsMap.put("name", RestockableChest.NAME);
-        propsMap.put("period", RestockableChest.PERIOD);
-        propsMap.put("indestructible", RestockableChest.INDESTRUCTIBLE);
-        propsMap.put("period_mode", RestockableChest.PERIOD_MODE);
-        propsMap.put("player_limit", RestockableChest.PLAYER_LIMIT);
-        propsMap.put("preserve_slots", RestockableChest.PRESERVE_SLOTS);
-        propsMap.put("restock_mode", RestockableChest.RESTOCK_MODE);
-        propsMap.put("unique", RestockableChest.UNIQUE);
+        propsMap.put("name", CRChest.NAME);
+        propsMap.put("period", CRChest.PERIOD);
+        propsMap.put("indestructible", CRChest.INDESTRUCTIBLE);
+        propsMap.put("period_mode", CRChest.PERIOD_MODE);
+        propsMap.put("player_limit", CRChest.PLAYER_LIMIT);
+        propsMap.put("preserve_slots", CRChest.PRESERVE_SLOTS);
+        propsMap.put("restock_mode", CRChest.RESTOCK_MODE);
+        propsMap.put("unique", CRChest.UNIQUE);
         
         for (String key : propsMap.keySet()) {
             if (!propsString.isEmpty()) {
@@ -49,8 +50,8 @@ public class SetCommand extends TargetedChestRestockCommand {
     }
 
     @Override
-    public void runCommand(Player player, Chest chest, List<String> args) {
-        RestockableChest rChest = chestManager.getChest(chest);
+    public void runCommand(Player player, Block block, List<String> args) {
+        CRChest rChest = chestManager.getChest(block, (InventoryHolder) block.getState());
         if (args.size() == 0) {
             if (rChest == null) {
                 messager.normal(Language.CMD_SET_NEW_CMD, player);
@@ -63,21 +64,21 @@ public class SetCommand extends TargetedChestRestockCommand {
                 messager.bad(Language.CMD_SET_INVALID_PROP, player, args.get(0));
                 return;
             }
-            if (configEntry == RestockableChest.PERIOD) {
+            if (configEntry == CRChest.PERIOD) {
                 messager.normal(Language.PERIOD_DESC, player);
-            } else if (configEntry == RestockableChest.PLAYER_LIMIT) {
+            } else if (configEntry == CRChest.PLAYER_LIMIT) {
                 messager.normal(Language.PLAYER_LIMIT_DESC, player);
-            } else if (configEntry == RestockableChest.INDESTRUCTIBLE) {
+            } else if (configEntry == CRChest.INDESTRUCTIBLE) {
                 messager.normal(Language.INDESTRUCTIBLE_DESC, player);
-            } else if (configEntry == RestockableChest.PERIOD_MODE) {
+            } else if (configEntry == CRChest.PERIOD_MODE) {
                 messager.normal(Language.PERIOD_MODE_DESC, player);
-            } else if (configEntry == RestockableChest.RESTOCK_MODE) {
+            } else if (configEntry == CRChest.RESTOCK_MODE) {
                 messager.normal(Language.RESTOCK_MODE_DESC, player);
-            } else if (configEntry == RestockableChest.PRESERVE_SLOTS) {
+            } else if (configEntry == CRChest.PRESERVE_SLOTS) {
                 messager.normal(Language.PRESERVE_SLOTS_DESC, player);
-            } else if (configEntry == RestockableChest.UNIQUE) {
+            } else if (configEntry == CRChest.UNIQUE) {
                 messager.normal(Language.UNIQUE_DESC, player);
-            } else if (configEntry == RestockableChest.NAME) {
+            } else if (configEntry == CRChest.NAME) {
                 messager.normal(Language.NAME_DESC, player);
             }
             if (configEntry.getType().equals(Boolean.class)) {

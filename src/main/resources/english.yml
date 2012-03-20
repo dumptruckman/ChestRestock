@@ -35,7 +35,7 @@ commands:
     periodmode:
     - 'This will change the period mode of the chest.  Options are "player" and "fixed".'
     - 'Player mode means the chest will restock every Period amount of seconds after a player checks a restocked chest.'
-    - 'SetTime mode means the chest will restock every Period amount of seconds after configuration, regardless of player interaction.'
+    - 'Fixed mode means the chest will restock every Period amount of seconds after configuration, regardless of player interaction.'
     restockmode:
     - 'This will change the restock mode of the chest.  Options are "add" and "replace".'
     - 'Add mode means the restock items will be added to whatever is in the chest.'
@@ -49,7 +49,7 @@ commands:
     indestructible:
     - 'This will cause a chest managed by dChest to become indestructible except by ops.'
     playerlimit:
-    - 'This will change the number of times a single player can loot the chest. Ops will not be limited.'
+    - 'This will change the number of times a single player can loot the chest.'
     - '-1 = no limit'
     - '0 = none or ops only'
     - '1 (or greater) = number of times a chest will restock for a player.'

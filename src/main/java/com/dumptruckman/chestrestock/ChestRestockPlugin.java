@@ -17,10 +17,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- *
- * @author dumptruckman
- */
 public class ChestRestockPlugin extends AbstractBukkitPlugin<CRConfig> implements ChestRestock {
 
     private final List<String> cmdPrefixes = Arrays.asList("cr");

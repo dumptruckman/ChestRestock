@@ -1,11 +1,13 @@
 package com.dumptruckman.chestrestock.command;
 
 import com.dumptruckman.chestrestock.ChestRestockPlugin;
-import com.dumptruckman.chestrestock.api.RestockableChest;
+import com.dumptruckman.chestrestock.api.CRChest;
+import com.dumptruckman.chestrestock.api.CRConfig;
 import com.dumptruckman.chestrestock.util.Language;
 import com.dumptruckman.chestrestock.util.Perms;
-import org.bukkit.block.Chest;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.InventoryHolder;
 
 import java.util.List;
 
@@ -24,18 +26,27 @@ public class CreateCommand extends TargetedChestRestockCommand {
     }
 
     @Override
-    public void runCommand(Player player, Chest chest, List<String> strings) {
-        RestockableChest rChest = chestManager.getChest(chest);
+    public void runCommand(Player player, Block block, List<String> strings) {
+        InventoryHolder holder = (InventoryHolder) block.getState();
+        CRChest rChest = chestManager.getChest(block, holder);
         if (rChest != null) {
             messager.normal(Language.CMD_CREATE_ALREADY_MADE, player);
             return;
         }
-        rChest = chestManager.newChest(chest);
+        rChest = chestManager.newChest(block, holder);
         if (rChest == null) {
             messager.bad(Language.CMD_CREATE_ERROR, player);
             return;
         }
+        rChest.set(CRChest.PERIOD, plugin.config().get(CRConfig.PERIOD));
+        rChest.set(CRChest.PERIOD_MODE, plugin.config().get(CRConfig.PERIOD_MODE));
+        rChest.set(CRChest.RESTOCK_MODE, plugin.config().get(CRConfig.RESTOCK_MODE));
+        rChest.set(CRChest.INDESTRUCTIBLE, plugin.config().get(CRConfig.INDESTRUCTIBLE));
+        rChest.set(CRChest.PLAYER_LIMIT, plugin.config().get(CRConfig.PLAYER_LIMIT));
+        rChest.set(CRChest.UNIQUE, plugin.config().get(CRConfig.UNIQUE));
+        rChest.set(CRChest.PRESERVE_SLOTS, plugin.config().get(CRConfig.PRESERVE_SLOTS));
+        rChest.set(CRChest.NAME, plugin.config().get(CRConfig.NAME));
         rChest.update();
-        messager.good(Language.CMD_CREATE_SUCCESS, player, rChest.get(RestockableChest.PERIOD));
+        messager.good(Language.CMD_CREATE_SUCCESS, player, rChest.get(CRChest.PERIOD));
     }
 }

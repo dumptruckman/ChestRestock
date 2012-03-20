@@ -3,7 +3,7 @@ package com.dumptruckman.chestrestock.command;
 import com.dumptruckman.chestrestock.ChestRestockPlugin;
 import com.dumptruckman.chestrestock.api.ChestManager;
 import com.dumptruckman.chestrestock.util.Language;
-import org.bukkit.block.Chest;
+import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -24,15 +24,15 @@ public abstract class TargetedChestRestockCommand extends CRCommand {
             return;
         }
         Player player = (Player) sender;
-        Chest chest = null;
+        Block holder = null;
         try {
-            chest = chestManager.getTargetedChest(player);
+            holder = chestManager.getTargetedInventoryHolder(player);
         } catch (IllegalStateException e) {
             messager.sendMessage(sender, e.getMessage());
             return;
         }
-        runCommand(player, chest, args);
+        runCommand(player, holder, args);
     }
 
-    public abstract void runCommand(Player player, Chest rChest, List<String> args);
+    public abstract void runCommand(Player player, Block holder, List<String> args);
 }

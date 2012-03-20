@@ -1,25 +1,23 @@
 package com.dumptruckman.chestrestock;
 
+import com.dumptruckman.chestrestock.api.CRChest;
 import com.dumptruckman.chestrestock.api.ChestRestock;
-import com.dumptruckman.chestrestock.api.RestockableChest;
 import com.dumptruckman.chestrestock.util.BlockLocation;
 import com.dumptruckman.chestrestock.util.InventoryTools;
 import com.dumptruckman.minecraft.pluginbase.config.AbstractYamlConfig;
 import org.bukkit.block.Block;
-import org.bukkit.block.Chest;
-import org.bukkit.inventory.DoubleChestInventory;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
 import java.io.IOException;
 
-class DefaultRestockableChest extends AbstractYamlConfig<RestockableChest> implements RestockableChest {
+class DefaultCRChest extends AbstractYamlConfig<CRChest> implements CRChest {
     
     private ChestRestock plugin;
     private BlockLocation location;
-    private boolean doubleChest = false;
 
-    DefaultRestockableChest(ChestRestock plugin, BlockLocation location, File configFile, Class<? extends RestockableChest>... configClasses) throws IOException {
+    DefaultCRChest(ChestRestock plugin, BlockLocation location, File configFile, Class<? extends CRChest>... configClasses) throws IOException {
         super(plugin, false, configFile, configClasses);
         this.plugin = plugin;
         this.location = location;
@@ -27,12 +25,9 @@ class DefaultRestockableChest extends AbstractYamlConfig<RestockableChest> imple
         if (block == null) {
             throw new IllegalStateException("The world '" + location.getWorldName() + "' is not loaded!");
         }
-        if (!(block.getState() instanceof Chest)) {
+        if (!(block.getState() instanceof InventoryHolder)) {
             plugin.getChestManager().removeChest(location);
-            throw new IllegalStateException("The location '" + location.toString() + "' is not a chest!");
-        }
-        if (((Chest) block.getState()).getInventory() instanceof DoubleChestInventory) {
-            doubleChest = true;
+            throw new IllegalStateException("The location '" + location.toString() + "' is not a inventory block!");
         }
         save();
     }
@@ -42,27 +37,22 @@ class DefaultRestockableChest extends AbstractYamlConfig<RestockableChest> imple
         return location;
     }
 
-    @Override
-    public boolean isDouble() {
-        return doubleChest;
-    }
-
-    public Chest getChest() {
+    public InventoryHolder getInventoryHolder() {
         Block block = getLocation().getBlock();
-        if (block == null || !(block.getState() instanceof Chest)) {
+        if (block == null || !(block.getState() instanceof InventoryHolder)) {
             plugin.getChestManager().removeChest(getLocation());
             return null;
         }
-        return (Chest) block.getState();
+        return (InventoryHolder) block.getState();
     }
     
     public void update() {
-        Chest chest = getChest();
-        if (chest == null) {
+        InventoryHolder holder = getInventoryHolder();
+        if (holder == null) {
             return;
         }
-        ItemStack[] items = InventoryTools.fillWithAir(new ItemStack[CHEST_SIZE]);
-        ItemStack[] chestContents = chest.getInventory().getContents();
+        ItemStack[] items = InventoryTools.fillWithAir(new ItemStack[MAX_SIZE]);
+        ItemStack[] chestContents = holder.getInventory().getContents();
         System.arraycopy(chestContents, 0, items, 0, chestContents.length);
         set(ITEMS, items);
         save();

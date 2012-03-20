@@ -4,14 +4,15 @@ import com.dumptruckman.chestrestock.util.BlockLocation;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.InventoryHolder;
 
 public interface ChestManager {
     
-    RestockableChest getChest(Chest chest);
+    CRChest getChest(Block block, InventoryHolder holder);
     
-    Chest getTargetedChest(Player player) throws IllegalStateException;
+    Block getTargetedInventoryHolder(Player player) throws IllegalStateException;
     
-    RestockableChest newChest(Chest chest);
+    CRChest newChest(Block block, InventoryHolder holder);
 
     Chest getOtherSide(Block chestBlock);
     

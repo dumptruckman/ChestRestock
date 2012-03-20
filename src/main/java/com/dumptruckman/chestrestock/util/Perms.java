@@ -10,4 +10,6 @@ public class Perms {
     public static final Perm CMD_SET = new Perm.Builder("cmd.set").build();
     public static final Perm CMD_RESTOCK = new Perm.Builder("cmd.restock").build();
     public static final Perm CMD_DISABLE = new Perm.Builder("cmd.disable").build();
+    
+    public static final Perm CAN_BREAK = new Perm.Builder("break").build();
 }
