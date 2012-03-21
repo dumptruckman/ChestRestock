@@ -1,130 +1,79 @@
 package com.dumptruckman.chestrestock.api;
 
 import com.dumptruckman.chestrestock.util.BlockLocation;
-import com.dumptruckman.minecraft.pluginbase.config.AdvancedConfigEntry;
 import com.dumptruckman.minecraft.pluginbase.config.Config;
 import com.dumptruckman.minecraft.pluginbase.config.ConfigEntry;
-import com.dumptruckman.minecraft.pluginbase.config.SimpleConfigEntry;
+import com.dumptruckman.minecraft.pluginbase.config.EntryBuilder;
+import com.dumptruckman.minecraft.pluginbase.config.EntrySerializer;
+import com.dumptruckman.minecraft.pluginbase.config.EntryValidator;
+import com.dumptruckman.minecraft.pluginbase.locale.Message;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public interface CRChest extends Config {
     
     final int MAX_SIZE = 54;
 
-    ConfigEntry<Boolean> PRESERVE_SLOTS = new AdvancedConfigEntry<Boolean>(Boolean.class,
-            "preserve_slots", true) {
-        @Override
-        public Object serialize(Boolean b) {
-            return b.toString();
-        }
+    ConfigEntry<Boolean> PRESERVE_SLOTS = new EntryBuilder<Boolean>(Boolean.class, "preserve_slots").def(true).stringSerializer().build();
 
-        @Override
-        public Boolean deserialize(Object o) {
-            return Boolean.valueOf(o.toString());
-        }
-    };
+    ConfigEntry<Boolean> INDESTRUCTIBLE = new EntryBuilder<Boolean>(Boolean.class, "indestructible").def(true).stringSerializer().build();
 
-    ConfigEntry<Boolean> INDESTRUCTIBLE = new AdvancedConfigEntry<Boolean>(Boolean.class,
-            "indestructible", true) {
-        @Override
-        public Object serialize(Boolean b) {
-            return b.toString();
-        }
+    ConfigEntry<Integer> PLAYER_LIMIT = new EntryBuilder<Integer>(Integer.class, "player_limit").def(-1).stringSerializer().build();
 
-        @Override
-        public Boolean deserialize(Object o) {
-            return Boolean.valueOf(o.toString());
-        }
-    };
+    ConfigEntry<Boolean> UNIQUE = new EntryBuilder<Boolean>(Boolean.class, "unique").def(true).stringSerializer().build();
 
-    ConfigEntry<Integer> PLAYER_LIMIT = new AdvancedConfigEntry<Integer>(Integer.class,
-            "player_limit", -1) {
-        @Override
-        public Object serialize(Integer i) {
-            return i.toString();
-        }
+    ConfigEntry<Integer> PERIOD = new EntryBuilder<Integer>(Integer.class, "period").def(900).stringSerializer().build();
 
-        @Override
-        public Integer deserialize(Object o) {
-            return Integer.valueOf(o.toString());
-        }
-    };
+    ConfigEntry<String> NAME = new EntryBuilder<String>(String.class, "name").def("").build();
 
-    ConfigEntry<Boolean> UNIQUE = new AdvancedConfigEntry<Boolean>(Boolean.class,
-            "unique", true) {
-        @Override
-        public Object serialize(Boolean b) {
-            return b.toString();
-        }
+    ConfigEntry<String> PERIOD_MODE = new EntryBuilder<String>(String.class, "period_mode").def("player")
+            .validator(new EntryValidator() {
+                @Override
+                public boolean isValid(Object o) {
+                    String value = o.toString();
+                    return value.equalsIgnoreCase("player") || value.equalsIgnoreCase("fixed");
+                }
 
-        @Override
-        public Boolean deserialize(Object o) {
-            return Boolean.valueOf(o.toString());
-        }
-    };
+                @Override
+                public Message getInvalidMessage() {
+                    //TODO
+                    return null;  //To change body of implemented methods use File | Settings | File Templates.
+                }
+            }).build();
 
-    ConfigEntry<Integer> PERIOD = new AdvancedConfigEntry<Integer>(Integer.class,
-            "period", 900) {
-        @Override
-        public Object serialize(Integer i) {
-            return i.toString();
-        }
+    ConfigEntry<String> RESTOCK_MODE = new EntryBuilder<String>(String.class, "restock_mode").def("replace")
+            .validator(new EntryValidator() {
+                @Override
+                public boolean isValid(Object o) {
+                    String value = o.toString();
+                    return value.equalsIgnoreCase("add") || value.equalsIgnoreCase("replace");
+                }
 
-        @Override
-        public Integer deserialize(Object o) {
-            return Integer.valueOf(o.toString());
-        }
-    };
+                @Override
+                public Message getInvalidMessage() {
+                    //TODO
+                    return null;  //To change body of implemented methods use File | Settings | File Templates.
+                }
+            }).build();
 
-    ConfigEntry<String> NAME = new SimpleConfigEntry<String>(String.class, "name", "");
+    ConfigEntry<ItemStack[]> ITEMS = new EntryBuilder<ItemStack[]>(ItemStack[].class, "items")
+            .def(new ItemStack[MAX_SIZE]).serializer(new EntrySerializer<ItemStack[]>() {
+                @Override
+                public ItemStack[] deserialize(Object o) {
+                    return DataStrings.parseInventory(o.toString(), MAX_SIZE);
+                }
 
-    ConfigEntry<String> PERIOD_MODE = new SimpleConfigEntry<String>(String.class,
-            "period_mode", "player") {
-        @Override
-        public boolean isValid(Object obj) {
-            String value = obj.toString();
-            return value.equalsIgnoreCase("player") || value.equalsIgnoreCase("fixed");
-        }
-    };
+                @Override
+                public Object serialize(ItemStack[] itemStacks) {
+                    return DataStrings.valueOf(itemStacks);
+                }
+            }).build();
 
-    ConfigEntry<String> RESTOCK_MODE = new SimpleConfigEntry<String>(String.class,
-            "restock_mode", "replace") {
-        @Override
-        public boolean isValid(Object obj) {
-            String value = obj.toString();
-            return value.equalsIgnoreCase("add") || value.equalsIgnoreCase("replace");
-        }
-    };
+    //TODO add serializer
+    ConfigEntry<CRPlayer> PLAYERS = new EntryBuilder<CRPlayer>(CRPlayer.class, "players").buildMap();
 
-    ConfigEntry<Map> PLAYERS = new AdvancedConfigEntry<Map>(Map.class, "players", new HashMap<String, Object>()) {
-        @Override
-        public Object serialize(Map map) {
-            return
-        }
-
-        @Override
-        public Map deserialize(Object o) {
-            return null;  //To change body of implemented methods use File | Settings | File Templates.
-        }
-    }
-
-    ConfigEntry<ItemStack[]> ITEMS = new AdvancedConfigEntry<ItemStack[]>(ItemStack[].class,
-            "items", new ItemStack[MAX_SIZE]) {
-        @Override
-        public Object serialize(ItemStack[] itemStacks) {
-            return DataStrings.valueOf(itemStacks);
-        }
-
-        @Override
-        public ItemStack[] deserialize(Object o) {
-            return DataStrings.parseInventory(o.toString(), MAX_SIZE);
-        }
-    };
+    
 
     BlockLocation getLocation();
 
