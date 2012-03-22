@@ -32,7 +32,7 @@ public class RestockCommand extends TargetedChestRestockCommand {
             messager.normal(Language.CMD_NOT_RCHEST, player);
             return;
         }
-        // TODO once restocking methods are complete for chests.
+        rChest.restockAllInventories();
         messager.good(Language.CMD_RESTOCK_SUCCESS, player);
     }
 }

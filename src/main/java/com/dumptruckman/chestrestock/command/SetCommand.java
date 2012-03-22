@@ -16,7 +16,7 @@ import java.util.Map;
 public class SetCommand extends TargetedChestRestockCommand {
     
     private Map<String, ConfigEntry> propsMap = new HashMap<String, ConfigEntry>();
-    private String propsString;
+    private String propsString = "";
 
     public SetCommand(ChestRestockPlugin plugin) {
         super(plugin);
@@ -106,6 +106,7 @@ public class SetCommand extends TargetedChestRestockCommand {
             }
             try {
                 rChest.set(configEntry, configEntry.deserialize(value));
+                rChest.save();
             } catch (NumberFormatException e) {
                 messager.bad(Language.CMD_SET_INVALID_VALUE, player, plugin.getCommandPrefixes().get(0) + " set "
                         + args.get(0));

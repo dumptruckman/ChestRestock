@@ -11,7 +11,9 @@ import com.dumptruckman.minecraft.pluginbase.config.EntryValidator;
 import com.dumptruckman.minecraft.pluginbase.config.MappedConfigEntry;
 import com.dumptruckman.minecraft.pluginbase.locale.Message;
 import com.dumptruckman.minecraft.pluginbase.util.Logging;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.HumanEntity;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 
@@ -30,16 +32,20 @@ public interface CRChest extends Config {
 
     ConfigEntry<Boolean> UNIQUE = new EntryBuilder<Boolean>(Boolean.class, "unique").def(true).stringSerializer().build();
 
+    ConfigEntry<Boolean> REDSTONE = new EntryBuilder<Boolean>(Boolean.class, "redstone").def(false).stringSerializer().build();
+
     ConfigEntry<Integer> PERIOD = new EntryBuilder<Integer>(Integer.class, "period").def(900).stringSerializer().build();
 
     ConfigEntry<String> NAME = new EntryBuilder<String>(String.class, "name").def("").build();
 
-    ConfigEntry<String> PERIOD_MODE = new EntryBuilder<String>(String.class, "period_mode").def("player")
+    String PERIOD_MODE_PLAYER = "player";
+    String PERIOD_MODE_FIXED = "fixed";
+    ConfigEntry<String> PERIOD_MODE = new EntryBuilder<String>(String.class, "period_mode").def(PERIOD_MODE_PLAYER)
             .validator(new EntryValidator() {
                 @Override
                 public boolean isValid(Object o) {
                     String value = o.toString();
-                    return value.equalsIgnoreCase("player") || value.equalsIgnoreCase("fixed");
+                    return value.equalsIgnoreCase(PERIOD_MODE_PLAYER) || value.equalsIgnoreCase(PERIOD_MODE_FIXED);
                 }
 
                 @Override
@@ -48,12 +54,14 @@ public interface CRChest extends Config {
                 }
             }).build();
 
-    ConfigEntry<String> RESTOCK_MODE = new EntryBuilder<String>(String.class, "restock_mode").def("replace")
+    String RESTOCK_MODE_REPLACE = "replace";
+    String RESTOCK_MODE_ADD = "add";
+    ConfigEntry<String> RESTOCK_MODE = new EntryBuilder<String>(String.class, "restock_mode").def(RESTOCK_MODE_REPLACE)
             .validator(new EntryValidator() {
                 @Override
                 public boolean isValid(Object o) {
                     String value = o.toString();
-                    return value.equalsIgnoreCase("add") || value.equalsIgnoreCase("replace");
+                    return value.equalsIgnoreCase(RESTOCK_MODE_ADD) || value.equalsIgnoreCase(RESTOCK_MODE_REPLACE);
                 }
 
                 @Override
@@ -82,9 +90,23 @@ public interface CRChest extends Config {
                     int lootCount = 0;
                     long lastRestockTime = 0;
                     try {
+                        if (o instanceof ConfigurationSection) {
+                            o = ((ConfigurationSection) o).getValues(false);
+                        }
                         Map<String, Object> map = (Map<String, Object>) o;
-                        lootCount = Integer.valueOf(map.get("lootCount").toString());
-                        lastRestockTime = Long.valueOf(map.get("lastRestockTime").toString());
+                        if (map == null) {
+                            map = new HashMap<String, Object>();
+                        }
+                        Object obj = map.get("restockCount");
+                        if (obj == null) {
+                            obj = 0;
+                        }
+                        lootCount = Integer.valueOf(obj.toString());
+                        obj = map.get("lastRestockTime");
+                        if (obj == null) {
+                            obj = 0L;
+                        }
+                        lastRestockTime = Long.valueOf(obj.toString());
                     } catch (ClassCastException e) {
                         Logging.warning("Error in player data!");
                         e.printStackTrace();
@@ -98,21 +120,27 @@ public interface CRChest extends Config {
                 @Override
                 public Object serialize(CRPlayer crPlayer) {
                     Map<String, Object> map = new HashMap<String, Object>();
-                    map.put("lootCount", crPlayer.getLootCount());
+                    map.put("restockCount", crPlayer.getLootCount());
                     map.put("lastRestockTime", crPlayer.getLastRestockTime());
                     return map;
                 }
             }).buildMap();
 
+    ConfigEntry<Long> LAST_RESTOCK = new EntryBuilder<Long>(Long.class, "lastRestockTime").def(0L).stringSerializer().build();
+
     BlockLocation getLocation();
 
     InventoryHolder getInventoryHolder();
+    
+    Inventory getInventory(HumanEntity player);
 
-    void update();
+    void update(HumanEntity player);
+    
+    void restock(Inventory inventory);
+
+    void restockAllInventories();
 
     void openInventory(HumanEntity player);
     
     CRPlayer getPlayerData(String name);
-    
-    Long getLastAccess();
 }

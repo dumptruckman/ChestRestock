@@ -91,4 +91,6 @@ public class Language {
             "Ensures that the chest is unique per player.  This means, they will each see a different set of items per chest");
     public static final Message NAME_DESC = new Message("props.name.desc",
             "A name for this chest.  This is used for giving specific permissions for a chest.");
+
+    public static void init() { }
 }

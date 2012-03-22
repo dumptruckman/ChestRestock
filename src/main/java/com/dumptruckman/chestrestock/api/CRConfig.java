@@ -27,6 +27,9 @@ public interface CRConfig extends BaseConfig {
             .comment("# When set to true, chests will give each player a unique version of the chest to prevent "
                     + "loot theft.").build();
 
+    ConfigEntry<Boolean> REDSTONE = new EntryBuilder<Boolean>(Boolean.class, "defaults.redstone").def(false)
+            .comment("# When set to true, chests will restock when they receive redstone power.").build();
+
     ConfigEntry<Integer> PERIOD = new EntryBuilder<Integer>(Integer.class, "defaults.period").def(900)
             .comment("# This is the max number of times a chest will restock for each player.  "
                     + "Negative values indicate unlimited restocks.").build();

@@ -10,12 +10,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.event.block.BlockFadeEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.event.block.BlockRedstoneEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.InventoryHolder;
 
 public class ChestRestockListener implements Listener {
@@ -30,20 +31,39 @@ public class ChestRestockListener implements Listener {
         this.chestManager = plugin.getChestManager();
     }
 
-    @EventHandler(priority = EventPriority.HIGH)
-    public void inventoryOpen(InventoryOpenEvent event) {
-        if (event.isCancelled()) {
+    @EventHandler
+    public void inventoryOpen(BlockRedstoneEvent event) {
+        if (event.getNewCurrent() <= 0) {
             return;
         }
-        Block block = event.getPlayer().getTargetBlock(null, 100);
+        Block block = event.getBlock();
         if (!(block.getState() instanceof InventoryHolder)) {
             return;
         }
         InventoryHolder holder = (InventoryHolder) block.getState();
-        if (!event.getInventory().getHolder().equals(holder)) {
-            Logging.finest("player opened inventory not related to target block");
+        CRChest rChest = chestManager.getChest(block, holder);
+        if (rChest == null) {
+            Logging.finest("chest not configured");
             return;
         }
+        if (rChest.get(CRChest.REDSTONE)) {
+            rChest.restockAllInventories();
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGH)
+    public void inventoryOpen(PlayerInteractEvent event) {
+        if (event.isCancelled()) {
+            return;
+        }
+        if (event.getAction() != Action.RIGHT_CLICK_BLOCK) {
+            return;
+        }
+        Block block = event.getClickedBlock();
+        if (!(block.getState() instanceof InventoryHolder)) {
+            return;
+        }
+        InventoryHolder holder = (InventoryHolder) block.getState();
         CRChest rChest = chestManager.getChest(block, holder);
         if (rChest == null) {
             Logging.finest("chest not configured");
@@ -98,7 +118,7 @@ public class ChestRestockListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void blockPlace(BlockPlaceEvent event) {
+    public void blockBreak(BlockBreakEvent event) {
         if (event.isCancelled()) {
             return;
         }
@@ -120,8 +140,14 @@ public class ChestRestockListener implements Listener {
         }
         if (rChest.get(CRChest.INDESTRUCTIBLE)) {
             if (player != null) {
-                if (Perms.CAN_BREAK.hasPermission(player)) {
-                    return false;
+                if (!rChest.get(CRChest.NAME).isEmpty()) {
+                    if (Perms.CAN_BREAK.specific(rChest.get(CRChest.NAME)).hasPermission(player)) {
+                        return false;
+                    }
+                } else {
+                    if (Perms.CAN_BREAK_ANY.hasPermission(player)) {
+                        return false;
+                    }
                 }
             }
             return true;

@@ -21,4 +21,14 @@ class DefaultCRPlayer implements CRPlayer {
     public long getLastRestockTime() {
         return lastRestockTime;
     }
+
+    @Override
+    public void setLootCount(int count) {
+        this.lootCount = count;
+    }
+
+    @Override
+    public void setLastRestockTime(long time) {
+        this.lastRestockTime = time;
+    }
 }

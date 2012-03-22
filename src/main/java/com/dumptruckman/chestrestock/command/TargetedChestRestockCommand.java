@@ -15,6 +15,7 @@ public abstract class TargetedChestRestockCommand extends CRCommand {
 
     public TargetedChestRestockCommand(ChestRestockPlugin plugin) {
         super(plugin);
+        chestManager = plugin.getChestManager();
     }
 
     @Override

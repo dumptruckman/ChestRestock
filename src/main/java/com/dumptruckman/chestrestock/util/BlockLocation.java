@@ -83,8 +83,9 @@ public class BlockLocation {
     }
     
     public static BlockLocation get(String stringFormat) {
-        String[] sections = stringFormat.split("~");
+        String[] sections = stringFormat.split("-");
         if (sections.length != 4) {
+            Logging.finer("Unable to parse location: " + stringFormat);
             return null;
         }
         try {

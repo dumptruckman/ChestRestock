@@ -10,6 +10,7 @@ import com.dumptruckman.chestrestock.command.RestockCommand;
 import com.dumptruckman.chestrestock.command.SetCommand;
 import com.dumptruckman.chestrestock.command.UpdateCommand;
 import com.dumptruckman.chestrestock.util.CommentedConfig;
+import com.dumptruckman.chestrestock.util.Language;
 import com.dumptruckman.minecraft.pluginbase.plugin.AbstractBukkitPlugin;
 
 import java.io.File;
@@ -26,6 +27,10 @@ public class ChestRestockPlugin extends AbstractBukkitPlugin<CRConfig> implement
     @Override
     protected CRConfig newConfigInstance() throws IOException {
         return new CommentedConfig(this, true, new File(getDataFolder(), "config.yml"), CRConfig.class);
+    }
+
+    public void preEnable() {
+        Language.init();
     }
     
     public void postEnable() {

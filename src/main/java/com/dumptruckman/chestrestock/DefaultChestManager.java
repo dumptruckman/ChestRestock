@@ -67,7 +67,9 @@ class DefaultChestManager implements ChestManager {
                 return null;
             }
         }
-        return loadChest(chestFile);
+        rChest = loadChest(chestFile);
+        chestsMap.put(location, rChest);
+        return rChest;
     }
     
     //public void removeChest()
@@ -103,6 +105,7 @@ class DefaultChestManager implements ChestManager {
     }
 
     private CRChest loadChest(File chestFile) {
+        Logging.fine("Loading chest from file: " + chestFile.getName());
         try {
             BlockLocation location = BlockLocation.get(
                     chestFile.getName().substring(0, chestFile.getName().indexOf(".yml")));
