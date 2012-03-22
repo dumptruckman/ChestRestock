@@ -1,5 +1,6 @@
 package com.dumptruckman.chestrestock.api;
 
+import com.dumptruckman.chestrestock.util.Language;
 import com.dumptruckman.minecraft.pluginbase.config.BaseConfig;
 import com.dumptruckman.minecraft.pluginbase.config.ConfigEntry;
 import com.dumptruckman.minecraft.pluginbase.config.EntryBuilder;
@@ -43,8 +44,7 @@ public interface CRConfig extends BaseConfig {
 
                 @Override
                 public Message getInvalidMessage() {
-                    //TODO
-                    return null;  //To change body of implemented methods use File | Settings | File Templates.
+                    return Language.PERIOD_MODE_INVALID;
                 }
             }).build();
 
@@ -61,8 +61,7 @@ public interface CRConfig extends BaseConfig {
 
                 @Override
                 public Message getInvalidMessage() {
-                    //TODO
-                    return null;  //To change body of implemented methods use File | Settings | File Templates.
+                    return Language.RESTOCK_MODE_INVALID;
                 }
             }).build();
 

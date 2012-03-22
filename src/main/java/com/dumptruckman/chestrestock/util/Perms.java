@@ -12,4 +12,6 @@ public class Perms {
     public static final Perm CMD_DISABLE = new Perm.Builder("cmd.disable").build();
     
     public static final Perm CAN_BREAK = new Perm.Builder("break").build();
+    
+    public static final Perm BYPASS = new Perm.Builder("")
 }

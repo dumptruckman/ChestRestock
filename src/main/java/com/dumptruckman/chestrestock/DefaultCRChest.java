@@ -1,22 +1,29 @@
 package com.dumptruckman.chestrestock;
 
 import com.dumptruckman.chestrestock.api.CRChest;
+import com.dumptruckman.chestrestock.api.CRPlayer;
 import com.dumptruckman.chestrestock.api.ChestRestock;
 import com.dumptruckman.chestrestock.util.BlockLocation;
 import com.dumptruckman.chestrestock.util.InventoryTools;
+import com.dumptruckman.chestrestock.util.Perms;
 import com.dumptruckman.minecraft.pluginbase.config.AbstractYamlConfig;
 import org.bukkit.block.Block;
 import org.bukkit.entity.HumanEntity;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 class DefaultCRChest extends AbstractYamlConfig<CRChest> implements CRChest {
     
     private ChestRestock plugin;
     private BlockLocation location;
+    
+    private Map<String, Inventory> playerInventories = new HashMap<String, Inventory>();
 
     DefaultCRChest(ChestRestock plugin, BlockLocation location, File configFile, Class<? extends CRChest>... configClasses) throws IOException {
         super(plugin, false, configFile, configClasses);
@@ -62,18 +69,44 @@ class DefaultCRChest extends AbstractYamlConfig<CRChest> implements CRChest {
     }
 
     @Override
+    public CRPlayer getPlayerData(String name) {
+        assert(name != null);
+        CRPlayer player = get(PLAYERS.specific(name));
+        if (player == null) {
+            player = Players.newCRPlayer();
+        }
+        return player;
+    }
+    
+    private void updatePlayerData(String name, CRPlayer player) {
+        assert(name != null);
+        assert(player != null);
+        set(PLAYERS.specific(name), player);
+    }
+
+    @Override
+    public Long getLastAccess() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+    
+    private void maybeRestock(HumanEntity player, CRPlayer crPlayer) {
+        
+        if (get(PLAYER_LIMIT) >= 0 && (crPlayer.getLootCount() < get(PLAYER_LIMIT) || Perms.)) {
+            
+        }
+    }
+
+    @Override
     public void openInventory(HumanEntity player) {
+        assert(player != null);
+        CRPlayer crPlayer = getPlayerData(player.getName());
         int playerRestockCount = chest.getPlayerRestockCount(event.getPlayer().getName());
-        if (timesrestockedforplayer != null) {
-            if (chest.getPlayerLimit() != -1) {
-                if (timesrestockedforplayer >= chest.getPlayerLimit()) {
-                    if (!event.getPlayer().isOp()) {
-                        return;
-                    }
+        if (chest.getPlayerLimit() != -1) {
+            if (timesrestockedforplayer >= chest.getPlayerLimit()) {
+                if (!event.getPlayer().isOp()) {
+                    return;
                 }
             }
-        } else {
-            timesrestockedforplayer = 0;
         }
 
         Long accesstime = new Date().getTime() / 1000;

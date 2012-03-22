@@ -64,27 +64,31 @@ public class Language {
     public static final Message CMD_SET_SUCCESS = new Message("cmd.set.success",
             "'%1' for this chest is now '%2'!");
 
-    public static final Message PERIOD_DESC = new Message("props.desc.period",
+    public static final Message PERIOD_DESC = new Message("props.period.desc",
             "This will change the period at which the chest restocks its contents.");
-    public static final Message PERIOD_MODE_DESC = new Message("props.desc.period_mode",
+    public static final Message PERIOD_MODE_DESC = new Message("props.period_mode.desc",
             "This will change the period mode of the chest.  Options are \"player\" and \"fixed\".",
             "Player mode means the chest will restock every Period amount of seconds after a player checks a restocked chest.",
             "Fixed mode means the chest will restock every Period amount of seconds after configuration, regardless of player interaction.");
-    public static final Message RESTOCK_MODE_DESC = new Message("props.desc.restock_mode",
+    public static final Message PERIOD_MODE_INVALID = new Message("props.period_mode.invalid",
+            "Valid options are \"player\" and \"fixed\"!");
+    public static final Message RESTOCK_MODE_DESC = new Message("props.restock_mode.desc",
             "This will change the restock mode of the chest.  Options are \"add\" and \"replace\".",
             "Add mode means the restock items will be added to whatever is in the chest.",
             "Replace mode means the restock items will replace anything in the chest.");
-    public static final Message PRESERVE_SLOTS_DESC = new Message("props.desc.preserve_slots",
+    public static final Message RESTOCK_MODE_INVALID = new Message("props.restock_mode.invalid",
+            "Valid options are \"add\" and \"replace\"!");
+    public static final Message PRESERVE_SLOTS_DESC = new Message("props.preserve_slots.desc",
             "This will set the default setting for whether or not to preserve the item slots of chests that are restocked.",
             "That is to say, the position of restocked items will stay the same.");
-    public static final Message INDESTRUCTIBLE_DESC = new Message("props.desc.indestructible",
+    public static final Message INDESTRUCTIBLE_DESC = new Message("props.indestructible.desc",
             "This will cause a chest managed by dChest to become indestructible except by those with sufficient permission.");
-    public static final Message PLAYER_LIMIT_DESC = new Message("props.desc.player_limit",
+    public static final Message PLAYER_LIMIT_DESC = new Message("props.player_limit.desc",
             "This will change the number of times a single player can loot the chest.",
             "-1 = no limit, 0 = none or permission based",
             "1 (or greater) = number of times a chest will restock for a player.");
-    public static final Message UNIQUE_DESC = new Message("props.desc.unique",
+    public static final Message UNIQUE_DESC = new Message("props.unique.desc",
             "Ensures that the chest is unique per player.  This means, they will each see a different set of items per chest");
-    public static final Message NAME_DESC = new Message("props.desc.name",
+    public static final Message NAME_DESC = new Message("props.name.desc",
             "A name for this chest.  This is used for giving specific permissions for a chest.");
 }

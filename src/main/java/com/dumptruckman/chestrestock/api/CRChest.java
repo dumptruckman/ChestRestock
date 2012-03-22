@@ -1,15 +1,22 @@
 package com.dumptruckman.chestrestock.api;
 
+import com.dumptruckman.chestrestock.Players;
 import com.dumptruckman.chestrestock.util.BlockLocation;
+import com.dumptruckman.chestrestock.util.Language;
 import com.dumptruckman.minecraft.pluginbase.config.Config;
 import com.dumptruckman.minecraft.pluginbase.config.ConfigEntry;
 import com.dumptruckman.minecraft.pluginbase.config.EntryBuilder;
 import com.dumptruckman.minecraft.pluginbase.config.EntrySerializer;
 import com.dumptruckman.minecraft.pluginbase.config.EntryValidator;
+import com.dumptruckman.minecraft.pluginbase.config.MappedConfigEntry;
 import com.dumptruckman.minecraft.pluginbase.locale.Message;
+import com.dumptruckman.minecraft.pluginbase.util.Logging;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public interface CRChest extends Config {
     
@@ -37,8 +44,7 @@ public interface CRChest extends Config {
 
                 @Override
                 public Message getInvalidMessage() {
-                    //TODO
-                    return null;  //To change body of implemented methods use File | Settings | File Templates.
+                    return Language.PERIOD_MODE_INVALID;
                 }
             }).build();
 
@@ -52,8 +58,7 @@ public interface CRChest extends Config {
 
                 @Override
                 public Message getInvalidMessage() {
-                    //TODO
-                    return null;  //To change body of implemented methods use File | Settings | File Templates.
+                    return Language.RESTOCK_MODE_INVALID;
                 }
             }).build();
 
@@ -70,10 +75,34 @@ public interface CRChest extends Config {
                 }
             }).build();
 
-    //TODO add serializer
-    ConfigEntry<CRPlayer> PLAYERS = new EntryBuilder<CRPlayer>(CRPlayer.class, "players").buildMap();
+    MappedConfigEntry<CRPlayer> PLAYERS = new EntryBuilder<CRPlayer>(CRPlayer.class, "players")
+            .serializer(new EntrySerializer<CRPlayer>() {
+                @Override
+                public CRPlayer deserialize(Object o) {
+                    int lootCount = 0;
+                    long lastRestockTime = 0;
+                    try {
+                        Map<String, Object> map = (Map<String, Object>) o;
+                        lootCount = Integer.valueOf(map.get("lootCount").toString());
+                        lastRestockTime = Long.valueOf(map.get("lastRestockTime").toString());
+                    } catch (ClassCastException e) {
+                        Logging.warning("Error in player data!");
+                        e.printStackTrace();
+                    } catch (NumberFormatException e) {
+                        Logging.warning("Error in player data!");
+                        e.printStackTrace();
+                    }
+                    return Players.newCRPlayer(lootCount, lastRestockTime);
+                }
 
-    
+                @Override
+                public Object serialize(CRPlayer crPlayer) {
+                    Map<String, Object> map = new HashMap<String, Object>();
+                    map.put("lootCount", crPlayer.getLootCount());
+                    map.put("lastRestockTime", crPlayer.getLastRestockTime());
+                    return map;
+                }
+            }).buildMap();
 
     BlockLocation getLocation();
 
@@ -83,9 +112,7 @@ public interface CRChest extends Config {
 
     void openInventory(HumanEntity player);
     
-    Integer getLootCount(HumanEntity player);
-
-    Long getLastAccess(HumanEntity player);
+    CRPlayer getPlayerData(String name);
     
     Long getLastAccess();
 }
