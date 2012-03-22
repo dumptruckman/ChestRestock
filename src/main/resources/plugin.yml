@@ -1,9 +1,0 @@
-name: ChestRestock
-main: com.dumptruckman.chestrestock.ChestRestockPlugin
-version: 2.0-beta
-author: dumptruckman
-
-commands:
-  cr:
-    description: Views/sets/changes the settings of the chest you are targetting.
-    usage: /<command>
