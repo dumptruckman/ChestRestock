@@ -15,9 +15,16 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.event.block.BlockFadeEvent;
+import org.bukkit.event.block.BlockIgniteEvent;
+import org.bukkit.event.block.BlockPhysicsEvent;
+import org.bukkit.event.block.BlockPistonEvent;
 import org.bukkit.event.block.BlockRedstoneEvent;
+import org.bukkit.event.entity.EntityChangeBlockEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.InventoryHolder;
+
+import java.util.List;
 
 public class ChestRestockListener implements Listener {
 
@@ -78,45 +85,99 @@ public class ChestRestockListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onBlockBreak(BlockBreakEvent event) {
+    public void blockBurn(BlockBurnEvent event) {
+        if (event.isCancelled()) {
+            return;
+        }
+
+        if (chestBreak(event.getBlock(), null)) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void blockIgnite(BlockIgniteEvent event) {
+        if (event.isCancelled()) {
+            return;
+        }
+
+        if (chestBreak(event.getBlock(), null)) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void blockPhysics(BlockPhysicsEvent event) {
+        if (event.isCancelled()) {
+            return;
+        }
+
+        if (chestBreak(event.getBlock(), null)) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void blockFade(BlockFadeEvent event) {
+        if (event.isCancelled()) {
+            return;
+        }
+
+        if (chestBreak(event.getBlock(), null)) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void blockPiston(BlockPistonEvent event) {
+        if (event.isCancelled()) {
+            return;
+        }
+
+        if (chestBreak(event.getBlock(), null)) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void entityExplode(EntityExplodeEvent event) {
+        if (event.isCancelled()) {
+            return;
+        }
+
+        List<Block> blocks = event.blockList();
+        for (Block block : blocks) {
+            if (chestBreak(block, null)) {
+                event.setCancelled(true);
+                break;
+            }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void entityChangeBlock(EntityChangeBlockEvent event) {
+        if (event.isCancelled()) {
+            return;
+        }
+
+        if (event.getEntity() instanceof Player) {
+            if (chestBreak(event.getBlock(), (Player) event.getEntity())) {
+                event.setCancelled(true);
+            }
+        } else {
+            if (chestBreak(event.getBlock(), null)) {
+                event.setCancelled(true);
+            }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void blockDamage(BlockDamageEvent event) {
         if (event.isCancelled()) {
             return;
         }
 
         if (chestBreak(event.getBlock(), event.getPlayer())) {
-            event.setCancelled(true);
-        }
-    }
-
-    @EventHandler(priority = EventPriority.HIGHEST)
-    public void onBlockBurn(BlockBurnEvent event) {
-        if (event.isCancelled()) {
-            return;
-        }
-
-        if (chestBreak(event.getBlock(), null)) {
-            event.setCancelled(true);
-        }
-    }
-
-    @EventHandler(priority = EventPriority.HIGHEST)
-    public void onBlockDamage(BlockDamageEvent event) {
-        if (event.isCancelled()) {
-            return;
-        }
-
-        if (chestBreak(event.getBlock(), null)) {
-            event.setCancelled(true);
-        }
-    }
-
-    @EventHandler(priority = EventPriority.HIGHEST)
-    public void onBlockFade(BlockFadeEvent event) {
-        if (event.isCancelled()) {
-            return;
-        }
-
-        if (chestBreak(event.getBlock(), null)) {
             event.setCancelled(true);
         }
     }
@@ -131,7 +192,6 @@ public class ChestRestockListener implements Listener {
             event.setCancelled(true);
         }
     }
-
     
     private boolean chestBreak(Block block, Player player) {
         if (!(block.getState() instanceof InventoryHolder)) {
