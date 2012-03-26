@@ -2,7 +2,7 @@ package com.dumptruckman.chestrestock;
 
 import com.dumptruckman.chestrestock.api.CRPlayer;
 
-public class Players {
+public final class Players {
     
     private Players() {
         throw new AssertionError();

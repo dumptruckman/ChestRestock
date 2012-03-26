@@ -8,7 +8,7 @@ import org.bukkit.inventory.ItemStack;
 /**
  * This class handles the formatting of strings for data i/o.
  */
-public class DataStrings {
+public final class DataStrings {
 
     /**
      * General delimiter to separate data items.
