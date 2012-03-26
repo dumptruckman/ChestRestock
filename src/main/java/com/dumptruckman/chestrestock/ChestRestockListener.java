@@ -83,7 +83,7 @@ public class ChestRestockListener implements Listener {
             return;
         }
 
-        if (chestBreak(event.getBlock(), null)) {
+        if (chestBreak(event.getBlock(), event.getPlayer())) {
             event.setCancelled(true);
         }
     }
