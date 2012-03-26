@@ -120,20 +120,20 @@ class DefaultCRChest extends AbstractYamlConfig<CRChest> implements CRChest {
         if (get(UNIQUE)) {
             lastRestock = crPlayer.getLastRestockTime();
         }
-        if (get(PLAYER_LIMIT) < 0 || hasLootBypass(player) || crPlayer.getLootCount() < get(PLAYER_LIMIT)) {
+        if (player == null || get(PLAYER_LIMIT) < 0 || hasLootBypass(player) || crPlayer.getLootCount() < get(PLAYER_LIMIT)) {
             if (accessTime < lastRestock + (get(PERIOD) * 1000)) {
                 return inventory;
             }
             int missedPeriods = 1;
             missedPeriods = (int)(accessTime - lastRestock / (get(PERIOD) * 1000));
             if (get(PERIOD_MODE).equalsIgnoreCase(PERIOD_MODE_PLAYER)) {
-                if (get(UNIQUE)) {
+                if (crPlayer != null && get(UNIQUE)) {
                     crPlayer.setLastRestockTime(accessTime);
                 } else {
                     set(LAST_RESTOCK, accessTime);
                 }
             } else {
-                if (get(UNIQUE)) {
+                if (crPlayer != null && get(UNIQUE)) {
                     crPlayer.setLastRestockTime(get(LAST_RESTOCK) + (missedPeriods * (get(PERIOD) * 1000)));
                 } else {
                     set(LAST_RESTOCK, get(LAST_RESTOCK) + (missedPeriods * (get(PERIOD) * 1000)));
@@ -143,8 +143,10 @@ class DefaultCRChest extends AbstractYamlConfig<CRChest> implements CRChest {
                 inventory.clear();
             }
             restock(inventory);
-            crPlayer.setLootCount(crPlayer.getLootCount() + 1);
-            updatePlayerData(player.getName(), crPlayer);
+            if (crPlayer != null) {
+                crPlayer.setLootCount(crPlayer.getLootCount() + 1);
+                updatePlayerData(player.getName(), crPlayer);
+            }
         }
         save();
         return inventory;
@@ -197,9 +199,12 @@ class DefaultCRChest extends AbstractYamlConfig<CRChest> implements CRChest {
 
     @Override
     public void openInventory(HumanEntity player) {
-        assert(player != null);
-        CRPlayer crPlayer = getPlayerData(player.getName());
-        Inventory inventory = maybeRestock(player, crPlayer);
-        player.openInventory(inventory);
+        if (player != null) {
+            CRPlayer crPlayer = getPlayerData(player.getName());
+            Inventory inventory = maybeRestock(player, crPlayer);
+            player.openInventory(inventory);
+        } else {
+            maybeRestock(null, null);
+        }
     }
 }

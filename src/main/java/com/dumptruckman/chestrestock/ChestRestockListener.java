@@ -32,7 +32,7 @@ public class ChestRestockListener implements Listener {
     }
 
     @EventHandler
-    public void inventoryOpen(BlockRedstoneEvent event) {
+    public void redstonePower(BlockRedstoneEvent event) {
         if (event.getNewCurrent() <= 0) {
             return;
         }
@@ -47,7 +47,11 @@ public class ChestRestockListener implements Listener {
             return;
         }
         if (rChest.get(CRChest.REDSTONE)) {
+            // This will force a restock of physical and virtual inventories.
             rChest.restockAllInventories();
+        } else {
+            // This will restock the physical inventory if it has been an appropriate amount of time.
+            rChest.openInventory(null);
         }
     }
 
