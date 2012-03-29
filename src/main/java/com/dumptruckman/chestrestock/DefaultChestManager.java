@@ -31,8 +31,12 @@ class DefaultChestManager implements ChestManager {
         }
     }
     
+    private File getWorldFolder(BlockLocation location) {
+        return new File(chestsFile, location.getWorldName());
+    }
+    
     private File getChestFile(BlockLocation location) {
-        return new File(chestsFile, location.toString() + ".yml");
+        return new File(getWorldFolder(location), location.toString() + ".yml");
     }
 
     @Override
@@ -109,6 +113,10 @@ class DefaultChestManager implements ChestManager {
         try {
             BlockLocation location = BlockLocation.get(
                     chestFile.getName().substring(0, chestFile.getName().indexOf(".yml")));
+            if (location == null) {
+                Logging.warning("Block location could not be parsed from file name: " + chestFile.getName());
+                return null;
+            }
             return new DefaultCRChest(plugin, location, chestFile, CRChest.class);
         } catch (IOException e) {
             e.printStackTrace();

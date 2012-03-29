@@ -6,6 +6,8 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 
 public class BlockLocation {
+    
+    private static final String DELIMITER = "_";
 
     private final String world;
     private final int x;
@@ -27,7 +29,7 @@ public class BlockLocation {
         this.x = x;
         this.y = y;
         this.z = z;
-        this.stringForm = this.world + "-" + this.x + "-" + this.y + "-" + this.z;
+        this.stringForm = this.x + DELIMITER + this.y + DELIMITER + this.z + DELIMITER + this.world;
     }
 
     public final String getWorldName() {
@@ -83,16 +85,16 @@ public class BlockLocation {
     }
     
     public static BlockLocation get(String stringFormat) {
-        String[] sections = stringFormat.split("-");
+        String[] sections = stringFormat.split(DELIMITER, 4);
         if (sections.length != 4) {
             Logging.finer("Unable to parse location: " + stringFormat);
             return null;
         }
         try {
-            return new BlockLocation(sections[0],
+            return new BlockLocation(sections[3],
+                    Integer.valueOf(sections[0]),
                     Integer.valueOf(sections[1]),
-                    Integer.valueOf(sections[2]),
-                    Integer.valueOf(sections[3]));
+                    Integer.valueOf(sections[2]));
         } catch (Exception e) {
             Logging.finer("Unable to parse location: " + stringFormat);
             return null;

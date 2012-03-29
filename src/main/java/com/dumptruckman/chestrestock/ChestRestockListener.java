@@ -17,7 +17,8 @@ import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.event.block.BlockFadeEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockPhysicsEvent;
-import org.bukkit.event.block.BlockPistonEvent;
+import org.bukkit.event.block.BlockPistonExtendEvent;
+import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
@@ -129,7 +130,18 @@ public class ChestRestockListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void blockPiston(BlockPistonEvent event) {
+    public void pistonExtend(BlockPistonExtendEvent event) {
+        if (event.isCancelled()) {
+            return;
+        }
+
+        if (chestBreak(event.getBlock(), null)) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void pistonRetract(BlockPistonRetractEvent event) {
         if (event.isCancelled()) {
             return;
         }
@@ -160,14 +172,8 @@ public class ChestRestockListener implements Listener {
             return;
         }
 
-        if (event.getEntity() instanceof Player) {
-            if (chestBreak(event.getBlock(), (Player) event.getEntity())) {
-                event.setCancelled(true);
-            }
-        } else {
-            if (chestBreak(event.getBlock(), null)) {
-                event.setCancelled(true);
-            }
+        if (chestBreak(event.getBlock(), null)) {
+            event.setCancelled(true);
         }
     }
 
