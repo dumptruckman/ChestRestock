@@ -12,7 +12,6 @@ import org.bukkit.inventory.InventoryHolder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UnknownFormatConversionException;
 
 public class SetCommand extends TargetedChestRestockCommand {
     
@@ -84,11 +83,11 @@ public class SetCommand extends TargetedChestRestockCommand {
                 messager.normal(Language.NAME_DESC, player);
             }
             if (configEntry.getType().equals(Boolean.class)) {
-                messager.normal(Language.CMD_SET_POSSIBLE_VALUES, player, "true/false");
+                messager.normal(Language.CMD_SET_POSSIBLE_VALUES, player, configEntry.getName(), "true/false");
             } else if (configEntry.getType().equals(Integer.class)) {
-                messager.normal(Language.CMD_SET_POSSIBLE_VALUES, player, "a number");
+                messager.normal(Language.CMD_SET_POSSIBLE_VALUES, player, configEntry.getName(), "a number");
             } else if (configEntry.getType().equals(String.class)) {
-                messager.normal(Language.CMD_SET_POSSIBLE_VALUES, player, "a word");
+                messager.normal(Language.CMD_SET_POSSIBLE_VALUES, player, configEntry.getName(), "a word");
             }
         } else if (args.size() == 2) {
             ConfigEntry configEntry = propsMap.get(args.get(0).toLowerCase());
@@ -110,10 +109,6 @@ public class SetCommand extends TargetedChestRestockCommand {
                 rChest.set(configEntry, configEntry.deserialize(value));
                 rChest.save();
             } catch (NumberFormatException e) {
-                messager.bad(Language.CMD_SET_INVALID_VALUE, player, plugin.getCommandPrefixes().get(0) + " set "
-                        + args.get(0));
-                return;
-            } catch (UnknownFormatConversionException e) {
                 messager.bad(Language.CMD_SET_INVALID_VALUE, player, plugin.getCommandPrefixes().get(0) + " set "
                         + args.get(0));
                 return;
