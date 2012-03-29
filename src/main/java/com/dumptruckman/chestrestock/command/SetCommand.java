@@ -12,6 +12,7 @@ import org.bukkit.inventory.InventoryHolder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UnknownFormatConversionException;
 
 public class SetCommand extends TargetedChestRestockCommand {
     
@@ -109,6 +110,10 @@ public class SetCommand extends TargetedChestRestockCommand {
                 rChest.set(configEntry, configEntry.deserialize(value));
                 rChest.save();
             } catch (NumberFormatException e) {
+                messager.bad(Language.CMD_SET_INVALID_VALUE, player, plugin.getCommandPrefixes().get(0) + " set "
+                        + args.get(0));
+                return;
+            } catch (UnknownFormatConversionException e) {
                 messager.bad(Language.CMD_SET_INVALID_VALUE, player, plugin.getCommandPrefixes().get(0) + " set "
                         + args.get(0));
                 return;
