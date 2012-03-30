@@ -31,7 +31,8 @@ public class Language {
             "Chest will preserve slots: %5",
             "Chest is indestructible: %6",
             "Chest player limit: %7",
-            "Chest has unique inventory: %8");
+            "Chest has unique inventory: %8",
+            "Chest restocks when powered: %9");
 
     public static final Message CMD_UPDATE_NAME = new Message("cmd.update.name",
             "Updates the restocking contents of a chest.");
