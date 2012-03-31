@@ -119,6 +119,9 @@ class DefaultCRChest extends AbstractYamlConfig<CRChest> implements CRChest {
         Inventory inventory = getInventory(player);
         if (get(UNIQUE)) {
             lastRestock = crPlayer.getLastRestockTime();
+            if (lastRestock == 0) {
+                lastRestock = get(LAST_RESTOCK);
+            }
         }
         if (player == null || get(PLAYER_LIMIT) < 0 || hasLootBypass(player) || crPlayer.getLootCount() < get(PLAYER_LIMIT)) {
             Logging.finer("Last restock (unique: " + get(UNIQUE) + "): " + lastRestock + "  Access time: " + accessTime + "  Time diff: " + (accessTime - lastRestock));
@@ -127,7 +130,7 @@ class DefaultCRChest extends AbstractYamlConfig<CRChest> implements CRChest {
                 return inventory;
             }
             Logging.finest("Preparing to restock...");
-            int missedPeriods = (int)((accessTime - lastRestock) / (get(PERIOD) * 1000));
+            long missedPeriods = (accessTime - lastRestock) / (get(PERIOD) * 1000);
             Logging.finest("Missed " + missedPeriods + " restock periods");
             if (get(PERIOD_MODE).equalsIgnoreCase(PERIOD_MODE_PLAYER)) {
                 if (crPlayer != null && player != null && get(UNIQUE)) {
@@ -138,7 +141,7 @@ class DefaultCRChest extends AbstractYamlConfig<CRChest> implements CRChest {
                     set(LAST_RESTOCK, accessTime);
                 }
             } else {
-                long newRestockTime = get(LAST_RESTOCK) + (missedPeriods * (get(PERIOD) * 1000));
+                long newRestockTime = lastRestock + (missedPeriods * (get(PERIOD) * 1000));
                 if (crPlayer != null && player != null && get(UNIQUE)) {
                     Logging.finest("Setting fixed last restock for '" + player.getName() + "' to " + newRestockTime);
                     crPlayer.setLastRestockTime(newRestockTime);
