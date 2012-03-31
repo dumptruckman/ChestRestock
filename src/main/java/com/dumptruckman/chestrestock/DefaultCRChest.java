@@ -121,32 +121,44 @@ class DefaultCRChest extends AbstractYamlConfig<CRChest> implements CRChest {
             lastRestock = crPlayer.getLastRestockTime();
         }
         if (player == null || get(PLAYER_LIMIT) < 0 || hasLootBypass(player) || crPlayer.getLootCount() < get(PLAYER_LIMIT)) {
+            Logging.finer("Last restock (unique: " + get(UNIQUE) + "): " + lastRestock + "  Access time: " + accessTime + "  Time diff: " + (accessTime - lastRestock));
             if (accessTime < lastRestock + (get(PERIOD) * 1000)) {
+                Logging.finest("Not time to restock");
                 return inventory;
             }
-            int missedPeriods = 1;
-            missedPeriods = (int)(accessTime - lastRestock / (get(PERIOD) * 1000));
+            Logging.finest("Preparing to restock...");
+            int missedPeriods = (int)((accessTime - lastRestock) / (get(PERIOD) * 1000));
+            Logging.finest("Missed " + missedPeriods + " restock periods");
             if (get(PERIOD_MODE).equalsIgnoreCase(PERIOD_MODE_PLAYER)) {
-                if (crPlayer != null && get(UNIQUE)) {
+                if (crPlayer != null && player != null && get(UNIQUE)) {
+                    Logging.finest("Setting last restock for '" + player.getName() + "' to " + accessTime);
                     crPlayer.setLastRestockTime(accessTime);
                 } else {
+                    Logging.finest("Setting last restock to " + accessTime);
                     set(LAST_RESTOCK, accessTime);
                 }
             } else {
-                if (crPlayer != null && get(UNIQUE)) {
-                    crPlayer.setLastRestockTime(get(LAST_RESTOCK) + (missedPeriods * (get(PERIOD) * 1000)));
+                long newRestockTime = get(LAST_RESTOCK) + (missedPeriods * (get(PERIOD) * 1000));
+                if (crPlayer != null && player != null && get(UNIQUE)) {
+                    Logging.finest("Setting fixed last restock for '" + player.getName() + "' to " + newRestockTime);
+                    crPlayer.setLastRestockTime(newRestockTime);
                 } else {
-                    set(LAST_RESTOCK, get(LAST_RESTOCK) + (missedPeriods * (get(PERIOD) * 1000)));
+                    Logging.finest("Setting fixed last restock to " + newRestockTime);
+                    set(LAST_RESTOCK, newRestockTime);
                 }
             }
             if (get(RESTOCK_MODE).equalsIgnoreCase(RESTOCK_MODE_REPLACE)) {
+                Logging.finest("Clearing inventory before restock");
                 inventory.clear();
             }
             restock(inventory);
-            if (crPlayer != null) {
+            if (crPlayer != null && player != null) {
+                Logging.finest("Increasing loot count for '" + player.getName() + "'");
                 crPlayer.setLootCount(crPlayer.getLootCount() + 1);
                 updatePlayerData(player.getName(), crPlayer);
             }
+        } else {
+            Logging.finer("'" + player.getName() + "' no longer allowed to loot this chest!");
         }
         save();
         return inventory;
