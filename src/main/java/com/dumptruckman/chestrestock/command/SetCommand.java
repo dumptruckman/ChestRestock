@@ -22,7 +22,6 @@ public class SetCommand extends TargetedChestRestockCommand {
         super(plugin);
         this.setName(messager.getMessage(Language.CMD_SET_NAME));
         this.setCommandUsage("/" + plugin.getCommandPrefixes().get(0) + " set [property [value]]");
-        this.setArgRange(0, 2);
         for (String prefix : plugin.getCommandPrefixes()) {
             this.addKey(prefix + " set");
         }
@@ -41,6 +40,7 @@ public class SetCommand extends TargetedChestRestockCommand {
         propsMap.put("restock_mode", CRChest.RESTOCK_MODE);
         propsMap.put("unique", CRChest.UNIQUE);
         propsMap.put("redstone", CRChest.REDSTONE);
+        propsMap.put("global_message", CRChest.GLOBAL_MESSAGE);
         
         for (String key : propsMap.keySet()) {
             if (!propsString.isEmpty()) {
@@ -89,7 +89,7 @@ public class SetCommand extends TargetedChestRestockCommand {
             } else if (configEntry.getType().equals(String.class)) {
                 messager.normal(Language.CMD_SET_POSSIBLE_VALUES, player, configEntry.getName(), "a word");
             }
-        } else if (args.size() == 2) {
+        } else if (args.size() > 1) {
             ConfigEntry configEntry = propsMap.get(args.get(0).toLowerCase());
             if (configEntry == null) {
                 messager.bad(Language.CMD_SET_INVALID_PROP, player, args.get(0));
@@ -99,7 +99,19 @@ public class SetCommand extends TargetedChestRestockCommand {
                 messager.normal(Language.CMD_NOT_RCHEST, player);
                 return;
             }
-            String value = args.get(1).toLowerCase();
+            String value;
+            if (args.size() == 2) {
+                value = args.get(1).toLowerCase();
+            } else {
+                StringBuilder builder = new StringBuilder();
+                for (int i = 1; i < args.size(); i++) {
+                    if (!builder.toString().isEmpty()) {
+                        builder.append(" ");
+                    }
+                    builder.append(args.get(i));
+                }
+                value = builder.toString();
+            }
             if (!configEntry.isValid(value)) {
                 messager.bad(Language.CMD_SET_INVALID_VALUE, player, plugin.getCommandPrefixes().get(0) + " set "
                         + args.get(0));

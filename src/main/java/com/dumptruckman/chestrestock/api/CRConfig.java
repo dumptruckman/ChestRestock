@@ -69,5 +69,8 @@ public interface CRConfig extends BaseConfig {
             }).build();
 
     ConfigEntry<String> NAME = new EntryBuilder<String>(String.class, "defaults.name").def("")
-            .comment("# The default name for new chests.  This is used for permissions if not left blank.").build();
+            .comment("# The default name for new chests.  This is used for permissions if not left blank (per chest).").build();
+
+    ConfigEntry<String> GLOBAL_MESSAGE = new EntryBuilder<String>(String.class, "global_message").def("")
+            .comment("# The default global message for new chests.  This will be broadcast when the chest restocks if not left blank. (per chest)").build();
 }

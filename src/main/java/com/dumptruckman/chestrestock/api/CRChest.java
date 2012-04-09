@@ -38,6 +38,8 @@ public interface CRChest extends Config {
 
     ConfigEntry<String> NAME = new EntryBuilder<String>(String.class, "name").def("").build();
 
+    ConfigEntry<String> GLOBAL_MESSAGE = new EntryBuilder<String>(String.class, "global_message").def("").build();
+
     String PERIOD_MODE_PLAYER = "player";
     String PERIOD_MODE_FIXED = "fixed";
     ConfigEntry<String> PERIOD_MODE = new EntryBuilder<String>(String.class, "period_mode").def(PERIOD_MODE_PLAYER)

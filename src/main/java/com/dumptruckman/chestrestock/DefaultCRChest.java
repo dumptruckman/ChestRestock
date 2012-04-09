@@ -194,6 +194,9 @@ class DefaultCRChest extends AbstractYamlConfig<CRChest> implements CRChest {
                 }
             }
         }
+        if (!get(GLOBAL_MESSAGE).isEmpty()) {
+            Bukkit.broadcastMessage(get(GLOBAL_MESSAGE));
+        }
     }
 
     @Override
