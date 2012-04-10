@@ -6,6 +6,8 @@ import org.bukkit.block.Chest;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryHolder;
 
+import java.util.Set;
+
 public interface ChestManager {
     
     CRChest getChest(Block block, InventoryHolder holder);
@@ -17,4 +19,10 @@ public interface ChestManager {
     Chest getOtherSide(Block chestBlock);
     
     boolean removeChest(BlockLocation location);
+
+    boolean pollingCheckIn(CRChest chest);
+
+    Set<CRChest> getChestsForPolling();
+
+    void pollChests();
 }

@@ -40,6 +40,7 @@ public class SetCommand extends TargetedChestRestockCommand {
         propsMap.put("restock_mode", CRChest.RESTOCK_MODE);
         propsMap.put("unique", CRChest.UNIQUE);
         propsMap.put("redstone", CRChest.REDSTONE);
+        propsMap.put("accept_poll", CRChest.ACCEPT_POLL);
         propsMap.put("global_message", CRChest.GLOBAL_MESSAGE);
         
         for (String key : propsMap.keySet()) {
@@ -120,6 +121,7 @@ public class SetCommand extends TargetedChestRestockCommand {
             try {
                 rChest.set(configEntry, configEntry.deserialize(value));
                 rChest.save();
+                chestManager.pollingCheckIn(rChest);
             } catch (NumberFormatException e) {
                 messager.bad(Language.CMD_SET_INVALID_VALUE, player, plugin.getCommandPrefixes().get(0) + " set "
                         + args.get(0));

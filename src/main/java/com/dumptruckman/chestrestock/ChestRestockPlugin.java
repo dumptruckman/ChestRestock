@@ -56,6 +56,23 @@ public class ChestRestockPlugin extends AbstractBukkitPlugin<CRConfig> implement
         chestManager = null;
     }
 
+    public void postReload() {
+        long ticks = config().get(CRConfig.RESTOCK_TASK) * 20;
+        if (ticks > 0) {
+            getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
+                @Override
+                public void run() {
+                    getChestManager().pollChests();
+                }
+            }, ticks, ticks);
+        }
+    }
+
+    public void onDisable() {
+        getServer().getScheduler().cancelTasks(this);
+        super.onDisable();
+    }
+
     @Override
     public List<String> getCommandPrefixes() {
         return cmdPrefixes;

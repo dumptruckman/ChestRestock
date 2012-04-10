@@ -48,9 +48,11 @@ public class CreateCommand extends TargetedChestRestockCommand {
         rChest.set(CRChest.NAME, plugin.config().get(CRConfig.NAME));
         rChest.set(CRChest.REDSTONE, plugin.config().get(CRConfig.REDSTONE));
         rChest.set(CRChest.GLOBAL_MESSAGE, plugin.config().get(CRConfig.GLOBAL_MESSAGE));
+        rChest.set(CRChest.ACCEPT_POLL, plugin.config().get(CRConfig.ACCEPT_POLL));
 
         rChest.set(CRChest.LAST_RESTOCK, System.currentTimeMillis());
         rChest.update(null);
         messager.good(Language.CMD_CREATE_SUCCESS, player, rChest.get(CRChest.PERIOD));
+        chestManager.pollingCheckIn(rChest);
     }
 }

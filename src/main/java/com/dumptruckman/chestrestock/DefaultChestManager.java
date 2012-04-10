@@ -1,10 +1,12 @@
 package com.dumptruckman.chestrestock;
 
 import com.dumptruckman.chestrestock.api.CRChest;
+import com.dumptruckman.chestrestock.api.CRConfig;
 import com.dumptruckman.chestrestock.api.ChestManager;
 import com.dumptruckman.chestrestock.util.BlockLocation;
 import com.dumptruckman.chestrestock.util.Language;
 import com.dumptruckman.minecraft.pluginbase.util.Logging;
+import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.entity.Player;
@@ -12,16 +14,24 @@ import org.bukkit.inventory.DoubleChestInventory;
 import org.bukkit.inventory.InventoryHolder;
 
 import java.io.File;
+import java.io.FileFilter;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Set;
 
 class DefaultChestManager implements ChestManager {
+
+    private final static String EXT = ".yml";
 
     private ChestRestockPlugin plugin;
     private File chestsFile;
     
     private Map<BlockLocation, CRChest> chestsMap = new HashMap<BlockLocation, CRChest>();
+    private Set<CRChest> pollingSet = new LinkedHashSet<CRChest>();
     
     DefaultChestManager(ChestRestockPlugin plugin) {
         this.plugin = plugin;
@@ -29,14 +39,48 @@ class DefaultChestManager implements ChestManager {
         if (!chestsFile.exists()) {
             chestsFile.mkdirs();
         }
+        initPolling();
+    }
+
+    private void initPolling() {
+        if (plugin.config().get(CRConfig.RESTOCK_TASK) < 1) {
+            Logging.fine("Chest restock polling disabled");
+            return;
+        }
+        Logging.fine("Initializing chest polling.");
+        File worldContainer = Bukkit.getWorldContainer();
+        for (File file : worldContainer.listFiles(new FileFilter() {
+            @Override
+            public boolean accept(File pathname) {
+                return pathname.isDirectory();
+            }
+        })) {
+            File worldFolder = getWorldFolder(file.getName());
+            if (worldFolder.exists()) {
+                Logging.finer("Checking chests for world: " + worldFolder);
+                for (File chestFile : worldFolder.listFiles(new FilenameFilter() {
+                    @Override
+                    public boolean accept(File dir, String name) {
+                        return name.endsWith(EXT);
+                    }
+                })) {
+                    CRChest chest = loadChest(chestFile);
+                    if (chest != null) {
+                        Logging.finest("Polling check in for " + chest.getLocation());
+                        pollingCheckIn(chest);
+                        chestsMap.put(chest.getLocation(), chest);
+                    }
+                }
+            }
+        }
     }
     
-    private File getWorldFolder(BlockLocation location) {
-        return new File(chestsFile, location.getWorldName());
+    private File getWorldFolder(String worldName) {
+        return new File(chestsFile, worldName);
     }
     
     private File getChestFile(BlockLocation location) {
-        return new File(getWorldFolder(location), location.toString() + ".yml");
+        return new File(getWorldFolder(location.getWorldName()), location.toString() + EXT);
     }
 
     @Override
@@ -112,7 +156,7 @@ class DefaultChestManager implements ChestManager {
         Logging.fine("Loading chest from file: " + chestFile.getName());
         try {
             BlockLocation location = BlockLocation.get(
-                    chestFile.getName().substring(0, chestFile.getName().indexOf(".yml")));
+                    chestFile.getName().substring(0, chestFile.getName().indexOf(EXT)));
             if (location == null) {
                 Logging.warning("Block location could not be parsed from file name: " + chestFile.getName());
                 return null;
@@ -152,5 +196,38 @@ class DefaultChestManager implements ChestManager {
             throw new IllegalStateException(plugin.getMessager().getMessage(Language.TARGETING));
         }
         return block;
+    }
+
+    @Override
+    public boolean pollingCheckIn(CRChest chest) {
+        if (chest.get(CRChest.ACCEPT_POLL)) {
+            if (pollingSet.add(chest)) {
+                Logging.finest(chest.getLocation() + " added to polling");
+            }
+            return true;
+        } else {
+            if (pollingSet.remove(chest)) {
+                Logging.finest(chest.getLocation() + " removed to polling");
+            }
+            return false;
+        }
+    }
+
+    @Override
+    public Set<CRChest> getChestsForPolling() {
+        return pollingSet;
+    }
+
+    @Override
+    public void pollChests() {
+        Iterator<CRChest> it = getChestsForPolling().iterator();
+        while (it.hasNext()) {
+            CRChest chest = it.next();
+            if (chest.getInventoryHolder() == null) {
+                it.remove();
+                continue;
+            }
+            chest.openInventory(null);
+        }
     }
 }

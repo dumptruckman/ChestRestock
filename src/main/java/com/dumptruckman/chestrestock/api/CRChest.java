@@ -34,6 +34,8 @@ public interface CRChest extends Config {
 
     ConfigEntry<Boolean> REDSTONE = new EntryBuilder<Boolean>(Boolean.class, "redstone").def(false).stringSerializer().build();
 
+    ConfigEntry<Boolean> ACCEPT_POLL = new EntryBuilder<Boolean>(Boolean.class, "accept_poll").def(false).stringSerializer().build();
+
     ConfigEntry<Integer> PERIOD = new EntryBuilder<Integer>(Integer.class, "period").def(900).stringSerializer().build();
 
     ConfigEntry<String> NAME = new EntryBuilder<String>(String.class, "name").def("").build();

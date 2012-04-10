@@ -30,6 +30,9 @@ public interface CRConfig extends BaseConfig {
     ConfigEntry<Boolean> REDSTONE = new EntryBuilder<Boolean>(Boolean.class, "defaults.redstone").def(false)
             .comment("# When set to true, chests will restock when they receive redstone power.").build();
 
+    ConfigEntry<Boolean> ACCEPT_POLL = new EntryBuilder<Boolean>(Boolean.class, "defaults.accept_poll").def(false)
+            .comment("# When set to true, chests will use the restock task poll to determine if the chest should update.").build();
+
     ConfigEntry<Integer> PERIOD = new EntryBuilder<Integer>(Integer.class, "defaults.period").def(900)
             .comment("# This is the max number of times a chest will restock for each player.  "
                     + "Negative values indicate unlimited restocks.").build();
@@ -73,4 +76,9 @@ public interface CRConfig extends BaseConfig {
 
     ConfigEntry<String> GLOBAL_MESSAGE = new EntryBuilder<String>(String.class, "global_message").def("")
             .comment("# The default global message for new chests.  This will be broadcast when the chest restocks if not left blank. (per chest)").build();
+
+    ConfigEntry<Integer> RESTOCK_TASK = new EntryBuilder<Integer>(Integer.class, "restock_task_interval").def(60)
+            .comment("# This is the interval (in seconds) at which a timer task will poll all 'accept_poll' chests to see if it should update.")
+            .comment("# This could potentially affect performance if you have LOTS of chests set to accept polling")
+            .comment("# To disable this polling feature, set this to 0").build();
 }
