@@ -52,6 +52,10 @@ public class ChestRestockPlugin extends AbstractBukkitPlugin<CRConfig> implement
         }
     }
 
+    public void preReload() {
+        chestManager = null;
+    }
+
     @Override
     public List<String> getCommandPrefixes() {
         return cmdPrefixes;
