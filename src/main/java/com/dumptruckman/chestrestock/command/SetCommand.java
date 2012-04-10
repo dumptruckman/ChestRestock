@@ -25,6 +25,7 @@ public class SetCommand extends TargetedChestRestockCommand {
         for (String prefix : plugin.getCommandPrefixes()) {
             this.addKey(prefix + " set");
         }
+        this.setArgRange(0, 500);
         this.addCommandExample("/" + plugin.getCommandPrefixes().get(0) + " set");
         this.addCommandExample("/" + plugin.getCommandPrefixes().get(0) + " set unique");
         this.addCommandExample("/" + plugin.getCommandPrefixes().get(0) + " set period 300");
