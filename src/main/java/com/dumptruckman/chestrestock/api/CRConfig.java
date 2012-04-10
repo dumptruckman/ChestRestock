@@ -31,7 +31,8 @@ public interface CRConfig extends BaseConfig {
             .comment("# When set to true, chests will restock when they receive redstone power.").build();
 
     ConfigEntry<Boolean> ACCEPT_POLL = new EntryBuilder<Boolean>(Boolean.class, "defaults.accept_poll").def(false)
-            .comment("# When set to true, chests will use the restock task poll to determine if the chest should update.").build();
+            .comment("# When set to true, chests will use the restock task poll to determine if the chest should update.")
+            .comment("# This may not work as expected with chests that are also 'unique'").build();
 
     ConfigEntry<Integer> PERIOD = new EntryBuilder<Integer>(Integer.class, "defaults.period").def(900)
             .comment("# This is the max number of times a chest will restock for each player.  "
