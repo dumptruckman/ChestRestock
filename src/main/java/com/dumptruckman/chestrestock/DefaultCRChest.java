@@ -117,7 +117,7 @@ class DefaultCRChest extends AbstractYamlConfig<CRChest> implements CRChest {
         long accessTime = System.currentTimeMillis();
         long lastRestock = get(LAST_RESTOCK);
         Inventory inventory = getInventory(player);
-        if (get(UNIQUE)) {
+        if (crPlayer != null && get(UNIQUE)) {
             lastRestock = crPlayer.getLastRestockTime();
             if (lastRestock == 0) {
                 lastRestock = get(LAST_RESTOCK);
