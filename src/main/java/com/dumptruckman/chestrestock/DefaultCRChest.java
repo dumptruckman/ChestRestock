@@ -3,6 +3,8 @@ package com.dumptruckman.chestrestock;
 import com.dumptruckman.chestrestock.api.CRChest;
 import com.dumptruckman.chestrestock.api.CRPlayer;
 import com.dumptruckman.chestrestock.api.ChestRestock;
+import com.dumptruckman.chestrestock.api.LootTable;
+import com.dumptruckman.chestrestock.api.LootTable.LootSection;
 import com.dumptruckman.chestrestock.util.BlockLocation;
 import com.dumptruckman.chestrestock.util.InventoryTools;
 import com.dumptruckman.chestrestock.util.Perms;
@@ -193,6 +195,10 @@ class DefaultCRChest extends AbstractYamlConfig<CRChest> implements CRChest {
                     inventory.addItem(item);
                 }
             }
+        }
+        LootTable lootTable = plugin.getLootConfig().getLootTable(get(LOOT_TABLE));
+        if (lootTable != null) {
+            lootTable.addToInventory(inventory);
         }
         if (!get(GLOBAL_MESSAGE).isEmpty()) {
             Bukkit.broadcastMessage(get(GLOBAL_MESSAGE));

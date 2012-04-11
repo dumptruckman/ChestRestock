@@ -3,6 +3,7 @@ package com.dumptruckman.chestrestock;
 import com.dumptruckman.chestrestock.api.CRConfig;
 import com.dumptruckman.chestrestock.api.ChestManager;
 import com.dumptruckman.chestrestock.api.ChestRestock;
+import com.dumptruckman.chestrestock.api.LootConfig;
 import com.dumptruckman.chestrestock.command.CheckCommand;
 import com.dumptruckman.chestrestock.command.CreateCommand;
 import com.dumptruckman.chestrestock.command.DisableCommand;
@@ -25,16 +26,19 @@ public class ChestRestockPlugin extends AbstractBukkitPlugin<CRConfig> implement
     private final List<String> cmdPrefixes = Arrays.asList("cr");
 
     private ChestManager chestManager = null;
+    private LootConfig lootConfig = null;
 
     @Override
     protected CRConfig newConfigInstance() throws IOException {
         return new CommentedConfig(this, true, new File(getDataFolder(), "config.yml"), CRConfig.class);
     }
 
+    @Override
     public void preEnable() {
         Language.init();
     }
-    
+
+    @Override
     public void postEnable() {
         getServer().getPluginManager().registerEvents(new ChestRestockListener(this), this);
         getCommandHandler().registerCommand(new CreateCommand(this));
@@ -52,10 +56,13 @@ public class ChestRestockPlugin extends AbstractBukkitPlugin<CRConfig> implement
         }
     }
 
+    @Override
     public void preReload() {
         chestManager = null;
+        lootConfig = null;
     }
 
+    @Override
     public void postReload() {
         long ticks = config().get(CRConfig.RESTOCK_TASK) * 20;
         if (ticks > 0) {
@@ -66,8 +73,10 @@ public class ChestRestockPlugin extends AbstractBukkitPlugin<CRConfig> implement
                 }
             }, ticks, ticks);
         }
+        getLootConfig();
     }
 
+    @Override
     public void onDisable() {
         getServer().getScheduler().cancelTasks(this);
         super.onDisable();
@@ -84,5 +93,13 @@ public class ChestRestockPlugin extends AbstractBukkitPlugin<CRConfig> implement
             chestManager = new DefaultChestManager(this);
         }
         return chestManager;
+    }
+
+    @Override
+    public LootConfig getLootConfig() {
+        if (lootConfig == null) {
+            lootConfig = new DefaultLootConfig(this);
+        }
+        return lootConfig;
     }
 }

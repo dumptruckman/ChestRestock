@@ -43,6 +43,7 @@ public class SetCommand extends TargetedChestRestockCommand {
         propsMap.put("redstone", CRChest.REDSTONE);
         propsMap.put("accept_poll", CRChest.ACCEPT_POLL);
         propsMap.put("global_message", CRChest.GLOBAL_MESSAGE);
+        propsMap.put("loot_table", CRChest.LOOT_TABLE);
         
         for (String key : propsMap.keySet()) {
             if (!propsString.isEmpty()) {

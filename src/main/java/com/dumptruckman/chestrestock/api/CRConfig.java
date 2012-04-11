@@ -75,6 +75,10 @@ public interface CRConfig extends BaseConfig {
     ConfigEntry<String> NAME = new EntryBuilder<String>(String.class, "defaults.name").def("")
             .comment("# The default name for new chests.  This is used for permissions if not left blank (per chest).").build();
 
+    ConfigEntry<String> LOOT_TABLE = new EntryBuilder<String>(String.class, "loot_table").def("")
+            .comment("# The default loot table for new chests.  If left blank, chests will only restock with what they're set up with.")
+            .comment("# A loot table enables chances for randomized loot.  You must configure a table in the loot_tables.yml file to use this.").build();
+
     ConfigEntry<String> GLOBAL_MESSAGE = new EntryBuilder<String>(String.class, "global_message").def("")
             .comment("# The default global message for new chests.  This will be broadcast when the chest restocks if not left blank. (per chest)").build();
 

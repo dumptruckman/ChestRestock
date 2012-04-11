@@ -46,6 +46,7 @@ public class CreateCommand extends TargetedChestRestockCommand {
         rChest.set(CRChest.UNIQUE, plugin.config().get(CRConfig.UNIQUE));
         rChest.set(CRChest.PRESERVE_SLOTS, plugin.config().get(CRConfig.PRESERVE_SLOTS));
         rChest.set(CRChest.NAME, plugin.config().get(CRConfig.NAME));
+        rChest.set(CRChest.LOOT_TABLE, plugin.config().get(CRConfig.LOOT_TABLE));
         rChest.set(CRChest.REDSTONE, plugin.config().get(CRConfig.REDSTONE));
         rChest.set(CRChest.GLOBAL_MESSAGE, plugin.config().get(CRConfig.GLOBAL_MESSAGE));
         rChest.set(CRChest.ACCEPT_POLL, plugin.config().get(CRConfig.ACCEPT_POLL));

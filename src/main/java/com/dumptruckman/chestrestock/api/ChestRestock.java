@@ -6,4 +6,6 @@ import org.bukkit.plugin.Plugin;
 public interface ChestRestock extends BukkitPlugin<CRConfig>, Plugin {
 
     ChestManager getChestManager();
+
+    LootConfig getLootConfig();
 }

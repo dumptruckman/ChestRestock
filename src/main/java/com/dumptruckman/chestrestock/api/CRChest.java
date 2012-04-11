@@ -40,6 +40,8 @@ public interface CRChest extends Config {
 
     ConfigEntry<String> NAME = new EntryBuilder<String>(String.class, "name").def("").build();
 
+    ConfigEntry<String> LOOT_TABLE = new EntryBuilder<String>(String.class, "loot_table").def("").build();
+
     ConfigEntry<String> GLOBAL_MESSAGE = new EntryBuilder<String>(String.class, "global_message").def("").build();
 
     String PERIOD_MODE_PLAYER = "player";
