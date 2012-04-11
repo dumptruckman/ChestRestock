@@ -150,10 +150,6 @@ class DefaultCRChest extends AbstractYamlConfig<CRChest> implements CRChest {
                     set(LAST_RESTOCK, newRestockTime);
                 }
             }
-            if (get(RESTOCK_MODE).equalsIgnoreCase(RESTOCK_MODE_REPLACE)) {
-                Logging.finest("Clearing inventory before restock");
-                inventory.clear();
-            }
             restock(inventory);
             if (crPlayer != null && player != null) {
                 Logging.finest("Increasing loot count for '" + player.getName() + "'");
@@ -168,6 +164,10 @@ class DefaultCRChest extends AbstractYamlConfig<CRChest> implements CRChest {
     }
     
     public void restock(Inventory inventory) {
+        if (get(RESTOCK_MODE).equalsIgnoreCase(RESTOCK_MODE_REPLACE)) {
+            Logging.finest("Clearing inventory before restock");
+            inventory.clear();
+        }
         Logging.finer("Restocking " + inventory);
         ItemStack[] restockItems = get(ITEMS);
         if (get(PRESERVE_SLOTS)) {
