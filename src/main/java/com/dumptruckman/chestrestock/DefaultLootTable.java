@@ -22,7 +22,7 @@ class DefaultLootTable implements LootTable, LootSection {
     }
 
     public void addToInventory(Inventory inv) {
-        Logging.finest("Adding section to inventory... Rolls: " + topSection.getRolls());
+        Logging.finest("Adding loot table to inventory " + topSection.getRolls() + " times");
         for (int i = 0; i < topSection.getRolls(); i++) {
             addSectionToInventory(inv, topSection);
         }
@@ -33,19 +33,23 @@ class DefaultLootTable implements LootTable, LootSection {
         if (item != null) {
             inv.addItem(item);
         }
-        Random randGen = new Random(System.currentTimeMillis());
+        Random randGen = new Random(System.nanoTime());
         for (Map.Entry<Float, Set<LootSection>> entry : section.getChildSections().entrySet()) {
             for (LootSection childSection : entry.getValue()) {
-                float chance = entry.getKey();
-                int rollTimes = (int) chance;
-                chance -= rollTimes;
-                if (chance >= randGen.nextFloat()) {
-                    rollTimes++;
-                }
-                rollTimes = rollTimes * childSection.getRolls();
-                Logging.finest("Adding section to inventory... Rolls: " + rollTimes);
-                for (int i = 0; i < rollTimes; i++) {
-                    addSectionToInventory(inv, childSection);
+                for (int i = 0; i < childSection.getRolls(); i++) {
+                    float chance = entry.getKey();
+                    int successfulRolls = (int) chance;
+                    chance -= successfulRolls;
+                    float randFloat = randGen.nextFloat();
+                    if (randFloat <= chance) {
+                        successfulRolls++;
+                    }
+                    if (successfulRolls > 0) {
+                        Logging.finest("Adding " + childSection + " to inventory " + successfulRolls + " times");
+                        for (int j = 0; j < successfulRolls; j++) {
+                            addSectionToInventory(inv, childSection);
+                        }
+                    }
                 }
             }
         }
