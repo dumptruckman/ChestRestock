@@ -8,28 +8,36 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Map;
 import java.util.WeakHashMap;
 
 class DefaultLootConfig implements LootConfig {
 
     private FileConfiguration config;
-    private File configFile;
 
     private Map<String, LootTable> cachedTables = new WeakHashMap<String, LootTable>();
 
     DefaultLootConfig(ChestRestockPlugin plugin) {
-        configFile = new File(plugin.getDataFolder(), "loot_tables.yml");
+        File configFile = new File(plugin.getDataFolder(), "loot_tables.yml");
         config = YamlConfiguration.loadConfiguration(configFile);
         String nl = System.getProperty("line.separator");
-        /*config.options().header("This is where you define loot tables for your chests to have random loot."
-                + nl + "All numbers should be whole numbers!  DO NOT use fractions!");
+        config.options().header("This is where you define loot tables for your chests to have random loot."
+                + nl + "Properties for each section of a table:"
+                + nl + "chance - the chance at which the section will be picked (as a fraction: 0.25 == 25%).  default: 1"
+                + nl + "rolls - the number of times the section will be considered.  default: 1"
+                + nl + "split (true/false) - if true, chance will be used as section weight and only 1 section will be picked.  default: false"
+                + nl + "id - the item id (number).  default: none"
+                + nl + "data - the item data value (number).  default: none"
+                + nl + "amount - the amount of the item.  default: 1");
         try {
             config.save(configFile);
+            YamlConfiguration.loadConfiguration(plugin.getResource("loot_example.yml"))
+                    .save(new File(plugin.getDataFolder(), "loot_example.yml"));
         } catch (IOException e) {
             Logging.severe("Could not save loot_tables.yml!");
             Logging.severe("Reason: " + e.getMessage());
-        }*/
+        }
     }
 
     @Override

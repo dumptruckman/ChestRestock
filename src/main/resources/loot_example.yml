@@ -1,0 +1,25 @@
+# In this example, when the chest using loot_table 'justaname' restocks, there is a 50% chance for a diamond sword
+# and a 10% chance of a 20 stack of mossy stone blocks.
+# Further, '2' is rolled 10 times, with a 10% chance of EITHER 1 diamond or 5 gold, but not both.
+# An additional note, the numbers used as headings can be any number or word as long as they are not the key words
+# such as chance, id, amount, data and rolls.  They should be unique headings though as if they are the same, errors may occur.
+justaname:
+  1:
+    chance: .50
+    id: 276
+  2:
+    rolls: 10
+    chance: .10
+    split: true
+    1:
+      chance: .50
+      id: 264
+    2:
+      chance: .50
+      id: 266
+      amount: 5
+  3:
+    chance: .10
+    id: 98
+    data: 2
+    amount: 20
