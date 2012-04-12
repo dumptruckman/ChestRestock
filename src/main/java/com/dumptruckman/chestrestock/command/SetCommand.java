@@ -68,22 +68,8 @@ public class SetCommand extends TargetedChestRestockCommand {
                 messager.bad(Language.CMD_SET_INVALID_PROP, player, args.get(0));
                 return;
             }
-            if (configEntry == CRChest.PERIOD) {
-                messager.normal(Language.PERIOD_DESC, player);
-            } else if (configEntry == CRChest.PLAYER_LIMIT) {
-                messager.normal(Language.PLAYER_LIMIT_DESC, player);
-            } else if (configEntry == CRChest.INDESTRUCTIBLE) {
-                messager.normal(Language.INDESTRUCTIBLE_DESC, player);
-            } else if (configEntry == CRChest.PERIOD_MODE) {
-                messager.normal(Language.PERIOD_MODE_DESC, player);
-            } else if (configEntry == CRChest.RESTOCK_MODE) {
-                messager.normal(Language.RESTOCK_MODE_DESC, player);
-            } else if (configEntry == CRChest.PRESERVE_SLOTS) {
-                messager.normal(Language.PRESERVE_SLOTS_DESC, player);
-            } else if (configEntry == CRChest.UNIQUE) {
-                messager.normal(Language.UNIQUE_DESC, player);
-            } else if (configEntry == CRChest.NAME) {
-                messager.normal(Language.NAME_DESC, player);
+            if (configEntry.getDescription() != null) {
+                messager.normal(configEntry.getDescription(), player);
             }
             if (configEntry.getType().equals(Boolean.class)) {
                 messager.normal(Language.CMD_SET_POSSIBLE_VALUES, player, configEntry.getName(), "true/false");

@@ -95,6 +95,14 @@ public class Language {
             "Ensures that the chest is unique per player.  This means, they will each see a different set of items per chest");
     public static final Message NAME_DESC = new Message("props.name.desc",
             "A name for this chest.  This is used for giving specific permissions for a chest.");
+    public static final Message REDSTONE_DESC = new Message("props.redstone.desc",
+            "This will cause the chest to be restocked when it receives redstone power.");
+    public static final Message ACCEPT_POLL_DESC = new Message("props.accept_poll.desc",
+            "When true, the global polling task for ChestRestock will check to see if this chest needs to restock and restock it if it is time.");
+    public static final Message LOOT_TABLE_DESC = new Message("props.loot_table.desc",
+            "The name of the loot table to use as defined in loot_tables.yml");
+    public static final Message GLOBAL_MESSAGE_DESC = new Message("props.global_message.desc",
+            "A message to be broadcast to the server when this chest restocks.  Blank means no message.");
 
     public static void init() { }
 }
