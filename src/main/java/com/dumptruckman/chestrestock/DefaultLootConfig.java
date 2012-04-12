@@ -17,11 +17,12 @@ class DefaultLootConfig implements LootConfig {
     private FileConfiguration config;
 
     private File lootFolder;
+    private File configFile;
 
     private Map<String, LootTable> cachedTables = new WeakHashMap<String, LootTable>();
 
     DefaultLootConfig(ChestRestockPlugin plugin) {
-        File configFile = new File(plugin.getDataFolder(), "loot_tables.yml");
+        configFile = new File(plugin.getDataFolder(), "loot_tables.yml");
         lootFolder = new File(plugin.getDataFolder(), "loot_tables");
         lootFolder.mkdirs();
         config = YamlConfiguration.loadConfiguration(configFile);
@@ -54,6 +55,7 @@ class DefaultLootConfig implements LootConfig {
             Logging.fine("Got cached table!");
             return cachedTables.get(name);
         }
+        config = YamlConfiguration.loadConfiguration(configFile);
         ConfigurationSection section = config.getConfigurationSection(name);
         if (section == null) {
             File lootFile = new File(lootFolder, name + ".yml");
