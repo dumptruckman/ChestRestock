@@ -101,6 +101,9 @@ public class SetCommand extends TargetedChestRestockCommand {
                 }
                 value = builder.toString();
             }
+            if (configEntry == CRChest.GLOBAL_MESSAGE && value.equalsIgnoreCase("clear")) {
+                value = "";
+            }
             if (!configEntry.isValid(value)) {
                 messager.bad(Language.CMD_SET_INVALID_VALUE, player, plugin.getCommandPrefixes().get(0) + " set "
                         + args.get(0));
