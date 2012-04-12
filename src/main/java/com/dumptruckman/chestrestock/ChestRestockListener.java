@@ -56,6 +56,7 @@ public class ChestRestockListener implements Listener {
         }
         if (rChest.get(CRChest.REDSTONE)) {
             // This will force a restock of physical and virtual inventories.
+            Logging.finer("Chest restocking due to redstone power!");
             rChest.restockAllInventories();
         } else {
             // This will restock the physical inventory if it has been an appropriate amount of time.
