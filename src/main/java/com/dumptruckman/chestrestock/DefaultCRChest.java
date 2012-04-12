@@ -4,7 +4,6 @@ import com.dumptruckman.chestrestock.api.CRChest;
 import com.dumptruckman.chestrestock.api.CRPlayer;
 import com.dumptruckman.chestrestock.api.ChestRestock;
 import com.dumptruckman.chestrestock.api.LootTable;
-import com.dumptruckman.chestrestock.api.LootTable.LootSection;
 import com.dumptruckman.chestrestock.util.BlockLocation;
 import com.dumptruckman.chestrestock.util.InventoryTools;
 import com.dumptruckman.chestrestock.util.Perms;
@@ -119,6 +118,10 @@ class DefaultCRChest extends AbstractYamlConfig<CRChest> implements CRChest {
         long accessTime = System.currentTimeMillis();
         long lastRestock = get(LAST_RESTOCK);
         Inventory inventory = getInventory(player);
+        if (get(PERIOD) < 1) {
+            Logging.fine("Chest does use period based restocking");
+            return inventory;
+        }
         if (crPlayer != null && get(UNIQUE)) {
             lastRestock = crPlayer.getLastRestockTime();
             if (lastRestock == 0) {
