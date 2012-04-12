@@ -16,13 +16,18 @@ class DefaultLootConfig implements LootConfig {
 
     private FileConfiguration config;
 
+    private File lootFolder;
+
     private Map<String, LootTable> cachedTables = new WeakHashMap<String, LootTable>();
 
     DefaultLootConfig(ChestRestockPlugin plugin) {
         File configFile = new File(plugin.getDataFolder(), "loot_tables.yml");
+        lootFolder = new File(plugin.getDataFolder(), "loot_tables");
+        lootFolder.mkdirs();
         config = YamlConfiguration.loadConfiguration(configFile);
         String nl = System.getProperty("line.separator");
         config.options().header("This is where you define loot tables for your chests to have random loot."
+                + nl + "You may also create separate yaml files for each loot table.  Just make sure the file name is the name of the table you want and placed in the loot_tables folder.  example: example_table.yml"
                 + nl + "Properties for each section of a table:"
                 + nl + "chance - the chance at which the section will be picked (as a fraction: 0.25 == 25%).  default: 1"
                 + nl + "rolls - the number of times the section will be considered.  default: 1"
@@ -51,8 +56,14 @@ class DefaultLootConfig implements LootConfig {
         }
         ConfigurationSection section = config.getConfigurationSection(name);
         if (section == null) {
-            Logging.warning("Could not locate loot table: " + name);
-            return null;
+            File lootFile = new File(lootFolder, name + ".yml");
+            if (lootFile.exists()) {
+                section = YamlConfiguration.loadConfiguration(lootFile);
+            }
+            if (section == null) {
+                Logging.warning("Could not locate loot table: " + name);
+                return null;
+            }
         }
         LootTable newTable = new DefaultLootTable(section);
         cachedTables.put(name, newTable);
