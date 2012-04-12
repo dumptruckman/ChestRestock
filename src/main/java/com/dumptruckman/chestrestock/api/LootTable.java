@@ -17,5 +17,11 @@ public interface LootTable {
         ItemStack getItem();
 
         Map<Float, Set<LootSection>> getChildSections();
+
+        boolean isSplit();
+
+        float getTotalWeight();
+
+        float getChance();
     }
 }

@@ -8,7 +8,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Map;
 import java.util.WeakHashMap;
 
@@ -23,14 +22,14 @@ class DefaultLootConfig implements LootConfig {
         configFile = new File(plugin.getDataFolder(), "loot_tables.yml");
         config = YamlConfiguration.loadConfiguration(configFile);
         String nl = System.getProperty("line.separator");
-        config.options().header("This is where you define loot tables for your chests to have random loot."
+        /*config.options().header("This is where you define loot tables for your chests to have random loot."
                 + nl + "All numbers should be whole numbers!  DO NOT use fractions!");
         try {
             config.save(configFile);
         } catch (IOException e) {
             Logging.severe("Could not save loot_tables.yml!");
             Logging.severe("Reason: " + e.getMessage());
-        }
+        }*/
     }
 
     @Override
