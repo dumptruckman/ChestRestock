@@ -1,6 +1,6 @@
 name: ChestRestock
 main: com.dumptruckman.chestrestock.ChestRestockPlugin
-version: 2.2
+version: 2.2.1
 author: dumptruckman
 
 commands:
