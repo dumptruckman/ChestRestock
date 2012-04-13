@@ -88,7 +88,7 @@ class DefaultChestManager implements ChestManager {
         BlockLocation location = BlockLocation.get(block);
         CRChest rChest = chestsMap.get(location);
         if (rChest != null) {
-            Logging.finer("Got cached chest at " + location);
+            Logging.fine("Got cached chest at " + location);
             return rChest;
         }
         File chestFile = getChestFile(location);
@@ -97,7 +97,7 @@ class DefaultChestManager implements ChestManager {
                 Logging.finest("No file for single chest found.");
                 return null;
             }
-            Logging.finer("Searching for other side of double chest...");
+            Logging.finest("Searching for other side of double chest...");
             Chest otherSide = getOtherSide(block);
             if (otherSide == null) {
                 Logging.fine("Chest claims to be double but other side not found!");
@@ -106,7 +106,7 @@ class DefaultChestManager implements ChestManager {
             location = BlockLocation.get(otherSide.getBlock());
             rChest = chestsMap.get(location);
             if (rChest != null) {
-                Logging.finer("Got cached chest (other-side) at " + location);
+                Logging.fine("Got cached chest (other-side) at " + location);
                 return rChest;
             }
             chestFile = getChestFile(location);
@@ -202,12 +202,12 @@ class DefaultChestManager implements ChestManager {
     public boolean pollingCheckIn(CRChest chest) {
         if (chest.get(CRChest.ACCEPT_POLL)) {
             if (pollingSet.add(chest)) {
-                Logging.finest(chest.getLocation() + " added to polling");
+                Logging.finer(chest.getLocation() + " added to polling");
             }
             return true;
         } else {
             if (pollingSet.remove(chest)) {
-                Logging.finest(chest.getLocation() + " removed to polling");
+                Logging.finer(chest.getLocation() + " removed to polling");
             }
             return false;
         }
@@ -223,7 +223,9 @@ class DefaultChestManager implements ChestManager {
         Iterator<CRChest> it = getChestsForPolling().iterator();
         while (it.hasNext()) {
             CRChest chest = it.next();
+            Logging.finest("Polling chest " + chest.getLocation().toString());
             if (chest.getInventoryHolder() == null) {
+                Logging.finest("Polled non-chest, removing from polling...");
                 it.remove();
                 continue;
             }
