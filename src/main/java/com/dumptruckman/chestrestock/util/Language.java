@@ -35,7 +35,8 @@ public class Language {
             "Chest restocks when powered: %9");
     public static final Message CMD_CHECK_GLOBAL_MESSAGE = new Message("cmd.check.global_message",
             "Chest accepting polls: %1",
-            "Chest global message: %2");
+            "Chest global message: %2",
+            "Chest loot table: %3");
 
     public static final Message CMD_UPDATE_NAME = new Message("cmd.update.name",
             "Updates the restocking contents of a chest.");

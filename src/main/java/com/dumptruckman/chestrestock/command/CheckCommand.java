@@ -38,6 +38,6 @@ public class CheckCommand extends TargetedChestRestockCommand {
                 rChest.get(PRESERVE_SLOTS), rChest.get(INDESTRUCTIBLE), rChest.get(PLAYER_LIMIT),
                 rChest.get(UNIQUE), rChest.get(REDSTONE));
         messager.normal(Language.CMD_CHECK_GLOBAL_MESSAGE, player, rChest.get(ACCEPT_POLL),
-                rChest.get(GLOBAL_MESSAGE));
+                rChest.get(GLOBAL_MESSAGE), rChest.get(LOOT_TABLE));
     }
 }
