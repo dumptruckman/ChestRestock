@@ -6,6 +6,7 @@ import com.dumptruckman.chestrestock.util.Perms;
 import com.dumptruckman.minecraft.pluginbase.locale.Messager;
 import com.dumptruckman.minecraft.pluginbase.util.Logging;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -16,7 +17,6 @@ import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.event.block.BlockFadeEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
-import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.block.BlockRedstoneEvent;
@@ -24,6 +24,7 @@ import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.material.RedstoneTorch;
 
 import java.util.List;
 
@@ -44,8 +45,12 @@ public class ChestRestockListener implements Listener {
         if (event.getNewCurrent() <= 0) {
             return;
         }
-        Block block = event.getBlock();
-        if (!(block.getState() instanceof InventoryHolder)) {
+        boolean torch = false;
+        if (event.getBlock().getState().getData() instanceof RedstoneTorch) {
+            torch = true;
+        }
+        Block block = getNearbyInventoryHolder(event.getBlock(), torch);
+        if (block == null) {
             return;
         }
         InventoryHolder holder = (InventoryHolder) block.getState();
@@ -59,9 +64,40 @@ public class ChestRestockListener implements Listener {
             Logging.finer("Chest restocking due to redstone power!");
             rChest.restockAllInventories();
         } else {
+            Logging.finer("Checking if chest needs restocking due to redstone power!");
             // This will restock the physical inventory if it has been an appropriate amount of time.
             rChest.openInventory(null);
         }
+    }
+
+    private Block getNearbyInventoryHolder(Block block, boolean torch) {
+        Block nearBlock = block.getRelative(BlockFace.EAST);
+        if (nearBlock.getState() instanceof InventoryHolder) {
+            return nearBlock;
+        }
+        nearBlock = block.getRelative(BlockFace.NORTH);
+        if (nearBlock.getState() instanceof InventoryHolder) {
+            return nearBlock;
+        }
+        nearBlock = block.getRelative(BlockFace.SOUTH);
+        if (nearBlock.getState() instanceof InventoryHolder) {
+            return nearBlock;
+        }
+        nearBlock = block.getRelative(BlockFace.WEST);
+        if (nearBlock.getState() instanceof InventoryHolder) {
+            return nearBlock;
+        }
+        nearBlock = block.getRelative(BlockFace.UP);
+        if (nearBlock.getState() instanceof InventoryHolder) {
+            return nearBlock;
+        }
+        if (torch) {
+            nearBlock = nearBlock.getRelative(BlockFace.UP);
+            if (nearBlock.getState() instanceof InventoryHolder) {
+                return nearBlock;
+            }
+        }
+        return null;
     }
 
     @EventHandler(priority = EventPriority.HIGH)
@@ -99,17 +135,6 @@ public class ChestRestockListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void blockIgnite(BlockIgniteEvent event) {
-        if (event.isCancelled()) {
-            return;
-        }
-
-        if (chestBreak(event.getBlock(), null)) {
-            event.setCancelled(true);
-        }
-    }
-
-    @EventHandler(priority = EventPriority.HIGHEST)
-    public void blockPhysics(BlockPhysicsEvent event) {
         if (event.isCancelled()) {
             return;
         }
