@@ -86,6 +86,7 @@ class DefaultChestManager implements ChestManager {
     @Override
     public CRChest getChest(Block block, InventoryHolder holder) {
         BlockLocation location = BlockLocation.get(block);
+        Logging.finer("Searching for ChestRestock chest at " + location.toString());
         CRChest rChest = chestsMap.get(location);
         if (rChest != null) {
             Logging.fine("Got cached chest at " + location);
@@ -94,10 +95,8 @@ class DefaultChestManager implements ChestManager {
         File chestFile = getChestFile(location);
         if (!chestFile.exists()) {
             if (!(holder.getInventory() instanceof DoubleChestInventory)) {
-                Logging.finest("No file for single chest found.");
                 return null;
             }
-            Logging.finest("Searching for other side of double chest...");
             Chest otherSide = getOtherSide(block);
             if (otherSide == null) {
                 Logging.fine("Chest claims to be double but other side not found!");
@@ -111,7 +110,6 @@ class DefaultChestManager implements ChestManager {
             }
             chestFile = getChestFile(location);
             if (!chestFile.exists()) {
-                Logging.finest("No file found for other side of double chest.");
                 return null;
             }
         }
