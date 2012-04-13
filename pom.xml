@@ -149,7 +149,7 @@ and adjust the build number accordingly -->
                             </artifactSet>
                             <relocations>
                                 <relocation>
-                                    <pattern>com.dumptruckman.minecraft</pattern>
+                                    <pattern>com.dumptruckman.minecraft.pluginbase</pattern>
                                     <shadedPattern>com.dumptruckman.chestrestock.pluginbase</shadedPattern>
                                 </relocation>
                             </relocations>
