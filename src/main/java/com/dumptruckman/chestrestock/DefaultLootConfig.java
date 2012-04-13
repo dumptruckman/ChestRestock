@@ -67,7 +67,7 @@ class DefaultLootConfig implements LootConfig {
                 return null;
             }
         }
-        LootTable newTable = new DefaultLootTable(section);
+        LootTable newTable = new DefaultLootTable(name, section);
         cachedTables.put(name, newTable);
         Logging.fine("Loaded loot table from config.");
         return newTable;

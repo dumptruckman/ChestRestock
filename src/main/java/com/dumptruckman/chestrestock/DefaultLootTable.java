@@ -17,8 +17,8 @@ class DefaultLootTable implements LootTable, LootSection {
 
     private LootSection topSection;
 
-    DefaultLootTable(ConfigurationSection section) {
-        topSection = new DefaultLootSection(section);
+    DefaultLootTable(String name, ConfigurationSection section) {
+        topSection = new DefaultLootSection(name, section);
     }
 
     public void addToInventory(Inventory inv) {
@@ -34,17 +34,18 @@ class DefaultLootTable implements LootTable, LootSection {
             inv.addItem(item);
         }
         Random randGen = new Random(System.nanoTime());
-        Logging.finest("Total weight of section: " + getTotalWeight());
-        float splitPicker = randGen.nextFloat() * getTotalWeight();
+        Logging.finest("Total weight of '" + section + "': " + section.getTotalWeight());
+        float splitPicker = randGen.nextFloat() * section.getTotalWeight();
         float currentWeight = 0F;
         boolean splitPicked = false;
         for (Map.Entry<Float, Set<LootSection>> entry : section.getChildSections().entrySet()) {
             for (LootSection childSection : entry.getValue()) {
-                if (isSplit()) {
+                if (section.isSplit()) {
                     currentWeight += entry.getKey();
                     Logging.finest("splitPicker: " + splitPicker + " <= " + currentWeight);
                     if (splitPicker <= currentWeight) {
-                        Logging.finest("Adding " + childSection + " to inventory " + childSection.getRolls() + " times");
+                        Logging.finest("Picked split: Adding " + childSection + " to inventory "
+                                + childSection.getRolls() + " times");
                         for (int i = 0; i < childSection.getRolls(); i++) {
                             addSectionToInventory(inv, childSection);
                         }
@@ -115,9 +116,11 @@ class DefaultLootTable implements LootTable, LootSection {
         private short data = 0;
         private int amount = 1;
         private boolean split = false;
-        float totalWeight = 0F;
+        private float totalWeight = 0F;
+        private String name;
 
-        DefaultLootSection(ConfigurationSection section) {
+        DefaultLootSection(String name, ConfigurationSection section) {
+            this.name = name;
             Set<String> keys = section.getKeys(false);
             if (keys.isEmpty()) {
                 Logging.warning("There is an empty loot section!");
@@ -139,15 +142,17 @@ class DefaultLootTable implements LootTable, LootSection {
                     try {
                         ConfigurationSection newSection = section.getConfigurationSection(key);
                         if (newSection != null) {
-                            LootSection lootSection = new DefaultLootSection(newSection);
+                            LootSection lootSection = new DefaultLootSection(key, newSection);
                             Set<LootSection> sectionSet = sectionMap.get(lootSection.getChance());
                             if (sectionSet == null) {
                                 sectionSet = new LinkedHashSet<LootSection>();
                                 sectionMap.put(lootSection.getChance(), sectionSet);
                             }
                             totalWeight += lootSection.getChance();
-                            Logging.finer("Adding LootSection to table with chance: " + lootSection.getChance() + " increasing total weight of section to " + totalWeight);
-                            sectionSet.add(new DefaultLootSection(newSection));
+                            Logging.finer("Adding section '" + key + "' to section '" + name + "' with chance '"
+                                    + lootSection.getChance() + "' increasing total weight of '" + name + "' to "
+                                    + totalWeight);
+                            sectionSet.add(new DefaultLootSection(key, newSection));
                         } else {
                             Logging.warning("Could not parse section: " + key);
                         }
@@ -183,6 +188,10 @@ class DefaultLootTable implements LootTable, LootSection {
 
         public float getChance() {
             return chance;
+        }
+
+        public String toString() {
+            return name;
         }
     }
 }
