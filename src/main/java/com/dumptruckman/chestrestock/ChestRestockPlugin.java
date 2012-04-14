@@ -102,4 +102,13 @@ public class ChestRestockPlugin extends AbstractBukkitPlugin<CRConfig> implement
         }
         return lootConfig;
     }
+
+    @Override
+    public boolean hasChestManagerLoaded() {
+	if (chestManager == null) {
+	    return false;
+	} else {
+	    return true;
+	}
+    }
 }
