@@ -35,8 +35,8 @@ public interface CRConfig extends BaseConfig {
             .comment("# This may not work as expected with chests that are also 'unique'").build();
 
     ConfigEntry<Integer> PERIOD = new EntryBuilder<Integer>(Integer.class, "defaults.period").def(900)
-            .comment("# This is the max number of times a chest will restock for each player.  "
-                    + "Negative values indicate unlimited restocks.").build();
+            .comment("# This is the amount of time a chest requires before it will restock it's inventory. (In seconds)")
+            .comment("# You may set this to 0 to disable timed restocking.").build();
     
     ConfigEntry<String> PERIOD_MODE = new EntryBuilder<String>(String.class, "defaults.period_mode").def("player")
             .comment("# Possible options are 'player' and 'fixed'")
