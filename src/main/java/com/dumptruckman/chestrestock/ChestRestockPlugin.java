@@ -12,7 +12,6 @@ import com.dumptruckman.chestrestock.command.SetCommand;
 import com.dumptruckman.chestrestock.command.UpdateCommand;
 import com.dumptruckman.chestrestock.util.CommentedConfig;
 import com.dumptruckman.chestrestock.util.Language;
-import com.dumptruckman.minecraft.pluginbase.commandhandler.Command;
 import com.dumptruckman.minecraft.pluginbase.plugin.AbstractBukkitPlugin;
 import com.dumptruckman.minecraft.pluginbase.plugin.command.HelpCommand;
 
@@ -36,6 +35,7 @@ public class ChestRestockPlugin extends AbstractBukkitPlugin<CRConfig> implement
     @Override
     public void preEnable() {
         Language.init();
+        HelpCommand.addStaticPrefixedKey("");
     }
 
     @Override
@@ -47,13 +47,6 @@ public class ChestRestockPlugin extends AbstractBukkitPlugin<CRConfig> implement
         getCommandHandler().registerCommand(new DisableCommand(this));
         getCommandHandler().registerCommand(new SetCommand(this));
         getCommandHandler().registerCommand(new RestockCommand(this));
-        for (Command c : getCommandHandler().getAllCommands()) {
-            if (c instanceof HelpCommand) {
-                for (String key : getCommandPrefixes()) {
-                    c.addKey(key);
-                }
-            }
-        }
     }
 
     @Override
