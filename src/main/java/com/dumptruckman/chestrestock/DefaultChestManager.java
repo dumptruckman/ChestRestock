@@ -230,4 +230,12 @@ class DefaultChestManager implements ChestManager {
             chest.openInventory(null);
         }
     }
+
+    public int getNumberChestsPolled() {
+        return pollingSet.size();
+    }
+
+    public int getNumberCachedChests() {
+        return chestsMap.size();
+    }
 }

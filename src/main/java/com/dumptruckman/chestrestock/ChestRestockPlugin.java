@@ -18,6 +18,7 @@ import com.dumptruckman.minecraft.pluginbase.plugin.command.HelpCommand;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 public class ChestRestockPlugin extends AbstractBukkitPlugin<CRConfig> implements ChestRestock {
@@ -94,5 +95,14 @@ public class ChestRestockPlugin extends AbstractBukkitPlugin<CRConfig> implement
             lootConfig = new DefaultLootConfig(this);
         }
         return lootConfig;
+    }
+
+    @Override
+    public List<String> dumpVersionInfo() {
+        List<String> versionInfo = new LinkedList<String>();
+        versionInfo.add("Restock task period: " + config().get(CRConfig.RESTOCK_TASK));
+        versionInfo.add("Chests to poll: " + getChestManager().getNumberChestsPolled());
+        versionInfo.add("Chests cached: " + getChestManager().getNumberCachedChests());
+        return versionInfo;
     }
 }

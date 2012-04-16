@@ -22,6 +22,10 @@ public interface ChestManager {
 
     boolean pollingCheckIn(CRChest chest);
 
+    int getNumberChestsPolled();
+
+    int getNumberCachedChests();
+
     Set<CRChest> getChestsForPolling();
 
     void pollChests();
