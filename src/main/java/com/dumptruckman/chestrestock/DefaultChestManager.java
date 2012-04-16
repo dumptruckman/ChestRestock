@@ -42,7 +42,7 @@ class DefaultChestManager implements ChestManager {
         initPolling();
     }
 
-    private void initPolling() {
+    public void initPolling() {
         if (plugin.config().get(CRConfig.RESTOCK_TASK) < 1) {
             Logging.fine("Chest restock polling disabled");
             return;

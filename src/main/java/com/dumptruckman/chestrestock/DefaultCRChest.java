@@ -39,8 +39,10 @@ class DefaultCRChest extends AbstractYamlConfig<CRChest> implements CRChest {
             throw new IllegalStateException("The world '" + location.getWorldName() + "' is not loaded!");
         }
         if (!(block.getState() instanceof InventoryHolder)) {
-            plugin.getChestManager().removeChest(location);
-            throw new IllegalStateException("The location '" + location.toString() + "' is not a inventory block!");
+            if (plugin.hasChestManagerLoaded()) {
+                plugin.getChestManager().removeChest(location);
+                throw new IllegalStateException("The location '" + location.toString() + "' is not a inventory block!");
+            }
         }
         save();
     }

@@ -98,6 +98,15 @@ public class ChestRestockPlugin extends AbstractBukkitPlugin<CRConfig> implement
     }
 
     @Override
+    public boolean hasChestManagerLoaded() {
+        if (chestManager == null) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    @Override
     public List<String> dumpVersionInfo() {
         List<String> versionInfo = new LinkedList<String>();
         versionInfo.add("Restock task period: " + config().get(CRConfig.RESTOCK_TASK));
