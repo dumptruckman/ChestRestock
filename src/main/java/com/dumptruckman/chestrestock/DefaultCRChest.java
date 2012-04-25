@@ -62,6 +62,14 @@ class DefaultCRChest extends AbstractYamlConfig<CRChest> implements CRChest {
         return (InventoryHolder) block.getState();
     }
 
+    public boolean isValid() {
+        Block block = getLocation().getBlock();
+        if (block == null || !(block.getState() instanceof InventoryHolder)) {
+            return false;
+        }
+        return true;
+    }
+
     @Override
     public Inventory getInventory(HumanEntity player) {
         Inventory inventory;

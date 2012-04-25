@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -48,6 +49,14 @@ class DefaultChestManager implements ChestManager {
             return;
         }
         Logging.fine("Initializing chest polling.");
+        cacheAllChests();
+    }
+
+    public Collection<CRChest> getAllChests() {
+        return chestsMap.values();
+    }
+
+    public void cacheAllChests() {
         File worldContainer = Bukkit.getWorldContainer();
         for (File file : worldContainer.listFiles(new FileFilter() {
             @Override
@@ -55,21 +64,29 @@ class DefaultChestManager implements ChestManager {
                 return pathname.isDirectory();
             }
         })) {
-            File worldFolder = getWorldFolder(file.getName());
-            if (worldFolder.exists()) {
-                Logging.finer("Checking chests for world: " + worldFolder);
-                for (File chestFile : worldFolder.listFiles(new FilenameFilter() {
-                    @Override
-                    public boolean accept(File dir, String name) {
-                        return name.endsWith(EXT);
-                    }
-                })) {
-                    CRChest chest = loadChest(chestFile);
-                    if (chest != null) {
-                        Logging.finest("Polling check in for " + chest.getLocation());
-                        pollingCheckIn(chest);
-                        chestsMap.put(chest.getLocation(), chest);
-                    }
+            cacheChests(file.getName());
+        }
+    }
+
+    public void cacheChests(String worldName) {
+        File worldFolder = getWorldFolder(worldName);
+        if (worldFolder.exists()) {
+            Logging.finer("Checking chests for world: " + worldFolder);
+            for (File chestFile : worldFolder.listFiles(new FilenameFilter() {
+                @Override
+                public boolean accept(File dir, String name) {
+                    return name.endsWith(EXT);
+                }
+            })) {
+                String fileName = chestFile.getName();
+                if (chestsMap.containsKey(BlockLocation.get(fileName.substring(0, fileName.lastIndexOf(EXT))))) {
+                    continue;
+                }
+                CRChest chest = loadChest(chestFile);
+                if (chest != null) {
+                    Logging.finest("Polling check in for " + chest.getLocation());
+                    pollingCheckIn(chest);
+                    chestsMap.put(chest.getLocation(), chest);
                 }
             }
         }

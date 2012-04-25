@@ -10,6 +10,7 @@ public class Perms {
     public static final Perm CMD_CHECK = new Perm.Builder(BASE_PERM + "cmd.check").commandPermission().build();
     public static final Perm CMD_UPDATE = new Perm.Builder(BASE_PERM + "cmd.update").commandPermission().build();
     public static final Perm CMD_SET = new Perm.Builder(BASE_PERM + "cmd.set").commandPermission().build();
+    public static final Perm CMD_RESTOCKALL = new Perm.Builder(BASE_PERM + "cmd.restockall").commandPermission().build();
     public static final Perm CMD_RESTOCK = new Perm.Builder(BASE_PERM + "cmd.restock").commandPermission().build();
     public static final Perm CMD_DISABLE = new Perm.Builder(BASE_PERM + "cmd.disable").commandPermission().build();
 

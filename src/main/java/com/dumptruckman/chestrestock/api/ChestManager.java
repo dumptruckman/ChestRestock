@@ -6,6 +6,7 @@ import org.bukkit.block.Chest;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryHolder;
 
+import java.util.Collection;
 import java.util.Set;
 
 public interface ChestManager {
@@ -21,6 +22,12 @@ public interface ChestManager {
     boolean removeChest(BlockLocation location);
 
     boolean pollingCheckIn(CRChest chest);
+
+    void cacheAllChests();
+
+    void cacheChests(String worldName);
+
+    Collection<CRChest> getAllChests();
 
     int getNumberChestsPolled();
 

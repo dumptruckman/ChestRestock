@@ -7,6 +7,7 @@ import com.dumptruckman.chestrestock.api.LootConfig;
 import com.dumptruckman.chestrestock.command.CheckCommand;
 import com.dumptruckman.chestrestock.command.CreateCommand;
 import com.dumptruckman.chestrestock.command.DisableCommand;
+import com.dumptruckman.chestrestock.command.RestockAllCommand;
 import com.dumptruckman.chestrestock.command.RestockCommand;
 import com.dumptruckman.chestrestock.command.SetCommand;
 import com.dumptruckman.chestrestock.command.UpdateCommand;
@@ -48,6 +49,7 @@ public class ChestRestockPlugin extends AbstractBukkitPlugin<CRConfig> implement
         getCommandHandler().registerCommand(new DisableCommand(this));
         getCommandHandler().registerCommand(new SetCommand(this));
         getCommandHandler().registerCommand(new RestockCommand(this));
+        getCommandHandler().registerCommand(new RestockAllCommand(this));
     }
 
     @Override

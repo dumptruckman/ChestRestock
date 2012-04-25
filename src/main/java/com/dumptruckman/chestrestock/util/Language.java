@@ -53,6 +53,15 @@ public class Language {
     public static final Message CMD_RESTOCK_SUCCESS = new Message("cmd.restock.success",
             "Chest has been restocked!");
 
+    public static final Message CMD_RESTOCKALL_NAME = new Message("cmd.restockall.name",
+            "Restocks all or specified chests immediately.");
+    public static final Message CMD_RESTOCKALL_INVALID_WORLD = new Message("cmd.restockall.invalid_world",
+            "%1 is not a valid world name!");
+    public static final Message CMD_RESTOCKALL_PATIENCE = new Message("cmd.restockall.patience",
+            "This command may cause server lag.  Please be patient...");
+    public static final Message CMD_RESTOCKALL_SUCCESS = new Message("cmd.restockall.success",
+            "%1 chest(s) have been restocked!");
+
     public static final Message CMD_SET_NAME = new Message("cmd.set.name",
             "Sets a property of a restock chest.");
     public static final Message CMD_SET_NEW_CMD = new Message("cmd.set.new_cmd",

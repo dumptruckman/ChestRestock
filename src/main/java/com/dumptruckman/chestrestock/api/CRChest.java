@@ -146,6 +146,8 @@ public interface CRChest extends Config {
 
     BlockLocation getLocation();
 
+    boolean isValid();
+
     InventoryHolder getInventoryHolder();
     
     Inventory getInventory(HumanEntity player);
