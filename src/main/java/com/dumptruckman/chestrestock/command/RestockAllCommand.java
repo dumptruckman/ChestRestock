@@ -50,6 +50,7 @@ public class RestockAllCommand extends CRCommand {
         } else {
             plugin.getChestManager().cacheChests(world.getName());
         }
+        int count = 0;
         for (CRChest chest : plugin.getChestManager().getAllChests()) {
             if (world != null && !chest.getLocation().getWorldName().equals(world.getName())) {
                 continue;
@@ -58,8 +59,10 @@ public class RestockAllCommand extends CRCommand {
                 continue;
             }
             if (chest.isValid()) {
+                count++;
                 chest.restockAllInventories();
             }
         }
+        messager.good(Language.CMD_RESTOCKALL_SUCCESS, sender, count);
     }
 }
