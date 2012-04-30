@@ -25,11 +25,11 @@ class DefaultLootTable implements LootTable, ItemSection {
     public void addToInventory(Inventory inv) {
         Logging.finest("Adding loot table to inventory " + topSection.getRolls() + " times");
         for (int i = 0; i < topSection.getRolls(); i++) {
-            addSectionToInventory(inv, topSection);
+            addSectionToInventory(inv, topSection, null);
         }
     }
 
-    private void addSectionToInventory(Inventory inv, LootSection section) {
+    private void addSectionToInventory(Inventory inv, LootSection section, EnchantSection enchantToUse) {
         ItemStack item = null;
         EnchantSection enchantSection = null;
         if (section instanceof ItemSection) {
@@ -37,11 +37,15 @@ class DefaultLootTable implements LootTable, ItemSection {
             item = itemSection.getItem();
             enchantSection = itemSection.getEnchantSection();
         }
+        if (enchantSection == null) {
+            enchantSection = enchantToUse;
+        }
         if (item != null) {
             if (enchantSection != null) {
                 addEnchantToItem(item, enchantSection);
             }
             inv.addItem(item);
+            enchantSection = null;
         }
         Random randGen = new Random(System.nanoTime());
         Logging.finest("Total weight of '" + section + "': " + section.getTotalWeight());
@@ -60,7 +64,7 @@ class DefaultLootTable implements LootTable, ItemSection {
                         Logging.finest("Picked split: Adding " + childSection + " to inventory "
                                 + childSection.getRolls() + " times");
                         for (int i = 0; i < childSection.getRolls(); i++) {
-                            addSectionToInventory(inv, childSection);
+                            addSectionToInventory(inv, childSection, enchantSection);
                         }
                         splitPicked = true;
                         break;
@@ -77,7 +81,7 @@ class DefaultLootTable implements LootTable, ItemSection {
                         if (successfulRolls > 0) {
                             Logging.finest("Adding " + childSection + " to inventory " + successfulRolls + " times");
                             for (int j = 0; j < successfulRolls; j++) {
-                                addSectionToInventory(inv, childSection);
+                                addSectionToInventory(inv, childSection, enchantSection);
                             }
                         }
                     }
