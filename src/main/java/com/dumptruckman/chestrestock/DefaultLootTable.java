@@ -1,9 +1,10 @@
 package com.dumptruckman.chestrestock;
 
 import com.dumptruckman.chestrestock.api.LootTable;
-import com.dumptruckman.chestrestock.api.LootTable.LootSection;
+import com.dumptruckman.chestrestock.api.LootTable.ItemSection;
 import com.dumptruckman.minecraft.pluginbase.util.Logging;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -13,12 +14,12 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
-class DefaultLootTable implements LootTable, LootSection {
+class DefaultLootTable implements LootTable, ItemSection {
 
-    private LootSection topSection;
+    private ItemSection topSection;
 
     DefaultLootTable(String name, ConfigurationSection section) {
-        topSection = new DefaultLootSection(name, section);
+        topSection = new DefaultItemSection(name, section);
     }
 
     public void addToInventory(Inventory inv) {
@@ -28,9 +29,18 @@ class DefaultLootTable implements LootTable, LootSection {
         }
     }
 
-    public void addSectionToInventory(Inventory inv, LootSection section) {
-        ItemStack item = section.getItem();
+    private void addSectionToInventory(Inventory inv, LootSection section) {
+        ItemStack item = null;
+        EnchantSection enchantSection = null;
+        if (section instanceof ItemSection) {
+            ItemSection itemSection = (ItemSection) section;
+            item = itemSection.getItem();
+            enchantSection = itemSection.getEnchantSection();
+        }
         if (item != null) {
+            if (enchantSection != null) {
+                addEnchantToItem(item, enchantSection);
+            }
             inv.addItem(item);
         }
         Random randGen = new Random(System.nanoTime());
@@ -40,6 +50,9 @@ class DefaultLootTable implements LootTable, LootSection {
         boolean splitPicked = false;
         for (Map.Entry<Float, Set<LootSection>> entry : section.getChildSections().entrySet()) {
             for (LootSection childSection : entry.getValue()) {
+                if (childSection instanceof EnchantSection) {
+                    continue;
+                }
                 if (section.isSplit()) {
                     currentWeight += entry.getKey();
                     Logging.finest("splitPicker: " + splitPicker + " <= " + currentWeight);
@@ -65,6 +78,71 @@ class DefaultLootTable implements LootTable, LootSection {
                             Logging.finest("Adding " + childSection + " to inventory " + successfulRolls + " times");
                             for (int j = 0; j < successfulRolls; j++) {
                                 addSectionToInventory(inv, childSection);
+                            }
+                        }
+                    }
+                }
+            }
+            if (splitPicked) {
+                break;
+            }
+        }
+    }
+
+    private void addEnchantToItem(ItemStack item, EnchantSection enchantSection) {
+        Enchantment enchantment = enchantSection.getEnchantment();
+        int enchantLevel = enchantSection.getLevel();
+        Random randGen = new Random(System.nanoTime());
+        if (enchantment != null && enchantLevel != 0) {
+            if (enchantLevel < 0) {
+                enchantLevel = -enchantLevel;
+                if (enchantLevel > enchantment.getMaxLevel()) {
+                    enchantLevel = enchantment.getMaxLevel();
+                }
+                enchantLevel = randGen.nextInt(enchantLevel) + 1;
+                Logging.finest("Using random enchant level for " + enchantment + ": " + enchantLevel);
+            }
+            if (enchantSection.isSafe()) {
+                item.addEnchantment(enchantment, enchantLevel);
+            } else {
+                item.addUnsafeEnchantment(enchantment, enchantLevel);
+            }
+        }
+        Logging.finest("Total weight of '" + enchantSection + "': " + enchantSection.getTotalWeight());
+        float splitPicker = randGen.nextFloat() * enchantSection.getTotalWeight();
+        float currentWeight = 0F;
+        boolean splitPicked = false;
+        for (Map.Entry<Float, Set<LootSection>> entry : enchantSection.getChildSections().entrySet()) {
+            for (LootSection childSection : entry.getValue()) {
+                if (!(childSection instanceof EnchantSection)) {
+                    continue;
+                }
+                EnchantSection childEnchantSection = (EnchantSection) childSection;
+                if (enchantSection.isSplit()) {
+                    currentWeight += entry.getKey();
+                    Logging.finest("splitPicker: " + splitPicker + " <= " + currentWeight);
+                    if (splitPicker <= currentWeight) {
+                        Logging.finest("Picked split: Adding " + childEnchantSection + " to item "
+                                + childEnchantSection.getRolls() + " times");
+                        for (int i = 0; i < childEnchantSection.getRolls(); i++) {
+                            addEnchantToItem(item, childEnchantSection);
+                        }
+                        splitPicked = true;
+                        break;
+                    }
+                } else {
+                    for (int i = 0; i < childEnchantSection.getRolls(); i++) {
+                        float chance = entry.getKey();
+                        int successfulRolls = (int) chance;
+                        chance -= successfulRolls;
+                        float randFloat = randGen.nextFloat();
+                        if (randFloat <= chance) {
+                            successfulRolls++;
+                        }
+                        if (successfulRolls > 0) {
+                            Logging.finest("Adding " + childEnchantSection + " to item " + successfulRolls + " times");
+                            for (int j = 0; j < successfulRolls; j++) {
+                                addEnchantToItem(item, childEnchantSection);
                             }
                         }
                     }
@@ -106,18 +184,32 @@ class DefaultLootTable implements LootTable, LootSection {
         return topSection.getChance();
     }
 
+    @Override
+    public EnchantSection getEnchantSection() {
+        return topSection.getEnchantSection();
+    }
+
     static class DefaultLootSection implements LootSection {
 
         private Map<Float, Set<LootSection>> sectionMap = new LinkedHashMap<Float, Set<LootSection>>();
 
+        protected EnchantSection enchantSection = null;
+
         private int rolls = 1;
         private float chance = 1F;
-        private int id = 0;
-        private short data = 0;
-        private int amount = 1;
         private boolean split = false;
         private float totalWeight = 0F;
-        private String name;
+        protected String name;
+
+        // Related to items
+        protected int itemId = 0;
+        protected short itemData = 0;
+        protected int itemAmount = 1;
+
+        // Related to enchants
+        protected String enchantName = "";
+        protected int enchantLevel = 1;
+        protected boolean enchantSafe = true;
 
         DefaultLootSection(String name, ConfigurationSection section) {
             this.name = name;
@@ -129,30 +221,44 @@ class DefaultLootTable implements LootTable, LootSection {
                 if (key.equalsIgnoreCase("rolls")) {
                     rolls = section.getInt("rolls", 1);
                 } else if (key.equalsIgnoreCase("id")) {
-                    id = section.getInt("id", 0);
+                    itemId = section.getInt("id", 0);
                 } else if (key.equalsIgnoreCase("data")) {
-                    data = (short) section.getInt("data", 0);
+                    itemData = (short) section.getInt("data", 0);
                 } else if (key.equalsIgnoreCase("amount")) {
-                    amount = (short) section.getInt("amount", 1);
+                    itemAmount = (short) section.getInt("amount", 1);
                 } else if (key.equalsIgnoreCase("chance")) {
                     chance = (float) section.getDouble("chance", 1);
                 } else if (key.equalsIgnoreCase("split")) {
                     split = section.getBoolean("split", false);
+                } else if (key.equalsIgnoreCase("name")) {
+                    enchantName = section.getString("name", "");
+                } else if (key.equalsIgnoreCase("level")) {
+                    enchantLevel = section.getInt("level", 1);
+                } else if (key.equalsIgnoreCase("safe")) {
+                    enchantSafe = section.getBoolean("safe", true);
                 } else {
                     try {
                         ConfigurationSection newSection = section.getConfigurationSection(key);
                         if (newSection != null) {
-                            LootSection lootSection = new DefaultLootSection(key, newSection);
+                            LootSection lootSection;
+                            if (key.equalsIgnoreCase("enchant")) {
+                                enchantSection = new DefaultEnchantSection(key, newSection);
+                                lootSection = enchantSection;
+                            } else if (this instanceof EnchantSection) {
+                                lootSection = new DefaultEnchantSection(key, newSection);
+                            } else {
+                                lootSection = new DefaultItemSection(key, newSection);
+                            }
                             Set<LootSection> sectionSet = sectionMap.get(lootSection.getChance());
                             if (sectionSet == null) {
                                 sectionSet = new LinkedHashSet<LootSection>();
                                 sectionMap.put(lootSection.getChance(), sectionSet);
                             }
                             totalWeight += lootSection.getChance();
-                            Logging.finer("Adding section '" + key + "' to section '" + name + "' with chance '"
-                                    + lootSection.getChance() + "' increasing total weight of '" + name + "' to "
+                            Logging.finer("Adding section '" + lootSection + "' to section '" + this + "' with chance '"
+                                    + lootSection.getChance() + "' increasing total weight of '" + this + "' to "
                                     + totalWeight);
-                            sectionSet.add(new DefaultLootSection(key, newSection));
+                            sectionSet.add(lootSection);
                         } else {
                             Logging.warning("Could not parse section: " + key);
                         }
@@ -163,35 +269,81 @@ class DefaultLootTable implements LootTable, LootSection {
             }
         }
 
+        @Override
         public int getRolls() {
             return rolls;
         }
 
-        public ItemStack getItem() {
-            if (id > 0 && amount > 0 && data >= 0) {
-                return new ItemStack(id, amount, data);
-            }
-            return null;
-        }
-
+        @Override
         public boolean isSplit() {
             return split;
         }
 
+        @Override
         public Map<Float, Set<LootSection>> getChildSections() {
             return sectionMap;
         }
 
+        @Override
         public float getTotalWeight() {
             return totalWeight;
         }
 
+        @Override
         public float getChance() {
             return chance;
         }
+    }
 
+    static class DefaultItemSection extends DefaultLootSection implements ItemSection {
+
+        DefaultItemSection(String name, ConfigurationSection section) {
+            super(name, section);
+        }
+
+        @Override
+        public ItemStack getItem() {
+            if (itemId > 0 && itemAmount > 0 && itemData >= 0) {
+                return new ItemStack(itemId, itemAmount, itemData);
+            }
+            return null;
+        }
+
+        @Override
         public String toString() {
-            return name;
+            return "[ItemSection] " + name;
+        }
+
+        @Override
+        public EnchantSection getEnchantSection() {
+            return enchantSection;
+        }
+    }
+
+    static class DefaultEnchantSection extends DefaultLootSection implements EnchantSection {
+
+        DefaultEnchantSection(String name, ConfigurationSection section) {
+            super(name, section);
+        }
+
+        @Override
+        public Enchantment getEnchantment() {
+            return Enchantment.getByName(enchantName.toUpperCase());
+        }
+
+        @Override
+        public int getLevel() {
+            return enchantLevel;
+        }
+
+        @Override
+        public boolean isSafe() {
+            return enchantSafe;
+        }
+
+        @Override
+        public String toString() {
+            return "[EnchantSection] " + name;
         }
     }
 }

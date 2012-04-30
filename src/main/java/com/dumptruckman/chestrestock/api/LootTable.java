@@ -1,5 +1,6 @@
 package com.dumptruckman.chestrestock.api;
 
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -10,11 +11,9 @@ public interface LootTable {
 
     void addToInventory(Inventory inv);
 
-    static interface LootSection {
+    interface LootSection {
 
         int getRolls();
-
-        ItemStack getItem();
 
         Map<Float, Set<LootSection>> getChildSections();
 
@@ -23,5 +22,21 @@ public interface LootTable {
         float getTotalWeight();
 
         float getChance();
+    }
+
+    interface ItemSection extends LootSection {
+
+        ItemStack getItem();
+
+        EnchantSection getEnchantSection();
+    }
+
+    static interface EnchantSection extends LootSection {
+
+        Enchantment getEnchantment();
+
+        int getLevel();
+
+        boolean isSafe();
     }
 }
