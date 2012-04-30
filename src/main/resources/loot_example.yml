@@ -1,9 +1,10 @@
 # In this example, when the chest using loot_table 'justaname' restocks, there is a guaranteed diamond pickaxe with silk touch enchant,
 # there is a 50% chance for: either a diamond/iron sword with up to 2 enchants (sharpness I-V, knockback I, or fire aspect II) OR a wood sword with silk touch,
 # and a 10% chance for: a 20 stack of mossy stone blocks.
-# Further, '2' is rolled 10 times, with a 10% chance of EITHER 1 diamond or 5 gold, but not both.
+# Further, '3' is rolled 10 times, with a 10% chance of EITHER 1 diamond or 5 gold, but not both.
+# There is also a 10% chance for 20 cracked stone brick (as indicated in '4').
 # An additional note, the numbers used as headings can be any number or word as long as they are not the key words
-# such as chance, id, amount, data and rolls.  They should be unique headings though as if they are the same, errors may occur.
+# such as chance, id, amount, data, rolls, name, safe, level, or enchant.  They should be unique headings though as if they are the same, errors may occur.
 justaname:
   1:
     id: 278
@@ -11,11 +12,11 @@ justaname:
       name: silk_touch
   2:
     chance: .50
-    1:
+    diamond:
       id: 276
-    2:
+    iron:
       id: 267
-    3:
+    wood:
       id: 268
       enchant:
         safe: false
@@ -24,12 +25,12 @@ justaname:
       rolls: 2
       split: true
       safe: false
-      1:
+      sharpness:
         name: damage_all
         level: -5
-      2:
+      knockback:
         name: knockback
-      3:
+      fire:
         name: fire_aspect
         level: 2
   3:
