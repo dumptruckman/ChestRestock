@@ -35,7 +35,14 @@ class DefaultLootConfig implements LootConfig {
                 + nl + "split (true/false) - if true, chance will be used as section weight and only 1 section will be picked.  default: false"
                 + nl + "id - the item id (number).  default: none"
                 + nl + "data - the item data value (number).  default: none"
-                + nl + "amount - the amount of the item.  default: 1");
+                + nl + "amount - the amount of the item.  default: 1"
+                + nl + "==================="
+                + nl + "enchant - This indicates there is an enchantment for the item selected for this section.  The following values must be defined under enchant:"
+                + nl + "name - the name of the enchantment.  default: none.  (possible values: http://jd.bukkit.org/apidocs/org/bukkit/enchantments/Enchantment.html)"
+                + nl + "level - the level of the enchantment.  Negative values indicate random level from 1 to -level.  default: 1"
+                + nl + "safe - whether or not to only allow safe enchantments.  default: true.  This means only appropriate enchantment/level for the item."
+                + nl + "PLEASE NOTE: The enchant section can have all the normal properties but cannot indicate items.  This means, you can do random sets of enchants!"
+                + nl + "Refer to loot_example.yml for a complete example!");
         try {
             config.save(configFile);
             YamlConfiguration.loadConfiguration(plugin.getResource("loot_example.yml"))
