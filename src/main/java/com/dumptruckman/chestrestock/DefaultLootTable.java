@@ -96,7 +96,7 @@ class DefaultLootTable implements LootTable, ItemSection {
         if (enchantment != null && enchantLevel != 0) {
             if (enchantLevel < 0) {
                 enchantLevel = -enchantLevel;
-                if (enchantLevel > enchantment.getMaxLevel()) {
+                if (enchantSection.isSafe() && enchantLevel > enchantment.getMaxLevel()) {
                     enchantLevel = enchantment.getMaxLevel();
                 }
                 enchantLevel = randGen.nextInt(enchantLevel) + 1;
