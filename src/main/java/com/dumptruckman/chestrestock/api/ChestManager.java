@@ -1,12 +1,12 @@
 package com.dumptruckman.chestrestock.api;
 
 import com.dumptruckman.chestrestock.util.BlockLocation;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryHolder;
 
-import java.util.Collection;
 import java.util.Set;
 
 public interface ChestManager {
@@ -27,8 +27,6 @@ public interface ChestManager {
 
     void cacheChests(String worldName);
 
-    Collection<CRChest> getAllChests();
-
     int getNumberChestsPolled();
 
     int getNumberCachedChests();
@@ -36,4 +34,6 @@ public interface ChestManager {
     Set<CRChest> getChestsForPolling();
 
     void pollChests();
+
+    int restockAllChests(World world, String name);
 }

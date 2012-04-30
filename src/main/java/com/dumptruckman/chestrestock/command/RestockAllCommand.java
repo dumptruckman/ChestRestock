@@ -1,7 +1,6 @@
 package com.dumptruckman.chestrestock.command;
 
 import com.dumptruckman.chestrestock.ChestRestockPlugin;
-import com.dumptruckman.chestrestock.api.CRChest;
 import com.dumptruckman.chestrestock.util.Language;
 import com.dumptruckman.chestrestock.util.Perms;
 import org.bukkit.Bukkit;
@@ -45,24 +44,7 @@ public class RestockAllCommand extends CRCommand {
         }
 
         messager.normal(Language.CMD_RESTOCKALL_PATIENCE, sender);
-        if (world == null) {
-            plugin.getChestManager().cacheAllChests();
-        } else {
-            plugin.getChestManager().cacheChests(world.getName());
-        }
-        int count = 0;
-        for (CRChest chest : plugin.getChestManager().getAllChests()) {
-            if (world != null && !chest.getLocation().getWorldName().equals(world.getName())) {
-                continue;
-            }
-            if (name != null && !chest.get(CRChest.NAME).equalsIgnoreCase(name)) {
-                continue;
-            }
-            if (chest.isValid()) {
-                count++;
-                chest.restockAllInventories();
-            }
-        }
+        int count = plugin.getChestManager().restockAllChests(world, name);
         messager.good(Language.CMD_RESTOCKALL_SUCCESS, sender, count);
     }
 }

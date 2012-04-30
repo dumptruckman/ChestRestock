@@ -15,6 +15,7 @@ import com.dumptruckman.chestrestock.util.CommentedConfig;
 import com.dumptruckman.chestrestock.util.Language;
 import com.dumptruckman.minecraft.pluginbase.plugin.AbstractBukkitPlugin;
 import com.dumptruckman.minecraft.pluginbase.plugin.command.HelpCommand;
+import org.bukkit.plugin.PluginManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -42,7 +43,11 @@ public class ChestRestockPlugin extends AbstractBukkitPlugin<CRConfig> implement
 
     @Override
     public void postEnable() {
-        getServer().getPluginManager().registerEvents(new ChestRestockListener(this), this);
+        PluginManager pm = getServer().getPluginManager();
+        pm.registerEvents(new ChestRestockListener(this), this);
+        if (pm.getPlugin("Multiverse-Adventure") != null) {
+            pm.registerEvents(new AdventureListener(this), this);
+        }
         getCommandHandler().registerCommand(new CreateCommand(this));
         getCommandHandler().registerCommand(new UpdateCommand(this));
         getCommandHandler().registerCommand(new CheckCommand(this));

@@ -7,6 +7,7 @@ import com.dumptruckman.chestrestock.util.BlockLocation;
 import com.dumptruckman.chestrestock.util.Language;
 import com.dumptruckman.minecraft.pluginbase.util.Logging;
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.entity.Player;
@@ -17,7 +18,6 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -50,10 +50,6 @@ class DefaultChestManager implements ChestManager {
         }
         Logging.fine("Initializing chest polling.");
         cacheAllChests();
-    }
-
-    public Collection<CRChest> getAllChests() {
-        return chestsMap.values();
     }
 
     public void cacheAllChests() {
@@ -254,5 +250,28 @@ class DefaultChestManager implements ChestManager {
 
     public int getNumberCachedChests() {
         return chestsMap.size();
+    }
+
+    @Override
+    public int restockAllChests(World world, String name) {
+        if (world == null) {
+            plugin.getChestManager().cacheAllChests();
+        } else {
+            plugin.getChestManager().cacheChests(world.getName());
+        }
+        int count = 0;
+        for (CRChest chest : chestsMap.values()) {
+            if (world != null && !chest.getLocation().getWorldName().equals(world.getName())) {
+                continue;
+            }
+            if (name != null && !chest.get(CRChest.NAME).equalsIgnoreCase(name)) {
+                continue;
+            }
+            if (chest.isValid()) {
+                count++;
+                chest.restockAllInventories();
+            }
+        }
+        return count;
     }
 }

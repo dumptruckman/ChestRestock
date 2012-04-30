@@ -5,7 +5,10 @@ import com.dumptruckman.minecraft.pluginbase.config.BaseConfig;
 import com.dumptruckman.minecraft.pluginbase.config.ConfigEntry;
 import com.dumptruckman.minecraft.pluginbase.config.EntryBuilder;
 import com.dumptruckman.minecraft.pluginbase.config.EntryValidator;
+import com.dumptruckman.minecraft.pluginbase.config.ListConfigEntry;
 import com.dumptruckman.minecraft.pluginbase.locale.Message;
+
+import java.util.Arrays;
 
 /**
  * Interface for interacting with the config of this plugin.
@@ -86,4 +89,9 @@ public interface CRConfig extends BaseConfig {
             .comment("# This is the interval (in seconds) at which a timer task will poll all 'accept_poll' chests to see if it should update.")
             .comment("# This could potentially affect performance if you have LOTS of chests set to accept polling")
             .comment("# To disable this polling feature, set this to 0").build();
+
+    ListConfigEntry<String> RESET_WORLDS = new EntryBuilder<String>(String.class, "restock_chests_reset_worlds")
+            .defList(Arrays.asList("hungergames"))
+            .comment("# These are worlds that all ChestRestock chests will be restocked in when Multiverse-Adventure resets the worlds.")
+            .comment("# Ignore this if you're not using Multiverse-Adventure").buildList();
 }
