@@ -23,7 +23,7 @@ public class AdventureListener implements Listener {
     @EventHandler
     public void worldReset(MVAResetFinishedEvent event) {
         World world = Bukkit.getWorld(event.getWorld());
-        if (world != null && plugin.config().get(CRConfig.RESET_WORLDS).contains(world.getName())) {
+        if (world != null && plugin.config().getList(CRConfig.RESET_WORLDS).contains(world.getName())) {
             Logging.info("Restocking all chests for reset world.. This may take a moment");
             plugin.getChestManager().restockAllChests(world, null);
         }
