@@ -10,6 +10,12 @@ public class Language {
             "You must be targeting a chest to use this command!");
     public static final Message CMD_NOT_RCHEST = new Message("cmd.not_restock_chest",
             "The targeted chest is not managed by ChestRestock.");
+    public static final Message CMD_INVALID_WORLD = new Message("cmd.invalid_world",
+            "%1 is not a valid world name!");
+    public static final Message CMD_PATIENCE = new Message("cmd.patience",
+            "This command may cause server lag.  Please be patient...");
+    public static final Message CMD_POSITIVE_NUMBER = new Message("cmd.positive_number",
+            "You must indicate a positive number!");
 
     public static final Message CMD_CREATE_NAME = new Message("cmd.create.name",
             "Initiates targeted chest for restocking.");
@@ -55,12 +61,20 @@ public class Language {
 
     public static final Message CMD_RESTOCKALL_NAME = new Message("cmd.restockall.name",
             "Restocks all or specified chests immediately.");
-    public static final Message CMD_RESTOCKALL_INVALID_WORLD = new Message("cmd.restockall.invalid_world",
-            "%1 is not a valid world name!");
-    public static final Message CMD_RESTOCKALL_PATIENCE = new Message("cmd.restockall.patience",
-            "This command may cause server lag.  Please be patient...");
     public static final Message CMD_RESTOCKALL_SUCCESS = new Message("cmd.restockall.success",
             "%1 chest(s) have been restocked!");
+
+    public static final Message CMD_CREATEALL_NAME = new Message("cmd.createall.name",
+            "Enables all inventory blocks in the specified area (LOADED CHUNKS ONLY!) as ChestRestock chests.");
+    public static final Message CMD_CREATEALL_INVALID_TYPE = new Message("cmd.createall.invalid_type",
+            "That is not a valid inventory type!",
+            "Valid options are: &b%1");
+    public static final Message CMD_CREATEALL_CONFIRM = new Message("cmd.createall.confirm",
+            "This command will potentially affect a LARGE amount of chests.",
+            "If you still wish to execute &c/cr createall&f");
+    public static final Message CMD_CREATEALL_SUCCESS = new Message("cmd.createall.success",
+            "%1 chest(s) have been restocked!");
+
 
     public static final Message CMD_SET_NAME = new Message("cmd.set.name",
             "Sets a property of a restock chest.");

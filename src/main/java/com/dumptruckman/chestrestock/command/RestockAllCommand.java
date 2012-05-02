@@ -34,7 +34,7 @@ public class RestockAllCommand extends CRCommand {
                 String worldName = arg.substring(3);
                 world = Bukkit.getWorld(worldName);
                 if (world == null) {
-                    messager.bad(Language.CMD_RESTOCKALL_INVALID_WORLD, sender, worldName);
+                    messager.bad(Language.CMD_INVALID_WORLD, sender, worldName);
                     return;
                 }
                 break;
@@ -43,7 +43,7 @@ public class RestockAllCommand extends CRCommand {
             }
         }
 
-        messager.normal(Language.CMD_RESTOCKALL_PATIENCE, sender);
+        messager.normal(Language.CMD_PATIENCE, sender);
         int count = plugin.getChestManager().restockAllChests(world, name);
         messager.good(Language.CMD_RESTOCKALL_SUCCESS, sender, count);
     }
