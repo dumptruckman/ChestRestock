@@ -127,7 +127,7 @@ public class CreateAllCommand extends QueuedPluginCommand<ChestRestockPlugin> {
                 for (int z = -radius; z <= radius; z++) {
                     chunk = world.getChunkAt(oX + x, oZ + z);
                     if (chunk.isLoaded()) {
-asdfa
+
                     } else if (loadChunks) {
                         chunk.load();
                     }
