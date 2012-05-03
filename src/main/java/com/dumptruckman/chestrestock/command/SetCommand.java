@@ -27,7 +27,7 @@ public class SetCommand extends TargetedChestRestockCommand {
             }
             try {
                 ConfigEntry entry = (ConfigEntry) field.get(null);
-                PROPS_MAP.put(entry.getName(), entry);
+                PROPS_MAP.put(field.getName().toLowerCase(), entry);
             } catch (IllegalAccessException ignore) { }
         }
         for (String key : PROPS_MAP.keySet()) {

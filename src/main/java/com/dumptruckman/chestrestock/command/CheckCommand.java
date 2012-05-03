@@ -29,7 +29,7 @@ public class CheckCommand extends TargetedChestRestockCommand {
             try {
                 ConfigEntry entry = (ConfigEntry) field.get(null);
                 PROPS_LIST.add(entry);
-                CHECK_MESSAGES.add(entry.getName() + ": %s");
+                CHECK_MESSAGES.add(field.getName().toLowerCase() + ": %s");
                 //count++;
             } catch (IllegalAccessException ignore) { }
         }

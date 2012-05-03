@@ -1,6 +1,7 @@
 package com.dumptruckman.chestrestock;
 
 import com.dumptruckman.chestrestock.api.CRChest;
+import com.dumptruckman.chestrestock.api.CRDefaults;
 import com.dumptruckman.chestrestock.api.ChestManager;
 import com.dumptruckman.chestrestock.util.Perms;
 import com.dumptruckman.minecraft.pluginbase.locale.Messager;
@@ -115,8 +116,13 @@ public class ChestRestockListener implements Listener {
         InventoryHolder holder = (InventoryHolder) block.getState();
         CRChest rChest = chestManager.getChest(block, holder);
         if (rChest == null) {
-            Logging.finest("chest not configured");
-            return;
+            if (plugin.getDefaults(block.getWorld().getName()).get(CRDefaults.AUTO_CREATE)) {
+                rChest = chestManager.createChest(block, holder);
+            }
+            if (rChest == null) {
+                Logging.finest("chest not configured");
+                return;
+            }
         }
         event.setCancelled(true);
         rChest.openInventory(event.getPlayer());

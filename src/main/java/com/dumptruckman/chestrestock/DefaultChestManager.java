@@ -1,10 +1,13 @@
 package com.dumptruckman.chestrestock;
 
 import com.dumptruckman.chestrestock.api.CRChest;
+import com.dumptruckman.chestrestock.api.CRChestOptions;
 import com.dumptruckman.chestrestock.api.CRConfig;
+import com.dumptruckman.chestrestock.api.CRDefaults;
 import com.dumptruckman.chestrestock.api.ChestManager;
 import com.dumptruckman.chestrestock.util.BlockLocation;
 import com.dumptruckman.chestrestock.util.Language;
+import com.dumptruckman.minecraft.pluginbase.config.ConfigEntry;
 import com.dumptruckman.minecraft.pluginbase.util.Logging;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -18,6 +21,7 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -136,6 +140,36 @@ class DefaultChestManager implements ChestManager {
     @Override
     public CRChest newChest(Block block, InventoryHolder holder) {
         return loadChest(getChestFile(BlockLocation.get(block)));
+    }
+
+    @Override
+    public CRChest createChest(Block block, InventoryHolder holder) {
+        if (block == null) {
+            throw new IllegalArgumentException("block may not be null!");
+        }
+        if (holder == null) {
+            throw new IllegalArgumentException("holder may not be null!");
+        }
+        CRChest rChest = newChest(block, holder);
+        if (rChest == null) {
+            return null;
+        }
+        CRDefaults defaults = plugin.getDefaults(block.getWorld().getName());
+        for (Field field : CRChestOptions.class.getFields()) {
+            if (!ConfigEntry.class.isAssignableFrom(field.getType())) {
+                continue;
+            }
+            try {
+                ConfigEntry entry = (ConfigEntry) field.get(null);
+                rChest.set(entry, defaults.get(entry));
+                //count++;
+            } catch (IllegalAccessException ignore) { }
+        }
+
+        rChest.set(CRChest.LAST_RESTOCK, System.currentTimeMillis());
+        rChest.update(null);
+        pollingCheckIn(rChest);
+        return rChest;
     }
 
     @Override

@@ -114,5 +114,8 @@ public class Language {
     public static final Message GLOBAL_MESSAGE_DESC = new Message("props.global_message.desc",
             "A message to be broadcast to the server when this chest restocks.  Blank means no message.");
 
+    public static final Message AUTO_CREATE_DESC = new Message("props.other.auto_create.desc",
+            "Automatically initializes chests, when opened, as if you created them with /cr create.");
+
     public static void init() { }
 }

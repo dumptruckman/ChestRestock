@@ -83,12 +83,12 @@ public interface CRConfig extends BaseConfig {
 
     @Deprecated
     ConfigEntry<String> LOOT_TABLE = new EntryBuilder<String>(String.class, "loot_table").def("")
-            .comment("This value has been moved to global_defaults.yml.  You may delete this entry.")
+            .comment("# This value has been moved to global_defaults.yml.  You may delete this entry.")
             .deprecated().build();
 
     @Deprecated
     ConfigEntry<String> GLOBAL_MESSAGE = new EntryBuilder<String>(String.class, "global_message").def("")
-            .comment("This value has been moved to global_defaults.yml.  You may delete this entry.")
+            .comment("# This value has been moved to global_defaults.yml.  You may delete this entry.")
             .deprecated().build();
 
     @Deprecated

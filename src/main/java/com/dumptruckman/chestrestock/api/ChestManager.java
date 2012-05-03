@@ -14,8 +14,11 @@ public interface ChestManager {
     CRChest getChest(Block block, InventoryHolder holder);
     
     Block getTargetedInventoryHolder(Player player) throws IllegalStateException;
-    
+
+    @Deprecated
     CRChest newChest(Block block, InventoryHolder holder);
+
+    CRChest createChest(Block block, InventoryHolder holder);
 
     Chest getOtherSide(Block chestBlock);
     

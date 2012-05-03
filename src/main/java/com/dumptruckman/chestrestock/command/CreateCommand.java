@@ -2,16 +2,12 @@ package com.dumptruckman.chestrestock.command;
 
 import com.dumptruckman.chestrestock.ChestRestockPlugin;
 import com.dumptruckman.chestrestock.api.CRChest;
-import com.dumptruckman.chestrestock.api.CRChestOptions;
-import com.dumptruckman.chestrestock.api.CRDefaults;
 import com.dumptruckman.chestrestock.util.Language;
 import com.dumptruckman.chestrestock.util.Perms;
-import com.dumptruckman.minecraft.pluginbase.config.ConfigEntry;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryHolder;
 
-import java.lang.reflect.Field;
 import java.util.List;
 
 public class CreateCommand extends TargetedChestRestockCommand {
@@ -36,26 +32,11 @@ public class CreateCommand extends TargetedChestRestockCommand {
             messager.normal(Language.CMD_CREATE_ALREADY_MADE, player);
             return;
         }
-        rChest = chestManager.newChest(block, holder);
+        rChest = chestManager.createChest(block, holder);
         if (rChest == null) {
             messager.bad(Language.CMD_CREATE_ERROR, player);
-            return;
+        } else {
+            messager.good(Language.CMD_CREATE_SUCCESS, player, rChest.get(CRChest.PERIOD));
         }
-        CRDefaults defaults = plugin.getDefaults(player.getWorld().getName());
-        for (Field field : CRChestOptions.class.getFields()) {
-            if (!ConfigEntry.class.isAssignableFrom(field.getType())) {
-                continue;
-            }
-            try {
-                ConfigEntry entry = (ConfigEntry) field.get(null);
-                rChest.set(entry, defaults.get(entry));
-                //count++;
-            } catch (IllegalAccessException ignore) { }
-        }
-
-        rChest.set(CRChest.LAST_RESTOCK, System.currentTimeMillis());
-        rChest.update(null);
-        messager.good(Language.CMD_CREATE_SUCCESS, player, rChest.get(CRChest.PERIOD));
-        chestManager.pollingCheckIn(rChest);
     }
 }
