@@ -2,6 +2,7 @@ package com.dumptruckman.chestrestock.command;
 
 import com.dumptruckman.chestrestock.ChestRestockPlugin;
 import com.dumptruckman.chestrestock.api.CRChest;
+import com.dumptruckman.chestrestock.api.CRChestOptions;
 import com.dumptruckman.chestrestock.util.Language;
 import com.dumptruckman.chestrestock.util.Perms;
 import com.dumptruckman.minecraft.pluginbase.config.ConfigEntry;
@@ -9,48 +10,45 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryHolder;
 
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class SetCommand extends TargetedChestRestockCommand {
-    
-    private Map<String, ConfigEntry> propsMap = new HashMap<String, ConfigEntry>();
-    private String propsString = "";
+
+    private static final Map<String, ConfigEntry> PROPS_MAP = new HashMap<String, ConfigEntry>();
+    private static String propsString = "";
+
+    static {
+        for (Field field : CRChestOptions.class.getFields()) {
+            if (!ConfigEntry.class.isAssignableFrom(field.getType())) {
+                continue;
+            }
+            try {
+                ConfigEntry entry = (ConfigEntry) field.get(null);
+                PROPS_MAP.put(entry.getName(), entry);
+            } catch (IllegalAccessException ignore) { }
+        }
+        for (String key : PROPS_MAP.keySet()) {
+            if (!propsString.isEmpty()) {
+                propsString += ", ";
+            }
+            propsString += key;
+        }
+    }
 
     public SetCommand(ChestRestockPlugin plugin) {
         super(plugin);
         this.setName(messager.getMessage(Language.CMD_SET_NAME));
         this.setCommandUsage("/" + plugin.getCommandPrefixes().get(0) + " set [property [value]]");
-        for (String prefix : plugin.getCommandPrefixes()) {
-            this.addKey(prefix + " set");
-        }
+        this.addPrefixedKey(" set");
         this.setArgRange(0, 500);
         this.addCommandExample("/" + plugin.getCommandPrefixes().get(0) + " set");
         this.addCommandExample("/" + plugin.getCommandPrefixes().get(0) + " set unique");
         this.addCommandExample("/" + plugin.getCommandPrefixes().get(0) + " set period 300");
         this.addCommandExample("/" + plugin.getCommandPrefixes().get(0) + " set restockmode fixed");
         this.setPermission(Perms.CMD_SET.getPermission());
-
-        propsMap.put("name", CRChest.NAME);
-        propsMap.put("period", CRChest.PERIOD);
-        propsMap.put("indestructible", CRChest.INDESTRUCTIBLE);
-        propsMap.put("period_mode", CRChest.PERIOD_MODE);
-        propsMap.put("player_limit", CRChest.PLAYER_LIMIT);
-        propsMap.put("preserve_slots", CRChest.PRESERVE_SLOTS);
-        propsMap.put("restock_mode", CRChest.RESTOCK_MODE);
-        propsMap.put("unique", CRChest.UNIQUE);
-        propsMap.put("redstone", CRChest.REDSTONE);
-        propsMap.put("accept_poll", CRChest.ACCEPT_POLL);
-        propsMap.put("global_message", CRChest.GLOBAL_MESSAGE);
-        propsMap.put("loot_table", CRChest.LOOT_TABLE);
-        
-        for (String key : propsMap.keySet()) {
-            if (!propsString.isEmpty()) {
-                propsString += ", ";
-            }
-            propsString += key;
-        }
     }
 
     @Override
@@ -63,7 +61,7 @@ public class SetCommand extends TargetedChestRestockCommand {
                 messager.normal(Language.CMD_SET_LIST_PROPS, player, propsString);
             }
         } else if (args.size() == 1) {
-            ConfigEntry configEntry = propsMap.get(args.get(0).toLowerCase());
+            ConfigEntry configEntry = PROPS_MAP.get(args.get(0).toLowerCase());
             if (configEntry == null) {
                 messager.bad(Language.CMD_SET_INVALID_PROP, player, args.get(0));
                 return;
@@ -79,7 +77,7 @@ public class SetCommand extends TargetedChestRestockCommand {
                 messager.normal(Language.CMD_SET_POSSIBLE_VALUES, player, configEntry.getName(), "a word");
             }
         } else if (args.size() > 1) {
-            ConfigEntry configEntry = propsMap.get(args.get(0).toLowerCase());
+            ConfigEntry configEntry = PROPS_MAP.get(args.get(0).toLowerCase());
             if (configEntry == null) {
                 messager.bad(Language.CMD_SET_INVALID_PROP, player, args.get(0));
                 return;
