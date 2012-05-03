@@ -2,13 +2,16 @@ package com.dumptruckman.chestrestock.command;
 
 import com.dumptruckman.chestrestock.ChestRestockPlugin;
 import com.dumptruckman.chestrestock.api.CRChest;
-import com.dumptruckman.chestrestock.api.CRConfig;
+import com.dumptruckman.chestrestock.api.CRChestOptions;
+import com.dumptruckman.chestrestock.api.CRDefaults;
 import com.dumptruckman.chestrestock.util.Language;
 import com.dumptruckman.chestrestock.util.Perms;
+import com.dumptruckman.minecraft.pluginbase.config.ConfigEntry;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryHolder;
 
+import java.lang.reflect.Field;
 import java.util.List;
 
 public class CreateCommand extends TargetedChestRestockCommand {
@@ -38,18 +41,17 @@ public class CreateCommand extends TargetedChestRestockCommand {
             messager.bad(Language.CMD_CREATE_ERROR, player);
             return;
         }
-        rChest.set(CRChest.PERIOD, plugin.config().get(CRConfig.PERIOD));
-        rChest.set(CRChest.PERIOD_MODE, plugin.config().get(CRConfig.PERIOD_MODE));
-        rChest.set(CRChest.RESTOCK_MODE, plugin.config().get(CRConfig.RESTOCK_MODE));
-        rChest.set(CRChest.INDESTRUCTIBLE, plugin.config().get(CRConfig.INDESTRUCTIBLE));
-        rChest.set(CRChest.PLAYER_LIMIT, plugin.config().get(CRConfig.PLAYER_LIMIT));
-        rChest.set(CRChest.UNIQUE, plugin.config().get(CRConfig.UNIQUE));
-        rChest.set(CRChest.PRESERVE_SLOTS, plugin.config().get(CRConfig.PRESERVE_SLOTS));
-        rChest.set(CRChest.NAME, plugin.config().get(CRConfig.NAME));
-        rChest.set(CRChest.LOOT_TABLE, plugin.config().get(CRConfig.LOOT_TABLE));
-        rChest.set(CRChest.REDSTONE, plugin.config().get(CRConfig.REDSTONE));
-        rChest.set(CRChest.GLOBAL_MESSAGE, plugin.config().get(CRConfig.GLOBAL_MESSAGE));
-        rChest.set(CRChest.ACCEPT_POLL, plugin.config().get(CRConfig.ACCEPT_POLL));
+        CRDefaults defaults = plugin.getDefaults(player.getWorld().getName());
+        for (Field field : CRChestOptions.class.getFields()) {
+            if (!ConfigEntry.class.isAssignableFrom(field.getType())) {
+                continue;
+            }
+            try {
+                ConfigEntry entry = (ConfigEntry) field.get(null);
+                rChest.set(entry, defaults.get(entry));
+                //count++;
+            } catch (IllegalAccessException ignore) { }
+        }
 
         rChest.set(CRChest.LAST_RESTOCK, System.currentTimeMillis());
         rChest.update(null);
