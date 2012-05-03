@@ -2,17 +2,38 @@ package com.dumptruckman.chestrestock.command;
 
 import com.dumptruckman.chestrestock.ChestRestockPlugin;
 import com.dumptruckman.chestrestock.api.CRChest;
+import com.dumptruckman.chestrestock.api.CRChestOptions;
 import com.dumptruckman.chestrestock.util.Language;
 import com.dumptruckman.chestrestock.util.Perms;
+import com.dumptruckman.minecraft.pluginbase.config.ConfigEntry;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryHolder;
 
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
-import static com.dumptruckman.chestrestock.api.CRChest.*;
-
 public class CheckCommand extends TargetedChestRestockCommand {
+
+    private static final List<ConfigEntry> PROPS_LIST = new LinkedList<ConfigEntry>();
+    private static final List<String> CHECK_MESSAGES = new LinkedList<String>();
+
+    static {
+        //int count = 2;
+        for (Field field : CRChestOptions.class.getFields()) {
+            if (!ConfigEntry.class.isAssignableFrom(field.getType())) {
+                continue;
+            }
+            try {
+                ConfigEntry entry = (ConfigEntry) field.get(null);
+                PROPS_LIST.add(entry);
+                CHECK_MESSAGES.add(entry.getName() + ": %s");
+                //count++;
+            } catch (IllegalAccessException ignore) { }
+        }
+    }
 
     public CheckCommand(ChestRestockPlugin plugin) {
         super(plugin);
@@ -33,11 +54,17 @@ public class CheckCommand extends TargetedChestRestockCommand {
             messager.normal(Language.CMD_NOT_RCHEST, player);
             return;
         }
+        List<String> messages = new ArrayList<String>(CHECK_MESSAGES);
+        for (int i = 0; i < messages.size(); i++) {
+            messages.set(i, String.format(messages.get(i), rChest.get(PROPS_LIST.get(i))));
+        }
+        messager.sendMessages(player, messages);
+        /*
         messager.normal(Language.CMD_CHECK_SUCCESS, player, rChest.get(NAME),
                 rChest.get(PERIOD), rChest.get(RESTOCK_MODE), rChest.get(PERIOD_MODE),
                 rChest.get(PRESERVE_SLOTS), rChest.get(INDESTRUCTIBLE), rChest.get(PLAYER_LIMIT),
                 rChest.get(UNIQUE), rChest.get(REDSTONE));
         messager.normal(Language.CMD_CHECK_GLOBAL_MESSAGE, player, rChest.get(ACCEPT_POLL),
-                rChest.get(GLOBAL_MESSAGE), rChest.get(LOOT_TABLE));
+                rChest.get(GLOBAL_MESSAGE), rChest.get(LOOT_TABLE));*/
     }
 }

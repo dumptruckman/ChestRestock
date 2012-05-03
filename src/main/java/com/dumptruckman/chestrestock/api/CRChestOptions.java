@@ -8,6 +8,9 @@ import com.dumptruckman.minecraft.pluginbase.locale.Message;
 
 public interface CRChestOptions {
 
+    ConfigEntry<String> NAME = new EntryBuilder<String>(String.class, "name").def("")
+            .description(Language.NAME_DESC).build();
+
     ConfigEntry<Boolean> PRESERVE_SLOTS = new EntryBuilder<Boolean>(Boolean.class, "preserve_slots").def(true)
             .description(Language.PRESERVE_SLOTS_DESC).stringSerializer().build();
 
@@ -28,15 +31,6 @@ public interface CRChestOptions {
 
     ConfigEntry<Integer> PERIOD = new EntryBuilder<Integer>(Integer.class, "period").def(900)
             .description(Language.PERIOD_DESC).stringSerializer().build();
-
-    ConfigEntry<String> NAME = new EntryBuilder<String>(String.class, "name").def("")
-            .description(Language.NAME_DESC).build();
-
-    ConfigEntry<String> LOOT_TABLE = new EntryBuilder<String>(String.class, "loot_table").def("")
-            .description(Language.LOOT_TABLE_DESC).build();
-
-    ConfigEntry<String> GLOBAL_MESSAGE = new EntryBuilder<String>(String.class, "global_message").def("")
-            .description(Language.GLOBAL_MESSAGE_DESC).build();
 
     String PERIOD_MODE_PLAYER = "player";
     String PERIOD_MODE_FIXED = "fixed";
@@ -69,4 +63,10 @@ public interface CRChestOptions {
                     return Language.RESTOCK_MODE_INVALID;
                 }
             }).description(Language.RESTOCK_MODE_DESC).build();
+
+    ConfigEntry<String> LOOT_TABLE = new EntryBuilder<String>(String.class, "loot_table").def("")
+            .description(Language.LOOT_TABLE_DESC).build();
+
+    ConfigEntry<String> GLOBAL_MESSAGE = new EntryBuilder<String>(String.class, "global_message").def("")
+            .description(Language.GLOBAL_MESSAGE_DESC).build();
 }
