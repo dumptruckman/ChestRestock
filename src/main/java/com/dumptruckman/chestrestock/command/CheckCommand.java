@@ -6,6 +6,7 @@ import com.dumptruckman.chestrestock.api.CRChestOptions;
 import com.dumptruckman.chestrestock.util.Language;
 import com.dumptruckman.chestrestock.util.Perms;
 import com.dumptruckman.minecraft.pluginbase.config.ConfigEntry;
+import com.dumptruckman.minecraft.pluginbase.util.Null;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryHolder;
@@ -28,6 +29,9 @@ public class CheckCommand extends TargetedChestRestockCommand {
             }
             try {
                 ConfigEntry entry = (ConfigEntry) field.get(null);
+                if (entry.getType().equals(Null.class)) {
+                    continue;
+                }
                 PROPS_LIST.add(entry);
                 CHECK_MESSAGES.add(field.getName().toLowerCase() + ": %s");
                 //count++;

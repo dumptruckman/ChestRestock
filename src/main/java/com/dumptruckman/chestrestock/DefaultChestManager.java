@@ -9,6 +9,7 @@ import com.dumptruckman.chestrestock.util.BlockLocation;
 import com.dumptruckman.chestrestock.util.Language;
 import com.dumptruckman.minecraft.pluginbase.config.ConfigEntry;
 import com.dumptruckman.minecraft.pluginbase.util.Logging;
+import com.dumptruckman.minecraft.pluginbase.util.Null;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -161,6 +162,9 @@ class DefaultChestManager implements ChestManager {
             }
             try {
                 ConfigEntry entry = (ConfigEntry) field.get(null);
+                if (entry.getType().equals(Null.class)) {
+                    continue;
+                }
                 rChest.set(entry, defaults.get(entry));
                 //count++;
             } catch (IllegalAccessException ignore) { }
