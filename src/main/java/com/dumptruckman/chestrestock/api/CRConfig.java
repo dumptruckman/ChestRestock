@@ -17,7 +17,7 @@ import java.util.Arrays;
 public interface CRConfig extends BaseConfig {
 
     ConfigEntry<Null> DEFAULTS = new EntryBuilder<Null>(Null.class, "defaults")
-            .comment("All defaults have been moved to global_defaults.yml.  You may delete this section!").build();
+            .comment("# All defaults have been moved to global_defaults.yml.  You may delete this section!").build();
 
     @Deprecated
     ConfigEntry<Boolean> PRESERVE_SLOTS = new EntryBuilder<Boolean>(Boolean.class, "defaults.preserve_slots").def(true)
