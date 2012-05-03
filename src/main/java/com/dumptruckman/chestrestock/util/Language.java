@@ -29,20 +29,6 @@ public class Language {
 
     public static final Message CMD_CHECK_NAME = new Message("cmd.check.name",
             "Checks a chest and gives info relating to ChestRestock");
-    public static final Message CMD_CHECK_SUCCESS = new Message("cmd.check.success",
-            "Chest name: %1",
-            "Chest restocks every %2 second(s)",
-            "Chest restock mode: %3",
-            "Chest period mode: %4",
-            "Chest will preserve slots: %5",
-            "Chest is indestructible: %6",
-            "Chest player limit: %7",
-            "Chest has unique inventory: %8",
-            "Chest restocks when powered: %9");
-    public static final Message CMD_CHECK_GLOBAL_MESSAGE = new Message("cmd.check.global_message",
-            "Chest accepting polls: %1",
-            "Chest global message: %2",
-            "Chest loot table: %3");
 
     public static final Message CMD_UPDATE_NAME = new Message("cmd.update.name",
             "Updates the restocking contents of a chest.");

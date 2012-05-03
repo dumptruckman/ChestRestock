@@ -59,12 +59,5 @@ public class CheckCommand extends TargetedChestRestockCommand {
             messages.set(i, String.format(messages.get(i), rChest.get(PROPS_LIST.get(i))));
         }
         messager.sendMessages(player, messages);
-        /*
-        messager.normal(Language.CMD_CHECK_SUCCESS, player, rChest.get(NAME),
-                rChest.get(PERIOD), rChest.get(RESTOCK_MODE), rChest.get(PERIOD_MODE),
-                rChest.get(PRESERVE_SLOTS), rChest.get(INDESTRUCTIBLE), rChest.get(PLAYER_LIMIT),
-                rChest.get(UNIQUE), rChest.get(REDSTONE));
-        messager.normal(Language.CMD_CHECK_GLOBAL_MESSAGE, player, rChest.get(ACCEPT_POLL),
-                rChest.get(GLOBAL_MESSAGE), rChest.get(LOOT_TABLE));*/
     }
 }
