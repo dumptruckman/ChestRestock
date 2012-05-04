@@ -66,7 +66,11 @@ public class DefaultsCommand extends CRCommand {
         CRDefaults defaults = plugin.getDefaults(world);
         List<String> messages = new ArrayList<String>(CHECK_MESSAGES);
         for (int i = 0; i < messages.size(); i++) {
-            messages.set(i, String.format(messages.get(i), defaults.get(PROPS_LIST.get(i))));
+            Object obj = defaults.get(PROPS_LIST.get(i));
+            if (obj == null) {
+                continue;
+            }
+            messages.set(i, String.format(messages.get(i), obj));
         }
         messager.sendMessages(sender, messages);
     }

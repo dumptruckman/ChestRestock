@@ -46,12 +46,16 @@ public class ChestRestockPlugin extends AbstractBukkitPlugin<CRConfig> implement
     }
 
     private CRDefaults newDefaultsConfig(File file) throws IOException {
+        return newDefaultsConfig(file, true);
+    }
+
+    private CRDefaults newDefaultsConfig(File file, boolean autoDefault) throws IOException {
         Logging.info(file.toString());
         File parent = file.getParentFile();
         if (parent != null && !parent.exists()) {
             file.getParentFile().mkdirs();
         }
-        return new DefaultsConfig(this, true, file, CRDefaults.class);
+        return new DefaultsConfig(this, autoDefault, file);
     }
 
     @Override
@@ -184,7 +188,11 @@ public class ChestRestockPlugin extends AbstractBukkitPlugin<CRConfig> implement
 
         if (!defaultsMap.containsKey(world)) {
             try {
-                defaultsMap.put(world, newDefaultsConfig(file));
+                if (world == null) {
+                    defaultsMap.put(world, newDefaultsConfig(file));
+                } else {
+                    defaultsMap.put(world, newDefaultsConfig(file, false));
+                }
             } catch (IOException e) {
                 Logging.warning("Could not create defaults file for world: " + world + "!");
                 Logging.warning("Exception: " + e.getMessage());

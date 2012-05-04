@@ -9,8 +9,8 @@ import java.io.IOException;
 
 public class DefaultsConfig extends AbstractYamlConfig<CRDefaults> implements CRDefaults {
 
-    public DefaultsConfig(BukkitPlugin plugin, boolean doComments, File configFile, Class<? extends CRDefaults>... configClasses) throws IOException {
-        super(plugin, doComments, configFile, configClasses);
+    public DefaultsConfig(BukkitPlugin plugin, boolean autoDefaults, File configFile) throws IOException {
+        super(plugin, true, autoDefaults, configFile, CRDefaults.class);
     }
 
     @Override

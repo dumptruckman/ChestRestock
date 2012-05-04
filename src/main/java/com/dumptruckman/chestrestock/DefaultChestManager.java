@@ -156,6 +156,7 @@ class DefaultChestManager implements ChestManager {
             return null;
         }
         CRDefaults defaults = plugin.getDefaults(block.getWorld().getName());
+        CRDefaults globals = plugin.getDefaults(null);
         for (Field field : CRChestOptions.class.getFields()) {
             if (!ConfigEntry.class.isAssignableFrom(field.getType())) {
                 continue;
@@ -165,7 +166,11 @@ class DefaultChestManager implements ChestManager {
                 if (entry.getType().equals(Null.class)) {
                     continue;
                 }
-                rChest.set(entry, defaults.get(entry));
+                Object obj = defaults.get(entry);
+                if (obj == null) {
+                    obj = globals.get(entry);
+                }
+                rChest.set(entry, obj);
                 //count++;
             } catch (IllegalAccessException ignore) { }
         }

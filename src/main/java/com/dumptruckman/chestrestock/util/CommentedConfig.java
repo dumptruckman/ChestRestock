@@ -10,7 +10,7 @@ import java.io.IOException;
 public class CommentedConfig extends AbstractYamlConfig<CRConfig> implements CRConfig {
 
     public CommentedConfig(BukkitPlugin plugin, boolean doComments, File configFile, Class<? extends CRConfig>... configClasses) throws IOException {
-        super(plugin, doComments, configFile, configClasses);
+        super(plugin, doComments, true, configFile, configClasses);
     }
 
     @Override

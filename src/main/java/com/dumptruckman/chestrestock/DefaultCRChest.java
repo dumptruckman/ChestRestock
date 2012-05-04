@@ -31,7 +31,7 @@ class DefaultCRChest extends AbstractYamlConfig<CRChest> implements CRChest {
     private Map<String, Inventory> playerInventories = new HashMap<String, Inventory>();
 
     DefaultCRChest(ChestRestock plugin, BlockLocation location, File configFile, Class<? extends CRChest>... configClasses) throws IOException {
-        super(plugin, false, configFile, configClasses);
+        super(plugin, false, true, configFile, configClasses);
         this.plugin = plugin;
         this.location = location;
         Block block = location.getBlock();
