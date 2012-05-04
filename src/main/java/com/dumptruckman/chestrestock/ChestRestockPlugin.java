@@ -8,6 +8,7 @@ import com.dumptruckman.chestrestock.api.LootConfig;
 import com.dumptruckman.chestrestock.command.CheckCommand;
 import com.dumptruckman.chestrestock.command.CreateCommand;
 import com.dumptruckman.chestrestock.command.DefaultCommand;
+import com.dumptruckman.chestrestock.command.DefaultsCommand;
 import com.dumptruckman.chestrestock.command.DisableCommand;
 import com.dumptruckman.chestrestock.command.RestockAllCommand;
 import com.dumptruckman.chestrestock.command.RestockCommand;
@@ -83,6 +84,7 @@ public class ChestRestockPlugin extends AbstractBukkitPlugin<CRConfig> implement
         getCommandHandler().registerCommand(new RestockCommand(this));
         getCommandHandler().registerCommand(new RestockAllCommand(this));
         getCommandHandler().registerCommand(new DefaultCommand(this));
+        getCommandHandler().registerCommand(new DefaultsCommand(this));
     }
 
     @Override
@@ -205,6 +207,11 @@ public class ChestRestockPlugin extends AbstractBukkitPlugin<CRConfig> implement
                 }
             }
         }
+    }
+
+    public boolean defaultsExistForWorld(String world) {
+        File file = new File(defaultsFolder, world + ".yml");
+        return file.exists();
     }
 
     @Override

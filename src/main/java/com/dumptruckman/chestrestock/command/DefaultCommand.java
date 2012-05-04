@@ -45,6 +45,7 @@ public class DefaultCommand extends CRCommand {
         this.setName(messager.getMessage(Language.CMD_DEFAULT_NAME));
         this.setCommandUsage("/" + plugin.getCommandPrefixes().get(0) + " default [-w:<world>] [property [value]]");
         this.addPrefixedKey(" default");
+        this.addPrefixedKey(" def");
         this.setArgRange(0, 500);
         this.addCommandExample("/" + plugin.getCommandPrefixes().get(0) + " default");
         this.addCommandExample("/" + plugin.getCommandPrefixes().get(0) + " default -w:hungergames");

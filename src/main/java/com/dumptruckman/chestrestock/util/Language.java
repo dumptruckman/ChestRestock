@@ -27,6 +27,11 @@ public class Language {
     public static final Message CMD_CREATE_ERROR = new Message("cmd.create.error",
             "There was an internal error while creating a new restock chest.  Please refer to server.log");
 
+    public static final Message CMD_DEFAULTS_NAME = new Message("cmd.defaults.name",
+            "Checks the global defaults or defaults for specified world");
+    public static final Message CMD_DEFAULTS_NO_DEFAULTS = new Message("cmd.defaults.no_defaults",
+            "No specific defaults for world: %1");
+
     public static final Message CMD_CHECK_NAME = new Message("cmd.check.name",
             "Checks a chest and gives info relating to ChestRestock");
 
