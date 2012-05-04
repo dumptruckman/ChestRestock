@@ -177,10 +177,6 @@ public class ChestRestockPlugin extends AbstractBukkitPlugin<CRConfig> implement
         File file;
         if (world != null) {
             file = new File(defaultsFolder, world + ".yml");
-            if (!file.exists()) {
-                world = null;
-                file = defaultsFile;
-            }
         } else {
             file = defaultsFile;
         }
