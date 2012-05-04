@@ -21,8 +21,6 @@ public interface ChestRestock extends BukkitPlugin<CRConfig>, Plugin {
      */
     CRDefaults getDefaults(String world);
 
-    boolean defaultsExistForWorld(String world);
-
     LootConfig getLootConfig();
 
     boolean hasChestManagerLoaded();

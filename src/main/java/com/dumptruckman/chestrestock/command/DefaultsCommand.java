@@ -59,19 +59,21 @@ public class DefaultsCommand extends CRCommand {
                 return;
             }
         }
-        if (world != null && !plugin.defaultsExistForWorld(world)) {
-            messager.info(Language.CMD_DEFAULTS_NO_DEFAULTS, sender, world);
-            return;
-        }
         CRDefaults defaults = plugin.getDefaults(world);
         List<String> messages = new ArrayList<String>(CHECK_MESSAGES);
+        int numProps = 0;
         for (int i = 0; i < messages.size(); i++) {
             Object obj = defaults.get(PROPS_LIST.get(i));
             if (obj == null) {
                 continue;
             }
+            numProps++;
             messages.set(i, String.format(messages.get(i), obj));
         }
-        messager.sendMessages(sender, messages);
+        if (numProps == 0) {
+            messager.info(Language.CMD_DEFAULTS_NO_DEFAULTS, sender, world);
+        } else {
+            messager.sendMessages(sender, messages);
+        }
     }
 }

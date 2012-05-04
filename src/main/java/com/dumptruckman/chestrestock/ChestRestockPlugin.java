@@ -197,11 +197,6 @@ public class ChestRestockPlugin extends AbstractBukkitPlugin<CRConfig> implement
         return defaultsMap.get(world);
     }
 
-    public boolean defaultsExistForWorld(String world) {
-        File file = new File(defaultsFolder, world + ".yml");
-        return file.exists();
-    }
-
     @Override
     public LootConfig getLootConfig() {
         if (lootConfig == null) {
