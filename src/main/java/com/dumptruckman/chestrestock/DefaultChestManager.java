@@ -5,6 +5,7 @@ import com.dumptruckman.chestrestock.api.CRChestOptions;
 import com.dumptruckman.chestrestock.api.CRConfig;
 import com.dumptruckman.chestrestock.api.CRDefaults;
 import com.dumptruckman.chestrestock.api.ChestManager;
+import com.dumptruckman.chestrestock.api.ChestRestock;
 import com.dumptruckman.chestrestock.util.BlockLocation;
 import com.dumptruckman.chestrestock.util.InventoryTools;
 import com.dumptruckman.chestrestock.util.Language;
@@ -34,13 +35,13 @@ class DefaultChestManager implements ChestManager {
 
     private final static String EXT = ".yml";
 
-    private ChestRestockPlugin plugin;
+    private ChestRestock plugin;
     private File chestsFile;
     
     private Map<BlockLocation, CRChest> chestsMap = new HashMap<BlockLocation, CRChest>();
     private Set<CRChest> pollingSet = new LinkedHashSet<CRChest>();
     
-    DefaultChestManager(ChestRestockPlugin plugin) {
+    DefaultChestManager(ChestRestock plugin) {
         this.plugin = plugin;
         chestsFile = new File(plugin.getDataFolder(), "chests");
         if (!chestsFile.exists()) {

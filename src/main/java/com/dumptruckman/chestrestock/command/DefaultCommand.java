@@ -1,7 +1,7 @@
 package com.dumptruckman.chestrestock.command;
 
-import com.dumptruckman.chestrestock.ChestRestockPlugin;
 import com.dumptruckman.chestrestock.api.CRDefaults;
+import com.dumptruckman.chestrestock.api.ChestRestock;
 import com.dumptruckman.chestrestock.util.Language;
 import com.dumptruckman.chestrestock.util.Perms;
 import com.dumptruckman.minecraft.pluginbase.config.ConfigEntry;
@@ -40,7 +40,7 @@ public class DefaultCommand extends CRCommand {
         }
     }
 
-    public DefaultCommand(ChestRestockPlugin plugin) {
+    public DefaultCommand(ChestRestock plugin) {
         super(plugin);
         this.setName(messager.getMessage(Language.CMD_DEFAULT_NAME));
         this.setCommandUsage("/" + plugin.getCommandPrefixes().get(0) + " default [-w:<world>] [property [value]]");

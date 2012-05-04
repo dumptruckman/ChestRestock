@@ -1,6 +1,6 @@
 package com.dumptruckman.chestrestock.command;
 
-import com.dumptruckman.chestrestock.ChestRestockPlugin;
+import com.dumptruckman.chestrestock.api.ChestRestock;
 import com.dumptruckman.chestrestock.util.Language;
 import com.dumptruckman.chestrestock.util.Perms;
 import org.bukkit.Bukkit;
@@ -12,7 +12,7 @@ import java.util.List;
 public class RestockAllCommand extends CRCommand {
 
 
-    public RestockAllCommand(ChestRestockPlugin plugin) {
+    public RestockAllCommand(ChestRestock plugin) {
         super(plugin);
         this.setName(messager.getMessage(Language.CMD_RESTOCKALL_NAME));
         this.setCommandUsage(plugin.getCommandPrefixes().get(0) + " restockall [name] [-w:worldname]");

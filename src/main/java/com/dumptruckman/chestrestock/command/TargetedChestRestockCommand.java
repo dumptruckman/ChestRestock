@@ -1,7 +1,7 @@
 package com.dumptruckman.chestrestock.command;
 
-import com.dumptruckman.chestrestock.ChestRestockPlugin;
 import com.dumptruckman.chestrestock.api.ChestManager;
+import com.dumptruckman.chestrestock.api.ChestRestock;
 import com.dumptruckman.chestrestock.util.Language;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
@@ -13,7 +13,7 @@ public abstract class TargetedChestRestockCommand extends CRCommand {
 
     protected ChestManager chestManager;
 
-    public TargetedChestRestockCommand(ChestRestockPlugin plugin) {
+    public TargetedChestRestockCommand(ChestRestock plugin) {
         super(plugin);
         chestManager = plugin.getChestManager();
     }

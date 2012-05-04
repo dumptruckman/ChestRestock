@@ -1,5 +1,6 @@
 package com.dumptruckman.chestrestock;
 
+import com.dumptruckman.chestrestock.api.ChestRestock;
 import com.dumptruckman.chestrestock.api.LootConfig;
 import com.dumptruckman.chestrestock.api.LootTable;
 import com.dumptruckman.minecraft.pluginbase.util.Logging;
@@ -21,7 +22,7 @@ class DefaultLootConfig implements LootConfig {
 
     private Map<String, LootTable> cachedTables = new WeakHashMap<String, LootTable>();
 
-    DefaultLootConfig(ChestRestockPlugin plugin) {
+    DefaultLootConfig(ChestRestock plugin) {
         configFile = new File(plugin.getDataFolder(), "loot_tables.yml");
         lootFolder = new File(plugin.getDataFolder(), "loot_tables");
         lootFolder.mkdirs();

@@ -1,8 +1,8 @@
 package com.dumptruckman.chestrestock.command;
 
-import com.dumptruckman.chestrestock.ChestRestockPlugin;
 import com.dumptruckman.chestrestock.api.CRChest;
 import com.dumptruckman.chestrestock.api.CRChestOptions;
+import com.dumptruckman.chestrestock.api.ChestRestock;
 import com.dumptruckman.chestrestock.util.Language;
 import com.dumptruckman.chestrestock.util.Perms;
 import com.dumptruckman.minecraft.pluginbase.config.ConfigEntry;
@@ -39,7 +39,7 @@ public class CheckCommand extends TargetedChestRestockCommand {
         }
     }
 
-    public CheckCommand(ChestRestockPlugin plugin) {
+    public CheckCommand(ChestRestock plugin) {
         super(plugin);
         this.setName(messager.getMessage(Language.CMD_CHECK_NAME));
         this.setCommandUsage(plugin.getCommandPrefixes().get(0) + " check");

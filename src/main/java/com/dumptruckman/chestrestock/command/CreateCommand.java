@@ -1,7 +1,7 @@
 package com.dumptruckman.chestrestock.command;
 
-import com.dumptruckman.chestrestock.ChestRestockPlugin;
 import com.dumptruckman.chestrestock.api.CRChest;
+import com.dumptruckman.chestrestock.api.ChestRestock;
 import com.dumptruckman.chestrestock.util.Language;
 import com.dumptruckman.chestrestock.util.Perms;
 import org.bukkit.block.Block;
@@ -12,7 +12,7 @@ import java.util.List;
 
 public class CreateCommand extends TargetedChestRestockCommand {
 
-    public CreateCommand(ChestRestockPlugin plugin) {
+    public CreateCommand(ChestRestock plugin) {
         super(plugin);
         this.setName(messager.getMessage(Language.CMD_CREATE_NAME));
         this.setCommandUsage(plugin.getCommandPrefixes().get(0) + " create");

@@ -3,6 +3,7 @@ package com.dumptruckman.chestrestock;
 import com.dumptruckman.chestrestock.api.CRChest;
 import com.dumptruckman.chestrestock.api.CRDefaults;
 import com.dumptruckman.chestrestock.api.ChestManager;
+import com.dumptruckman.chestrestock.api.ChestRestock;
 import com.dumptruckman.chestrestock.util.Perms;
 import com.dumptruckman.minecraft.pluginbase.locale.Messager;
 import com.dumptruckman.minecraft.pluginbase.util.Logging;
@@ -31,11 +32,11 @@ import java.util.List;
 
 public class ChestRestockListener implements Listener {
 
-    private ChestRestockPlugin plugin;
+    private ChestRestock plugin;
     private Messager messager;
     private ChestManager chestManager;
 
-    public ChestRestockListener(ChestRestockPlugin plugin) {
+    public ChestRestockListener(ChestRestock plugin) {
         this.plugin = plugin;
         this.messager = plugin.getMessager();
         this.chestManager = plugin.getChestManager();
