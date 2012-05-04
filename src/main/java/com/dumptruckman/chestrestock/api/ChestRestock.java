@@ -1,6 +1,8 @@
 package com.dumptruckman.chestrestock.api;
 
 import com.dumptruckman.minecraft.pluginbase.plugin.BukkitPlugin;
+import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 public interface ChestRestock extends BukkitPlugin<CRConfig>, Plugin {
@@ -30,4 +32,13 @@ public interface ChestRestock extends BukkitPlugin<CRConfig>, Plugin {
      * @return true if the ChestManager for the plugin has been loaded.  Added to prevent recursive errors!
      */
     boolean hasChestManagerLoaded();
+
+    /**
+     * Returns the block the player is targeting if it is an InventoryHolder otherwise, throws IllegalStateException.
+     *
+     * @param player Player to check target of.
+     * @return The block the player is targeting that is an InventoryHolder.
+     * @throws IllegalStateException If the targeted block is not an InventoryHolder or the player is not targeting a block.
+     */
+    Block getTargetedInventoryHolder(Player player) throws IllegalStateException;
 }

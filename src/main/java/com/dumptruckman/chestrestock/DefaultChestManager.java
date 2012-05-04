@@ -8,7 +8,6 @@ import com.dumptruckman.chestrestock.api.ChestManager;
 import com.dumptruckman.chestrestock.api.ChestRestock;
 import com.dumptruckman.chestrestock.util.BlockLocation;
 import com.dumptruckman.chestrestock.util.InventoryTools;
-import com.dumptruckman.chestrestock.util.Language;
 import com.dumptruckman.minecraft.pluginbase.config.ConfigEntry;
 import com.dumptruckman.minecraft.pluginbase.util.Logging;
 import com.dumptruckman.minecraft.pluginbase.util.Null;
@@ -270,11 +269,7 @@ class DefaultChestManager implements ChestManager {
 
     @Override
     public Block getTargetedInventoryHolder(Player player) throws IllegalStateException {
-        Block block = player.getTargetBlock(null, 100);
-        if (block == null || !(block.getState() instanceof InventoryHolder)) {
-            throw new IllegalStateException(plugin.getMessager().getMessage(Language.TARGETING));
-        }
-        return block;
+        return plugin.getTargetedInventoryHolder(player);
     }
 
     @Override

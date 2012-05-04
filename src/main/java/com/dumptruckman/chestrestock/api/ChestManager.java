@@ -35,7 +35,16 @@ public interface ChestManager {
      * @return The CRChest represented by the block or null if none configured.
      */
     CRChest getChest(Block block);
-    
+
+    /**
+     * Returns the block the player is targeting if it is an InventoryHolder otherwise, throws IllegalStateException.
+     * @deprecated as of release 2.3.  Use {@link ChestRestock#getTargetedInventoryHolder(org.bukkit.entity.Player)} instead.
+     *
+     * @param player Player to check target of.
+     * @return The block the player is targeting that is an InventoryHolder.
+     * @throws IllegalStateException If the targeted block is not an InventoryHolder or the player is not targeting a block.
+     */
+    @Deprecated
     Block getTargetedInventoryHolder(Player player) throws IllegalStateException;
 
     @Deprecated
