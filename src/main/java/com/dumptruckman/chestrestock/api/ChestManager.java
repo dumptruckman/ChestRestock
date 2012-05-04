@@ -47,9 +47,36 @@ public interface ChestManager {
     @Deprecated
     Block getTargetedInventoryHolder(Player player) throws IllegalStateException;
 
+    /**
+     * Creates a new CRChest with hard coded defaults and does not persist the chest or update it properly.
+     * @deprecated as of release 2.3.  Use {@link #createChest(org.bukkit.block.Block)} instead.
+     *
+     * @param block The block to set up with ChestRestock.  Must be an InventoryHolder.
+     * @param holder The InventoryHolder associated with the block.
+     * @return The newly created instance of a CRChest.
+     */
     @Deprecated
     CRChest newChest(Block block, InventoryHolder holder);
 
+    /**
+     * Creates a new CRChest at the block specified, which must be an InventoryHolder.  This enables the CRChest
+     * with all of the defaults for the world the block is in.
+     *
+     * @param block The block where the CRChest will be.  Must be an InventoryHolder.
+     * @return The newly created CRChest.
+     */
+    CRChest createChest(Block block);
+
+    /**
+     * Creates a new CRChest at the block specified, which must be an InventoryHolder.  This enables the CRChest
+     * with all of the defaults for the world the block is in.
+     * @deprecated as of release 2.3.  Use {@link #createChest(org.bukkit.block.Block)} instead.
+     *
+     * @param block The block where the CRChest will be.  Must be an InventoryHolder.
+     * @param holder The InventoryHolder associated with the block.
+     * @return The newly created CRChest.
+     */
+    @Deprecated
     CRChest createChest(Block block, InventoryHolder holder);
 
     Chest getOtherSide(Block chestBlock);

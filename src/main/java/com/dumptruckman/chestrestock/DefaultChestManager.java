@@ -158,13 +158,14 @@ class DefaultChestManager implements ChestManager {
     }
 
     @Override
-    public CRChest createChest(Block block, InventoryHolder holder) {
+    public CRChest createChest(Block block) {
         if (block == null) {
             throw new IllegalArgumentException("block may not be null!");
         }
-        if (holder == null) {
-            throw new IllegalArgumentException("holder may not be null!");
+        if (!(block.getState() instanceof InventoryHolder)) {
+            throw new IllegalArgumentException("block must be an InventoryHolder!");
         }
+        InventoryHolder holder = (InventoryHolder) block.getState();
         CRChest rChest = newChest(block, holder);
         if (rChest == null) {
             return null;
@@ -203,6 +204,11 @@ class DefaultChestManager implements ChestManager {
         rChest.update(null);
         pollingCheckIn(rChest);
         return rChest;
+    }
+
+    @Override
+    public CRChest createChest(Block block, InventoryHolder holder) {
+        return createChest(block);
     }
 
     @Override
