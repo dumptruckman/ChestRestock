@@ -50,7 +50,6 @@ public class ChestRestockPlugin extends AbstractBukkitPlugin<CRConfig> implement
     }
 
     private CRDefaults newDefaultsConfig(File file, boolean autoDefault) throws IOException {
-        Logging.info(file.toString());
         File parent = file.getParentFile();
         if (parent != null && !parent.exists()) {
             file.getParentFile().mkdirs();
