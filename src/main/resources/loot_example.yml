@@ -12,6 +12,7 @@ justaname:
       name: silk_touch
   2:
     chance: .50
+    split: true
     diamond:
       id: 276
     iron:
