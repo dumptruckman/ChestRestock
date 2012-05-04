@@ -1,5 +1,6 @@
 package com.dumptruckman.chestrestock;
 
+import com.dumptruckman.chestrestock.api.CRChest;
 import com.dumptruckman.chestrestock.api.CRConfig;
 import com.dumptruckman.chestrestock.api.CRDefaults;
 import com.dumptruckman.chestrestock.api.ChestManager;
@@ -112,6 +113,11 @@ public class ChestRestockPlugin extends AbstractBukkitPlugin<CRConfig> implement
             }, ticks, ticks);
         }
         getLootConfig();
+        try {
+            CRChest.Constants.setMaxInventorySize(config().get(CRConfig.MAX_INVENTORY_SIZE));
+        } catch (IllegalArgumentException e) {
+            Logging.warning(e.getMessage());
+        }
     }
 
     private void migrateDefaults() {

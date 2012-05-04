@@ -18,14 +18,36 @@ import java.util.HashMap;
 import java.util.Map;
 
 public interface CRChest extends Config, CRChestOptions {
-    
-    final int MAX_SIZE = 54;
+
+    class Constants {
+        public static final int MIN_INVENTORY_SIZE = 54;
+        private static int MAX_INVENTORY_SIZE = 54;
+
+        public static void setMaxInventorySize(int size) {
+            if (size < MIN_INVENTORY_SIZE) {
+                throw new IllegalArgumentException("Size may not be less than " + MIN_INVENTORY_SIZE);
+            }
+            MAX_INVENTORY_SIZE = size;
+        }
+
+        public static int getMaxInventorySize() {
+            return MAX_INVENTORY_SIZE;
+        }
+    }
+
+    /**
+     * Indicates the maximum size of an inventory.
+     * @deprecated as of release 2.3.  Use {@link CRConfig#MAX_INVENTORY_SIZE} and
+     * {@link com.dumptruckman.chestrestock.api.CRChest.Constants#getMaxInventorySize()} instead.
+     */
+    @Deprecated
+    int MAX_SIZE = 54;
 
     ConfigEntry<ItemStack[]> ITEMS = new EntryBuilder<ItemStack[]>(ItemStack[].class, "items")
-            .def(new ItemStack[MAX_SIZE]).serializer(new EntrySerializer<ItemStack[]>() {
+            .def(new ItemStack[Constants.MAX_INVENTORY_SIZE]).serializer(new EntrySerializer<ItemStack[]>() {
                 @Override
                 public ItemStack[] deserialize(Object o) {
-                    return DataStrings.parseInventory(o.toString(), MAX_SIZE);
+                    return DataStrings.parseInventory(o.toString(), Constants.MAX_INVENTORY_SIZE);
                 }
 
                 @Override

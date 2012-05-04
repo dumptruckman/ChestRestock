@@ -100,7 +100,7 @@ class DefaultCRChest extends AbstractYamlConfig<CRChest> implements CRChest {
     @Override
     public void update(HumanEntity player) {
         Inventory inventory = getInventory(player);
-        ItemStack[] items = InventoryTools.fillWithAir(new ItemStack[MAX_SIZE]);
+        ItemStack[] items = InventoryTools.fillWithAir(new ItemStack[CRChest.Constants.getMaxInventorySize()]);
         ItemStack[] chestContents = inventory.getContents();
         System.arraycopy(chestContents, 0, items, 0, chestContents.length);
         set(ITEMS, items);

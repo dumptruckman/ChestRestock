@@ -1,5 +1,6 @@
 package com.dumptruckman.chestrestock.util;
 
+import com.dumptruckman.chestrestock.api.CRChest.Constants;
 import com.dumptruckman.minecraft.pluginbase.locale.Message;
 
 public class Language {
@@ -131,6 +132,9 @@ public class Language {
             "Automatically initializes chests, when opened, as if you created them with /cr create.");
     public static final Message EMPTY_LOOT_TABLE_DESC = new Message("props.other.empty_loot_table.desc",
             "The loot table to use for empty chests.");
+
+    public static final Message MAX_INVENTORY_SIZE_INVALID = new Message("settings.max_inventory_size.invalid",
+            "You must specify a number that is equal to or larger than " + Constants.MIN_INVENTORY_SIZE);
 
     public static void init() { }
 }

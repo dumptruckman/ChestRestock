@@ -1,5 +1,6 @@
 package com.dumptruckman.chestrestock.api;
 
+import com.dumptruckman.chestrestock.api.CRChest.Constants;
 import com.dumptruckman.chestrestock.util.Language;
 import com.dumptruckman.minecraft.pluginbase.config.BaseConfig;
 import com.dumptruckman.minecraft.pluginbase.config.ConfigEntry;
@@ -16,6 +17,7 @@ import java.util.Arrays;
  */
 public interface CRConfig extends BaseConfig {
 
+    @Deprecated
     ConfigEntry<Null> DEFAULTS = new EntryBuilder<Null>(Null.class, "defaults")
             .comment("# All defaults have been moved to global_defaults.yml.  You may delete this section!").build();
 
@@ -100,4 +102,26 @@ public interface CRConfig extends BaseConfig {
             .defList(Arrays.asList("hungergames"))
             .comment("# These are worlds that all ChestRestock chests will be restocked in when Multiverse-Adventure resets the worlds.")
             .comment("# Ignore this if you're not using Multiverse-Adventure").buildList();
+
+    ConfigEntry<Integer> MAX_INVENTORY_SIZE = new EntryBuilder<Integer>(Integer.class, "settings.max_inventory_size")
+            .def(54)
+            .comment("# This is the maximum size of any inventory.  The default (54) is the size of a standard double chest.")
+            .comment("# You should only adjust this value if you are using mods that allow larger inventories.")
+            .validator(new EntryValidator() {
+                @Override
+                public boolean isValid(Object o) {
+                    if (o instanceof String) {
+                        try {
+                            o = Integer.valueOf((String) o);
+                        } catch (NumberFormatException ignore) { }
+                    }
+                    return o instanceof Integer && ((Integer) o) >= Constants.MIN_INVENTORY_SIZE;
+                }
+
+                @Override
+                public Message getInvalidMessage() {
+                    return Language.MAX_INVENTORY_SIZE_INVALID;
+                }
+            })
+            .build();
 }
