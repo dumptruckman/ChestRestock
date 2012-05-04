@@ -68,9 +68,6 @@ public class DefaultCommand extends CRCommand {
                 }
             }
         }
-        if (world != null) {
-            plugin.createDefaultIfNoneExists(world);
-        }
         if (args.size() - i == 0) {
             messager.normal(Language.CMD_SET_LIST_PROPS, sender, propsString);
         } else if (args.size() - i == 1) {

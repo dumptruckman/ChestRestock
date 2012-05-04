@@ -197,21 +197,6 @@ public class ChestRestockPlugin extends AbstractBukkitPlugin<CRConfig> implement
         return defaultsMap.get(world);
     }
 
-    @Override
-    public void createDefaultIfNoneExists(String world) {
-        if (!defaultsMap.containsKey(world)) {
-            File file = new File(defaultsFolder, world + ".yml");
-            if (!file.exists()) {
-                try {
-                    file.createNewFile();
-                } catch (IOException e) {
-                    Logging.warning("Could not create defaults file for world: " + world + "!");
-                    Logging.warning("Exception: " + e.getMessage());
-                }
-            }
-        }
-    }
-
     public boolean defaultsExistForWorld(String world) {
         File file = new File(defaultsFolder, world + ".yml");
         return file.exists();
