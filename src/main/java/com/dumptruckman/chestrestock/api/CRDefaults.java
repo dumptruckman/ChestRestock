@@ -16,4 +16,9 @@ public interface CRDefaults extends CRChestOptions {
             .comment("# This will automatically initialize any chest not already managed by ChestRestock with these defaults.")
             .comment("# Essentially the same thing as using \"/cr create\" on every chest encountered")
             .stringSerializer().build();
+
+    ConfigEntry<String> EMPTY_LOOT_TABLE = new EntryBuilder<String>(String.class, "other.empty_loot_table").def("")
+            .description(Language.EMPTY_LOOT_TABLE_DESC)
+            .comment("# This is the loot table that will be used when intializing a restock chest that is empty when created.")
+            .stringSerializer().build();
 }

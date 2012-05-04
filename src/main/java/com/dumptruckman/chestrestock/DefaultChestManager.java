@@ -11,12 +11,14 @@ import com.dumptruckman.minecraft.pluginbase.config.ConfigEntry;
 import com.dumptruckman.minecraft.pluginbase.util.Logging;
 import com.dumptruckman.minecraft.pluginbase.util.Null;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.DoubleChestInventory;
 import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -173,6 +175,22 @@ class DefaultChestManager implements ChestManager {
                 rChest.set(entry, obj);
                 //count++;
             } catch (IllegalAccessException ignore) { }
+        }
+        boolean empty = true;
+        for (ItemStack item : holder.getInventory().getContents()) {
+            if (item != null && item.getType() != Material.AIR) {
+                empty = false;
+                break;
+            }
+        }
+        if (empty) {
+            String emptyLootTable = defaults.get(CRDefaults.EMPTY_LOOT_TABLE);
+            if (emptyLootTable == null) {
+                emptyLootTable = globals.get(CRDefaults.EMPTY_LOOT_TABLE);
+            }
+            if (!emptyLootTable.isEmpty()) {
+                rChest.set(CRChest.LOOT_TABLE, emptyLootTable);
+            }
         }
 
         rChest.set(CRChest.LAST_RESTOCK, System.currentTimeMillis());

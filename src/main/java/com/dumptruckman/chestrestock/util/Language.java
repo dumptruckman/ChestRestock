@@ -127,6 +127,8 @@ public class Language {
 
     public static final Message AUTO_CREATE_DESC = new Message("props.other.auto_create.desc",
             "Automatically initializes chests, when opened, as if you created them with /cr create.");
+    public static final Message EMPTY_LOOT_TABLE_DESC = new Message("props.other.empty_loot_table.desc",
+            "The loot table to use for empty chests.");
 
     public static void init() { }
 }
