@@ -134,7 +134,7 @@ public class Language {
             "The loot table to use for empty chests.");
 
     public static final Message MAX_INVENTORY_SIZE_INVALID = new Message("settings.max_inventory_size.invalid",
-            "You must specify a number that is equal to or larger than " + Constants.MIN_INVENTORY_SIZE);
+            "You must specify a number that is equal to or larger than " + Constants.MIN_MAX_INVENTORY_SIZE);
 
     public static void init() { }
 }

@@ -113,9 +113,10 @@ public interface CRConfig extends BaseConfig {
                     if (o instanceof String) {
                         try {
                             o = Integer.valueOf((String) o);
-                        } catch (NumberFormatException ignore) { }
+                        } catch (NumberFormatException ignore) {
+                        }
                     }
-                    return o instanceof Integer && ((Integer) o) >= Constants.MIN_INVENTORY_SIZE;
+                    return o instanceof Integer && ((Integer) o) >= Constants.MIN_MAX_INVENTORY_SIZE;
                 }
 
                 @Override
