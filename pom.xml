@@ -185,6 +185,16 @@ and adjust the build number accordingly -->
             <version>2.4</version>
             <type>jar</type>
             <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.bukkit</groupId>
+                    <artifactId>craftbukkit</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.onarandombox.multiverseportals</groupId>
+                    <artifactId>Multiverse-Portals</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <!-- End of Multiverse-Adventure Dependency -->
         <!-- Start of Test Dependencies -->
