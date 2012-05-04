@@ -7,6 +7,7 @@ import com.dumptruckman.chestrestock.api.ChestRestock;
 import com.dumptruckman.chestrestock.api.LootConfig;
 import com.dumptruckman.chestrestock.command.CheckCommand;
 import com.dumptruckman.chestrestock.command.CreateCommand;
+import com.dumptruckman.chestrestock.command.DefaultCommand;
 import com.dumptruckman.chestrestock.command.DisableCommand;
 import com.dumptruckman.chestrestock.command.RestockAllCommand;
 import com.dumptruckman.chestrestock.command.RestockCommand;
@@ -44,6 +45,7 @@ public class ChestRestockPlugin extends AbstractBukkitPlugin<CRConfig> implement
     }
 
     private CRDefaults newDefaultsConfig(File file) throws IOException {
+        Logging.info(file.toString());
         File parent = file.getParentFile();
         if (parent != null && !parent.exists()) {
             file.getParentFile().mkdirs();
@@ -55,6 +57,7 @@ public class ChestRestockPlugin extends AbstractBukkitPlugin<CRConfig> implement
     public void preEnable() {
         defaultsFolder = new File(getDataFolder(), "world_defaults");
         defaultsFile = new File(getDataFolder(), "global_defaults.yml");
+        defaultsFolder.mkdirs();
         Language.init();
         HelpCommand.addStaticPrefixedKey("");
     }
@@ -79,6 +82,7 @@ public class ChestRestockPlugin extends AbstractBukkitPlugin<CRConfig> implement
         getCommandHandler().registerCommand(new SetCommand(this));
         getCommandHandler().registerCommand(new RestockCommand(this));
         getCommandHandler().registerCommand(new RestockAllCommand(this));
+        getCommandHandler().registerCommand(new DefaultCommand(this));
     }
 
     @Override

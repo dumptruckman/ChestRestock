@@ -11,7 +11,7 @@ public interface CRChestOptions extends Config {
 
     ConfigEntry<String> NAME = new EntryBuilder<String>(String.class, "name").def("")
             .comment("# The default name for new chests.  This is used for permissions if not left blank (per chest).")
-            .description(Language.NAME_DESC).build();
+            .description(Language.NAME_DESC).stringSerializer().build();
 
     ConfigEntry<Boolean> PRESERVE_SLOTS = new EntryBuilder<Boolean>(Boolean.class, "preserve_slots").def(true)
             .comment("# When set to true, chests will restock items in the same slots they were set up with.")
@@ -60,7 +60,7 @@ public interface CRChestOptions extends Config {
                 public Message getInvalidMessage() {
                     return Language.PERIOD_MODE_INVALID;
                 }
-            }).description(Language.PERIOD_MODE_DESC).build();
+            }).description(Language.PERIOD_MODE_DESC).stringSerializer().build();
 
     String RESTOCK_MODE_REPLACE = "replace";
     String RESTOCK_MODE_ADD = "add";
@@ -79,14 +79,14 @@ public interface CRChestOptions extends Config {
                 public Message getInvalidMessage() {
                     return Language.RESTOCK_MODE_INVALID;
                 }
-            }).description(Language.RESTOCK_MODE_DESC).build();
+            }).description(Language.RESTOCK_MODE_DESC).stringSerializer().build();
 
     ConfigEntry<String> LOOT_TABLE = new EntryBuilder<String>(String.class, "loot_table").def("")
             .comment("# The default loot table for new chests.  If left blank, chests will only restock with what they're set up with.")
             .comment("# A loot table enables chances for randomized loot.  You must configure a table in the loot_tables.yml file to use this.")
-            .description(Language.LOOT_TABLE_DESC).build();
+            .description(Language.LOOT_TABLE_DESC).stringSerializer().build();
 
     ConfigEntry<String> GLOBAL_MESSAGE = new EntryBuilder<String>(String.class, "global_message").def("")
             .comment("# The default global message for new chests.  This will be broadcast when the chest restocks if not left blank. (per chest)")
-            .description(Language.GLOBAL_MESSAGE_DESC).build();
+            .description(Language.GLOBAL_MESSAGE_DESC).stringSerializer().build();
 }

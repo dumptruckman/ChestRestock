@@ -61,6 +61,12 @@ public class Language {
     public static final Message CMD_CREATEALL_SUCCESS = new Message("cmd.createall.success",
             "%1 chest(s) have been restocked!");
 
+    public static final Message CMD_DEFAULT_NAME = new Message("cmd.default.name",
+            "Alters a default property.");
+    public static final Message CMD_DEFAULT_SUCCESS_WORLD = new Message("cmd.default.success.world",
+            "'%1' for world '%2' is now '%3'");
+    public static final Message CMD_DEFAULT_SUCCESS_GLOBAL = new Message("cmd.default.success.global",
+            "'%1' for global defaults is now '%2'");
 
     public static final Message CMD_SET_NAME = new Message("cmd.set.name",
             "Sets a property of a restock chest.");

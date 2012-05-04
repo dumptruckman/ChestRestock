@@ -15,5 +15,5 @@ public interface CRDefaults extends CRChestOptions {
             .description(Language.AUTO_CREATE_DESC)
             .comment("# This will automatically initialize any chest not already managed by ChestRestock with these defaults.")
             .comment("# Essentially the same thing as using \"/cr create\" on every chest encountered")
-            .build();
+            .stringSerializer().build();
 }
