@@ -124,6 +124,8 @@ public class Language {
             "The name of the loot table to use as defined in loot_tables.yml");
     public static final Message GLOBAL_MESSAGE_DESC = new Message("props.global_message.desc",
             "A message to be broadcast to the server when this chest restocks.  Blank means no message.");
+    public static final Message ONLY_RESTOCK_EMPTY_DESC = new Message("props.only_restock_empty.desc",
+            "When true, only empty chests will restock.");
 
     public static final Message AUTO_CREATE_DESC = new Message("props.other.auto_create.desc",
             "Automatically initializes chests, when opened, as if you created them with /cr create.");

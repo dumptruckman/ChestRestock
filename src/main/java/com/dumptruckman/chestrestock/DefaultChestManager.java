@@ -6,19 +6,18 @@ import com.dumptruckman.chestrestock.api.CRConfig;
 import com.dumptruckman.chestrestock.api.CRDefaults;
 import com.dumptruckman.chestrestock.api.ChestManager;
 import com.dumptruckman.chestrestock.util.BlockLocation;
+import com.dumptruckman.chestrestock.util.InventoryTools;
 import com.dumptruckman.chestrestock.util.Language;
 import com.dumptruckman.minecraft.pluginbase.config.ConfigEntry;
 import com.dumptruckman.minecraft.pluginbase.util.Logging;
 import com.dumptruckman.minecraft.pluginbase.util.Null;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.DoubleChestInventory;
 import org.bukkit.inventory.InventoryHolder;
-import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -176,14 +175,8 @@ class DefaultChestManager implements ChestManager {
                 //count++;
             } catch (IllegalAccessException ignore) { }
         }
-        boolean empty = true;
-        for (ItemStack item : holder.getInventory().getContents()) {
-            if (item != null && item.getType() != Material.AIR) {
-                empty = false;
-                break;
-            }
-        }
-        if (empty) {
+
+        if (InventoryTools.isEmpty(holder.getInventory().getContents())) {
             String emptyLootTable = defaults.get(CRDefaults.EMPTY_LOOT_TABLE);
             if (emptyLootTable == null) {
                 emptyLootTable = globals.get(CRDefaults.EMPTY_LOOT_TABLE);

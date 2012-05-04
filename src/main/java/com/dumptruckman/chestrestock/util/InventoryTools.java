@@ -1,5 +1,6 @@
 package com.dumptruckman.chestrestock.util;
 
+import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 public class InventoryTools {
@@ -15,5 +16,14 @@ public class InventoryTools {
             items[i] = new ItemStack(0);
         }
         return items;
+    }
+
+    public static boolean isEmpty(ItemStack[] items) {
+        for (ItemStack item : items) {
+            if (item != null && item.getType() != Material.AIR) {
+                return false;
+            }
+        }
+        return true;
     }
 }

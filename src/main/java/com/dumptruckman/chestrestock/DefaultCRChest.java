@@ -165,11 +165,21 @@ class DefaultCRChest extends AbstractYamlConfig<CRChest> implements CRChest {
                     set(LAST_RESTOCK, newRestockTime);
                 }
             }
-            restock(inventory);
-            if (crPlayer != null && player != null) {
-                Logging.finest("Increasing loot count for '" + player.getName() + "'");
-                crPlayer.setLootCount(crPlayer.getLootCount() + 1);
-                updatePlayerData(player.getName(), crPlayer);
+            boolean restock = false;
+            if (get(ONLY_RESTOCK_EMPTY)) {
+                if (InventoryTools.isEmpty(inventory.getContents())) {
+                    restock = true;
+                }
+            } else {
+                restock = true;
+            }
+            if (restock) {
+                restock(inventory);
+                if (crPlayer != null && player != null) {
+                    Logging.finest("Increasing loot count for '" + player.getName() + "'");
+                    crPlayer.setLootCount(crPlayer.getLootCount() + 1);
+                    updatePlayerData(player.getName(), crPlayer);
+                }
             }
         } else {
             Logging.finer("'" + player.getName() + "' no longer allowed to loot this chest!");

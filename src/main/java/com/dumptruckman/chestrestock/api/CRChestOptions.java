@@ -89,4 +89,8 @@ public interface CRChestOptions extends Config {
     ConfigEntry<String> GLOBAL_MESSAGE = new EntryBuilder<String>(String.class, "global_message").def("")
             .comment("# The default global message for new chests.  This will be broadcast when the chest restocks if not left blank. (per chest)")
             .description(Language.GLOBAL_MESSAGE_DESC).stringSerializer().build();
+
+    ConfigEntry<Boolean> ONLY_RESTOCK_EMPTY = new EntryBuilder<Boolean>(Boolean.class, "only_restock_empty").def(false)
+            .comment("# When set to true, only empty chests will be restocked.")
+            .description(Language.ONLY_RESTOCK_EMPTY_DESC).stringSerializer().build();
 }
