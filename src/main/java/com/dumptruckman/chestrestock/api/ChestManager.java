@@ -10,8 +10,31 @@ import org.bukkit.inventory.InventoryHolder;
 import java.util.Set;
 
 public interface ChestManager {
-    
+
+    /**
+     * Finds an initialized CRChest at the location of the block given.  If the block given is a double chest,
+     * it will check to see if the other side of the chest is the one that was used for persistence and return
+     * the CRChest associated with that instead.  If ChestRestock has not initialized an inventory holder here
+     * this will return null.
+     * @deprecated as of release 2.3.  Use {@link #getChest(org.bukkit.block.Block)} instead.
+     *
+     * @param block The block to check to see if it's set up with ChestRestock.  Must be an InventoryHolder.
+     * @param holder The InventoryHolder that represents the block.
+     * @return The CRChest represented by the block or null if none configured.
+     */
+    @Deprecated
     CRChest getChest(Block block, InventoryHolder holder);
+
+    /**
+     * Finds an initialized CRChest at the location of the block given.  If the block given is a double chest,
+     * it will check to see if the other side of the chest is the one that was used for persistence and return
+     * the CRChest associated with that instead.  If ChestRestock has not initialized an inventory holder here
+     * this will return null.
+     *
+     * @param block The block to check to see if it's set up with ChestRestock.  Must be an InventoryHolder.
+     * @return The CRChest represented by the block or null if none configured.
+     */
+    CRChest getChest(Block block);
     
     Block getTargetedInventoryHolder(Player player) throws IllegalStateException;
 

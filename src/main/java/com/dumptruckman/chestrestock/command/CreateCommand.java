@@ -27,7 +27,7 @@ public class CreateCommand extends TargetedChestRestockCommand {
     @Override
     public void runCommand(Player player, Block block, List<String> strings) {
         InventoryHolder holder = (InventoryHolder) block.getState();
-        CRChest rChest = chestManager.getChest(block, holder);
+        CRChest rChest = chestManager.getChest(block);
         if (rChest != null) {
             messager.normal(Language.CMD_CREATE_ALREADY_MADE, player);
             return;

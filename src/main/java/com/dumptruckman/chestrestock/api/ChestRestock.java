@@ -21,7 +21,13 @@ public interface ChestRestock extends BukkitPlugin<CRConfig>, Plugin {
      */
     CRDefaults getDefaults(String world);
 
+    /**
+     * @return the object that contains all data and methods related to random loot tables.
+     */
     LootConfig getLootConfig();
 
+    /**
+     * @return true if the ChestManager for the plugin has been loaded.  Added to prevent recursive errors!
+     */
     boolean hasChestManagerLoaded();
 }

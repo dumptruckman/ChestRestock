@@ -9,7 +9,6 @@ import com.dumptruckman.minecraft.pluginbase.config.ConfigEntry;
 import com.dumptruckman.minecraft.pluginbase.util.Null;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.InventoryHolder;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -53,7 +52,7 @@ public class CheckCommand extends TargetedChestRestockCommand {
 
     @Override
     public void runCommand(Player player, Block block, List<String> strings) {
-        CRChest rChest = chestManager.getChest(block, (InventoryHolder) block.getState());
+        CRChest rChest = chestManager.getChest(block);
         if (rChest == null) {
             messager.normal(Language.CMD_NOT_RCHEST, player);
             return;

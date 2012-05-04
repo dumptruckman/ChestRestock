@@ -50,7 +50,7 @@ class DefaultChestManager implements ChestManager {
         initPolling();
     }
 
-    public void initPolling() {
+    private void initPolling() {
         if (plugin.config().get(CRConfig.RESTOCK_TASK) < 1) {
             Logging.fine("Chest restock polling disabled");
             return;
@@ -59,6 +59,7 @@ class DefaultChestManager implements ChestManager {
         cacheAllChests();
     }
 
+    @Override
     public void cacheAllChests() {
         File worldContainer = Bukkit.getWorldContainer();
         for (File file : worldContainer.listFiles(new FileFilter() {
@@ -71,6 +72,7 @@ class DefaultChestManager implements ChestManager {
         }
     }
 
+    @Override
     public void cacheChests(String worldName) {
         File worldFolder = getWorldFolder(worldName);
         if (worldFolder.exists()) {
@@ -103,8 +105,14 @@ class DefaultChestManager implements ChestManager {
         return new File(getWorldFolder(location.getWorldName()), location.toString() + EXT);
     }
 
-    @Override
-    public CRChest getChest(Block block, InventoryHolder holder) {
+    public CRChest getChest(Block block) {
+        if (block == null) {
+            throw new IllegalArgumentException("block may not be null!");
+        }
+        if (!(block.getState() instanceof InventoryHolder)) {
+            throw new IllegalArgumentException("block must be an InventoryHolder!");
+        }
+        InventoryHolder holder = (InventoryHolder) block.getState();
         BlockLocation location = BlockLocation.get(block);
         Logging.finer("Searching for ChestRestock chest at " + location.toString());
         CRChest rChest = chestsMap.get(location);
@@ -136,6 +144,11 @@ class DefaultChestManager implements ChestManager {
         rChest = loadChest(chestFile);
         chestsMap.put(location, rChest);
         return rChest;
+    }
+
+    @Override
+    public CRChest getChest(Block block, InventoryHolder holder) {
+        return getChest(block);
     }
     
     //public void removeChest()

@@ -6,7 +6,6 @@ import com.dumptruckman.chestrestock.util.Language;
 import com.dumptruckman.chestrestock.util.Perms;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.InventoryHolder;
 
 import java.util.List;
 
@@ -27,7 +26,7 @@ public class RestockCommand extends TargetedChestRestockCommand {
 
     @Override
     public void runCommand(Player player, Block block, List<String> strings) {
-        CRChest rChest = chestManager.getChest(block, (InventoryHolder) block.getState());
+        CRChest rChest = chestManager.getChest(block);
         if (rChest == null) {
             messager.normal(Language.CMD_NOT_RCHEST, player);
             return;
