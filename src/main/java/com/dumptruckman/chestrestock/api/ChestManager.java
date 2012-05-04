@@ -79,23 +79,78 @@ public interface ChestManager {
     @Deprecated
     CRChest createChest(Block block, InventoryHolder holder);
 
+    /**
+     * Grabs the other side of a double chest, if the chestBlock IS a double chest.
+     *
+     * @param chestBlock The chest to check for the other side of.
+     * @return The Chest that is the other side of the double chest represented by chestBlock.
+     * If chestBlock is not a double chest, this returns null.
+     */
     Chest getOtherSide(Block chestBlock);
-    
+
+    /**
+     * Disables a CRChest.  This turns it back into a regular ol' InventoryHolder.  This also deletes the file
+     * for the chest.
+     *
+     * @param location The {@link BlockLocation} of the chest to remove.
+     * @return True if the chest was deleted or false if none was found to delete.
+     */
     boolean removeChest(BlockLocation location);
 
+    /**
+     * Adds the CRChest to the set of chests to poll at a regular interval for restocking IF the chest is set to
+     * {@link CRChestOptions#ACCEPT_POLL}.  If it is not set to {@link CRChestOptions#ACCEPT_POLL} it will be removed
+     * from the polling set.
+     *
+     * @param chest The CRChest to check in.
+     * @return true if chest was added to polling set, false if removed.
+     */
     boolean pollingCheckIn(CRChest chest);
 
+    /**
+     * Loads all chests from persistence for all loaded worlds and caches them in memory.
+     * This is done on startup to make sure all chests set to {@link CRChestOptions#ACCEPT_POLL} are checked in.
+     */
     void cacheAllChests();
 
+    /**
+     * Loads all chests from persistence for the specified world and caches them in memory.
+     *
+     * @param worldName The name of world to load chests for.
+     */
     void cacheChests(String worldName);
 
+    /**
+     * @return The number of chests in the polling set.
+     */
     int getNumberChestsPolled();
 
+    /**
+     * @return The number of chests cached in memory.
+     */
     int getNumberCachedChests();
 
+    /**
+     * @deprecated as of release 2.3.  Not intended for public use.
+     *
+     * @return The set of chests for polling.
+     */
+    @Deprecated
     Set<CRChest> getChestsForPolling();
 
+    /**
+     * Iterates through all chests set to {@link CRChestOptions#ACCEPT_POLL} and restocks them
+     * if they are ready to be restocked.  This is performed automatically at an interval specified by
+     * {@link CRConfig#RESTOCK_TASK}.
+     */
     void pollChests();
 
+    /**
+     * Restocks all chests for a given world and given name.
+     *
+     * @param world The world to restock all chests for.  If null, restocks for ALL worlds.
+     * @param name The name of chest to restock.  If null, all names are considered.
+     * @return The number of chests that were restocked.
+     */
     int restockAllChests(World world, String name);
 }

@@ -300,7 +300,7 @@ class DefaultChestManager implements ChestManager {
 
     @Override
     public void pollChests() {
-        Iterator<CRChest> it = getChestsForPolling().iterator();
+        Iterator<CRChest> it = pollingSet.iterator();
         while (it.hasNext()) {
             CRChest chest = it.next();
             Logging.finest("Polling chest " + chest.getLocation().toString());
