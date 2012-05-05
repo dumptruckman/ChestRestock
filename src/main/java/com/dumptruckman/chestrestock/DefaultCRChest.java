@@ -45,6 +45,7 @@ class DefaultCRChest extends AbstractYamlConfig<CRChest> implements CRChest {
             }
         }
         save();
+        Logging.finer("Finished object initialization of " + this);
     }
 
     @Override
@@ -72,6 +73,7 @@ class DefaultCRChest extends AbstractYamlConfig<CRChest> implements CRChest {
 
     @Override
     public Inventory getInventory(HumanEntity player) {
+        Logging.finest("Getting inventory for: " + player);
         Inventory inventory;
         if (player != null && get(UNIQUE)) {
             inventory = playerInventories.get(player.getName());
@@ -79,16 +81,16 @@ class DefaultCRChest extends AbstractYamlConfig<CRChest> implements CRChest {
                 if (getInventoryHolder().getInventory().getType() == InventoryType.CHEST) {
                     inventory = Bukkit.createInventory(getInventoryHolder(),
                             getInventoryHolder().getInventory().getSize());
-                    Logging.finer("Created new chest inventory for player: " + player.getName());
+                    Logging.finer("Created new chest inventory for: " + player);
                 } else {
                     inventory = Bukkit.createInventory(getInventoryHolder(),
                             getInventoryHolder().getInventory().getType());
-                    Logging.finer("Created new other inventory for player: " + player.getName());
+                    Logging.finer("Created new other inventory for: " + player);
                 }
                 inventory.setContents(getInventoryHolder().getInventory().getContents());
                 playerInventories.put(player.getName(), inventory);
             } else {
-                Logging.finer("Got existing unqiue inventory for player: " + player.getName());
+                Logging.finer("Got existing unique inventory for: " + player);
             }
         } else {
             Logging.finer("Got non-unique physical inventory");

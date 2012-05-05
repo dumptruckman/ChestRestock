@@ -203,6 +203,7 @@ class DefaultChestManager implements ChestManager {
         rChest.set(CRChest.LAST_RESTOCK, System.currentTimeMillis());
         rChest.update(null);
         pollingCheckIn(rChest);
+        chestsMap.put(rChest.getLocation(), rChest);
         return rChest;
     }
 
