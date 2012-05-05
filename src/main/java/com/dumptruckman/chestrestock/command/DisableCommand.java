@@ -14,7 +14,7 @@ public class DisableCommand extends TargetedChestRestockCommand {
     public DisableCommand(ChestRestock plugin) {
         super(plugin);
         this.setName(messager.getMessage(Language.CMD_DISABLE_NAME));
-        this.setCommandUsage(plugin.getCommandPrefixes().get(0) + " disable");
+        this.setCommandUsage("/" + plugin.getCommandPrefixes().get(0) + " disable");
         this.setArgRange(0, 0);
         for (String prefix : plugin.getCommandPrefixes()) {
             this.addKey(prefix + " disable");

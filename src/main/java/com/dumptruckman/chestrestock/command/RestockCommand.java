@@ -15,7 +15,7 @@ public class RestockCommand extends TargetedChestRestockCommand {
     public RestockCommand(ChestRestock plugin) {
         super(plugin);
         this.setName(messager.getMessage(Language.CMD_RESTOCK_NAME));
-        this.setCommandUsage(plugin.getCommandPrefixes().get(0) + " restock");
+        this.setCommandUsage("/" + plugin.getCommandPrefixes().get(0) + " restock");
         this.setArgRange(0, 0);
         for (String prefix : plugin.getCommandPrefixes()) {
             this.addKey(prefix + " restock");

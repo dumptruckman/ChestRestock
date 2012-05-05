@@ -15,7 +15,7 @@ public class RestockAllCommand extends CRCommand {
     public RestockAllCommand(ChestRestock plugin) {
         super(plugin);
         this.setName(messager.getMessage(Language.CMD_RESTOCKALL_NAME));
-        this.setCommandUsage(plugin.getCommandPrefixes().get(0) + " restockall [name] [-w:worldname]");
+        this.setCommandUsage("/" + plugin.getCommandPrefixes().get(0) + " restockall [name] [-w:worldname]");
         this.setArgRange(0, 2);
         this.addPrefixedKey(" restockall");
         this.addCommandExample("/" + plugin.getCommandPrefixes().get(0) + " restockall phatlootz");

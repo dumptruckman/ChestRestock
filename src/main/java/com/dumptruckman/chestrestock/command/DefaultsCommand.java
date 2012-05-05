@@ -40,7 +40,7 @@ public class DefaultsCommand extends CRCommand {
     public DefaultsCommand(ChestRestock plugin) {
         super(plugin);
         this.setName(messager.getMessage(Language.CMD_DEFAULTS_NAME));
-        this.setCommandUsage(plugin.getCommandPrefixes().get(0) + " defaults [world]");
+        this.setCommandUsage("/" + plugin.getCommandPrefixes().get(0) + " defaults [world]");
         this.setArgRange(0, 1);
         this.addPrefixedKey(" defaults");
         this.addPrefixedKey(" defs");

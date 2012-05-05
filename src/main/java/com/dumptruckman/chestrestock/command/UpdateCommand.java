@@ -14,7 +14,7 @@ public class UpdateCommand extends TargetedChestRestockCommand {
     public UpdateCommand(ChestRestock plugin) {
         super(plugin);
         this.setName(messager.getMessage(Language.CMD_UPDATE_NAME));
-        this.setCommandUsage(plugin.getCommandPrefixes().get(0) + " update");
+        this.setCommandUsage("/" + plugin.getCommandPrefixes().get(0) + " update");
         this.setArgRange(0, 0);
         for (String prefix : plugin.getCommandPrefixes()) {
             this.addKey(prefix + " update");
