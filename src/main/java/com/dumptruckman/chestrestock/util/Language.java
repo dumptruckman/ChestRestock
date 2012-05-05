@@ -32,9 +32,15 @@ public class Language {
             "Checks the global defaults or defaults for specified world");
     public static final Message CMD_DEFAULTS_NO_DEFAULTS = new Message("cmd.defaults.no_defaults",
             "No specific defaults for world: %1");
+    public static final Message CMD_DEFAULTS_GLOBAL = new Message("cmd.defaults.global",
+            "&6=== Global Defaults ===");
+    public static final Message CMD_DEFAULTS_WORLD = new Message("cmd.defaults.world",
+            "&6=== World Defaults: %1 ===");
 
     public static final Message CMD_CHECK_NAME = new Message("cmd.check.name",
             "Checks a chest and gives info relating to ChestRestock");
+    public static final Message CMD_CHECK_INFO = new Message("cmd.check.info",
+            "&6=== Chest Settings @ %1 ===");
 
     public static final Message CMD_UPDATE_NAME = new Message("cmd.update.name",
             "Updates the restocking contents of a chest.");

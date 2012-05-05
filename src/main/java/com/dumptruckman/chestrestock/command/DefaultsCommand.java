@@ -31,7 +31,7 @@ public class DefaultsCommand extends CRCommand {
                     continue;
                 }
                 PROPS_LIST.add(entry);
-                CHECK_MESSAGES.add(field.getName().toLowerCase() + ": %s");
+                CHECK_MESSAGES.add("\u00a7b" + field.getName().toLowerCase() + ":\u00a7f %s");
                 //count++;
             } catch (IllegalAccessException ignore) { }
         }
@@ -46,7 +46,7 @@ public class DefaultsCommand extends CRCommand {
         this.addPrefixedKey(" defs");
         this.addCommandExample("/" + plugin.getCommandPrefixes().get(0) + " defaults");
         this.addCommandExample("/" + plugin.getCommandPrefixes().get(0) + " defs hungergames");
-        this.setPermission(Perms.CMD_CHECK.getPermission());
+        this.setPermission(Perms.CMD_DEFAULTS.getPermission());
     }
 
     @Override
@@ -61,14 +61,26 @@ public class DefaultsCommand extends CRCommand {
         }
         CRDefaults defaults = plugin.getDefaults(world);
         List<String> messages = new ArrayList<String>(CHECK_MESSAGES);
+        List<String> messagesToRemove = new LinkedList<String>();
         int numProps = 0;
         for (int i = 0; i < messages.size(); i++) {
             Object obj = defaults.get(PROPS_LIST.get(i));
             if (obj == null) {
-                continue;
+                if (world == null) {
+                    obj = "";
+                } else {
+                    messagesToRemove.add(messages.get(i));
+                    continue;
+                }
             }
             numProps++;
             messages.set(i, String.format(messages.get(i), obj));
+        }
+        messages.removeAll(messagesToRemove);
+        if (world == null) {
+            messages.add(0, messager.getMessage(Language.CMD_DEFAULTS_GLOBAL));
+        } else {
+            messages.add(0, messager.getMessage(Language.CMD_DEFAULTS_WORLD, world));
         }
         if (numProps == 0) {
             messager.info(Language.CMD_DEFAULTS_NO_DEFAULTS, sender, world);

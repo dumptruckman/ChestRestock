@@ -11,6 +11,7 @@ public class Perms {
     public static final Perm CMD_UPDATE = new Perm.Builder(BASE_PERM + "cmd.update").commandPermission().build();
     public static final Perm CMD_SET = new Perm.Builder(BASE_PERM + "cmd.set").commandPermission().build();
     public static final Perm CMD_DEFAULT = new Perm.Builder(BASE_PERM + "cmd.default").commandPermission().build();
+    public static final Perm CMD_DEFAULTS = new Perm.Builder(BASE_PERM + "cmd.defaults").commandPermission().build();
     public static final Perm CMD_RESTOCKALL = new Perm.Builder(BASE_PERM + "cmd.restockall").commandPermission().build();
     public static final Perm CMD_CREATEALL = new Perm.Builder(BASE_PERM + "cmd.createall").commandPermission().build();
     public static final Perm CMD_RESTOCK = new Perm.Builder(BASE_PERM + "cmd.restock").commandPermission().build();

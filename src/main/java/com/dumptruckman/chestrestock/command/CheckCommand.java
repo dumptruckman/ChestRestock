@@ -32,7 +32,7 @@ public class CheckCommand extends TargetedChestRestockCommand {
                     continue;
                 }
                 PROPS_LIST.add(entry);
-                CHECK_MESSAGES.add(field.getName().toLowerCase() + ": %s");
+                CHECK_MESSAGES.add("\u00a7b" + field.getName().toLowerCase() + ":\u00a7f %s");
                 //count++;
             } catch (IllegalAccessException ignore) { }
         }
@@ -61,6 +61,7 @@ public class CheckCommand extends TargetedChestRestockCommand {
         for (int i = 0; i < messages.size(); i++) {
             messages.set(i, String.format(messages.get(i), rChest.get(PROPS_LIST.get(i))));
         }
+        messages.add(0, messager.getMessage(Language.CMD_CHECK_INFO, rChest.getLocation()));
         messager.sendMessages(player, messages);
     }
 }

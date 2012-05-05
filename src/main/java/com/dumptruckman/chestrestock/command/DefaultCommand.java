@@ -51,7 +51,7 @@ public class DefaultCommand extends CRCommand {
         this.addCommandExample("/" + plugin.getCommandPrefixes().get(0) + " default -w:hungergames");
         this.addCommandExample("/" + plugin.getCommandPrefixes().get(0) + " default period 300");
         this.addCommandExample("/" + plugin.getCommandPrefixes().get(0) + " default -w:hungergames restockmode fixed");
-        this.setPermission(Perms.CMD_SET.getPermission());
+        this.setPermission(Perms.CMD_DEFAULT.getPermission());
     }
 
     @Override
