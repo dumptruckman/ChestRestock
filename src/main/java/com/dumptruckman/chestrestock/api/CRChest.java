@@ -17,8 +17,14 @@ import org.bukkit.inventory.ItemStack;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * An interface that represents a ChestRestock "chest".  Chest being any sort of block based inventory.
+ */
 public interface CRChest extends Config, CRChestOptions {
 
+    /**
+     * Constants related to CRChest.
+     */
     class Constants {
 
         /**
@@ -139,15 +145,50 @@ public interface CRChest extends Config, CRChestOptions {
      */
     InventoryHolder getInventoryHolder();
 
+    /**
+     * Retrieves the inventory for this CRChest.  If player is null or this chest is not {@link CRChest#UNIQUE} this
+     * inventory will be the physical inventory of the block.  Otherwise, a unique "fake" (non-block based) inventory
+     * will be returned.
+     *
+     * @param player The player to get the inventory for if the chest is {@link CRChest#UNIQUE} or null to always
+     *               get the physical inventory.
+     * @return The physical inventory or a unique inventory for the player.
+     */
     Inventory getInventory(HumanEntity player);
 
+    /**
+     * Updates the items to restock with with the inventory's current contents.
+     *
+     * @param player The player causing the update which is needed if the chest is {@link CRChest#UNIQUE} otherwise
+     *               null to update with the contents of the physical inventory.
+     */
     void update(HumanEntity player);
-    
+
+    /**
+     * Restocks the inventory passed in using all the {@link CRChestOptions} of this chest.
+     *
+     * @param inventory The inventory to restock.
+     */
     void restock(Inventory inventory);
 
+    /**
+     * This restocks all inventories of the chest, physical and player unique using all the {@link CRChestOptions} of
+     * this chest.
+     */
     void restockAllInventories();
 
+    /**
+     * Opens the inventory of this chest for the player passed in.  This causes the chest to consider restocking.
+     * null may be used to possibly trigger restocking on the physical inventory.  This will literally open the
+     * inventory window for the player passed in.
+     *
+     * @param player The player to open the inventory window for or null.
+     */
     void openInventory(HumanEntity player);
-    
+
+    /**
+     * @param name The name of a player.
+     * @return The data for the specified player for this chest.
+     */
     CRPlayer getPlayerData(String name);
 }

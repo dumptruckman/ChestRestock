@@ -9,6 +9,10 @@ import org.bukkit.inventory.InventoryHolder;
 
 import java.util.Set;
 
+/**
+ * This is where most of the business of this plugin is handled.  From here, you can retrieve chests from
+ * persistence and create new chests and so on.  Oh, just look at the methods!
+ */
 public interface ChestManager {
 
     /**

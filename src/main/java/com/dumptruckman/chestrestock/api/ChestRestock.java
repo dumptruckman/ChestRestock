@@ -5,6 +5,10 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
+/**
+ * The main interface of the ChestRestock plugin.  You can use this for casting Plugin when got from Bukkit's
+ * plugin manager.
+ */
 public interface ChestRestock extends BukkitPlugin<CRConfig>, Plugin {
 
     /**
