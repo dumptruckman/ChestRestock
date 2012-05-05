@@ -45,6 +45,8 @@ public interface CRChestOptions extends Config {
      */
     ConfigEntry<Boolean> UNIQUE = new EntryBuilder<Boolean>(Boolean.class, "unique").def(true)
             .comment("# When set to true, chests will give each player a unique version of the chest to prevent loot theft.")
+            .comment("# These inventories will NOT persist through server restarts/reloads.")
+            .comment("# It's possible these inventories will be wiped when the chest is not in use for a while.  This is dependent on your JVM Garbage Collection settings.")
             .description(Language.UNIQUE_DESC).stringSerializer().build();
 
     /**
