@@ -27,7 +27,7 @@ public class DisableCommand extends TargetedChestRestockCommand {
     public void runCommand(Player player, Block block, List<String> strings) {
         CRChest rChest = chestManager.getChest(block);
         if (rChest == null) {
-            messager.normal(Language.CMD_NOT_RCHEST, player);
+            messager.bad(Language.CMD_NOT_RCHEST, player);
             return;
         }
         chestManager.removeChest(rChest.getLocation());

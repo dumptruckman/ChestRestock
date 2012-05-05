@@ -3,6 +3,7 @@ package com.dumptruckman.chestrestock.command;
 import com.dumptruckman.chestrestock.api.ChestManager;
 import com.dumptruckman.chestrestock.api.ChestRestock;
 import com.dumptruckman.chestrestock.util.Language;
+import com.dumptruckman.minecraft.pluginbase.locale.Messages;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -27,9 +28,9 @@ public abstract class TargetedChestRestockCommand extends CRCommand {
         Player player = (Player) sender;
         Block holder = null;
         try {
-            holder = chestManager.getTargetedInventoryHolder(player);
+            holder = plugin.getTargetedInventoryHolder(player);
         } catch (IllegalStateException e) {
-            messager.sendMessage(sender, e.getMessage());
+            messager.sendMessage(sender, "\u00a7c" + messager.getMessage(Messages.GENERIC_ERROR) + " " + e.getMessage());
             return;
         }
         runCommand(player, holder, args);
