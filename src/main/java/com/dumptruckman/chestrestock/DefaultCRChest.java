@@ -126,13 +126,13 @@ class DefaultCRChest extends AbstractYamlConfig<CRChest> implements CRChest {
         save();
     }
     
-    private Inventory maybeRestock(HumanEntity player, CRPlayer crPlayer) {
+    private boolean maybeRestock(HumanEntity player, CRPlayer crPlayer, Inventory inventory) {
+        boolean restock = false;
         long accessTime = System.currentTimeMillis();
         long lastRestock = get(LAST_RESTOCK);
-        Inventory inventory = getInventory(player);
         if (get(PERIOD) < 1) {
             Logging.fine("Chest does use period based restocking");
-            return inventory;
+            return restock;
         }
         if (crPlayer != null && get(UNIQUE)) {
             lastRestock = crPlayer.getLastRestockTime();
@@ -144,7 +144,7 @@ class DefaultCRChest extends AbstractYamlConfig<CRChest> implements CRChest {
             Logging.finer("Last restock (unique: " + get(UNIQUE) + "): " + lastRestock + "  Access time: " + accessTime + "  Time diff: " + (accessTime - lastRestock));
             if (accessTime < lastRestock + (get(PERIOD) * 1000)) {
                 Logging.finest("Not time to restock");
-                return inventory;
+                return restock;
             }
             Logging.finest("Preparing to restock...");
             long missedPeriods = (accessTime - lastRestock) / (get(PERIOD) * 1000);
@@ -167,7 +167,6 @@ class DefaultCRChest extends AbstractYamlConfig<CRChest> implements CRChest {
                     set(LAST_RESTOCK, newRestockTime);
                 }
             }
-            boolean restock = false;
             if (get(ONLY_RESTOCK_EMPTY)) {
                 if (InventoryTools.isEmpty(inventory.getContents())) {
                     restock = true;
@@ -187,7 +186,7 @@ class DefaultCRChest extends AbstractYamlConfig<CRChest> implements CRChest {
             Logging.finer("'" + player.getName() + "' no longer allowed to loot this chest!");
         }
         save();
-        return inventory;
+        return restock;
     }
     
     public void restock(Inventory inventory) {
@@ -247,13 +246,15 @@ class DefaultCRChest extends AbstractYamlConfig<CRChest> implements CRChest {
     }
 
     @Override
-    public void openInventory(HumanEntity player) {
+    public boolean openInventory(HumanEntity player) {
         if (player != null) {
             CRPlayer crPlayer = getPlayerData(player.getName());
-            Inventory inventory = maybeRestock(player, crPlayer);
+            Inventory inventory = getInventory(player);
+            boolean result = maybeRestock(player, crPlayer, inventory);
             player.openInventory(inventory);
+            return result;
         } else {
-            maybeRestock(null, null);
+            return maybeRestock(null, null, getInventory(null));
         }
     }
 }

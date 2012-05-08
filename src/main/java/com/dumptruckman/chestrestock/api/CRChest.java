@@ -183,8 +183,9 @@ public interface CRChest extends Config, CRChestOptions {
      * inventory window for the player passed in.
      *
      * @param player The player to open the inventory window for or null.
+     * @return true if this caused the chest to restock.
      */
-    void openInventory(HumanEntity player);
+    boolean openInventory(HumanEntity player);
 
     /**
      * @param name The name of a player.
