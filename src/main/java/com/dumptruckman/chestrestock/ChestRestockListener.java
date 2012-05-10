@@ -116,7 +116,11 @@ public class ChestRestockListener implements Listener {
         }
         CRChest rChest = chestManager.getChest(block);
         if (rChest == null) {
-            if (plugin.getDefaults(block.getWorld().getName()).get(CRDefaults.AUTO_CREATE)) {
+            Boolean autoCreate = plugin.getDefaults(block.getWorld().getName()).get(CRDefaults.AUTO_CREATE);
+            if (autoCreate == null) {
+                autoCreate = plugin.getDefaults(null).get(CRDefaults.AUTO_CREATE);
+            }
+            if (autoCreate) {
                 rChest = chestManager.createChest(block);
             }
             if (rChest == null) {
