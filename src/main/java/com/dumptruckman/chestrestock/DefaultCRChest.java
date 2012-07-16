@@ -83,9 +83,14 @@ class DefaultCRChest extends AbstractYamlConfig<CRChest> implements CRChest {
                             getInventoryHolder().getInventory().getSize());
                     Logging.finer("Created new chest inventory for: " + player);
                 } else {
+                    Logging.fine("Workaround: Non-chest unique inventories are currently disabled due to Bukkit bug! returning physical inventory...");
+                    inventory = getInventoryHolder().getInventory();
+                    return inventory;
+                    /* TODO Re-add this when https://bukkit.atlassian.net/browse/BUKKIT-1929 is fixed.
                     inventory = Bukkit.createInventory(getInventoryHolder(),
                             getInventoryHolder().getInventory().getType());
                     Logging.finer("Created new other inventory for: " + player);
+                    */
                 }
                 inventory.setContents(getInventoryHolder().getInventory().getContents());
                 playerInventories.put(player.getName(), inventory);
