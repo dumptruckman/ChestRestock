@@ -4,8 +4,8 @@ import com.dumptruckman.chestrestock.api.CRChest;
 import com.dumptruckman.chestrestock.api.CRDefaults;
 import com.dumptruckman.chestrestock.api.ChestManager;
 import com.dumptruckman.chestrestock.api.ChestRestock;
+import com.dumptruckman.chestrestock.util.BlockLocation;
 import com.dumptruckman.chestrestock.util.Perms;
-import com.dumptruckman.minecraft.pluginbase.locale.Messager;
 import com.dumptruckman.minecraft.pluginbase.util.Logging;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -33,13 +33,13 @@ import java.util.List;
 public class ChestRestockListener implements Listener {
 
     private ChestRestock plugin;
-    private Messager messager;
-    private ChestManager chestManager;
 
     public ChestRestockListener(ChestRestock plugin) {
         this.plugin = plugin;
-        this.messager = plugin.getMessager();
-        this.chestManager = plugin.getChestManager();
+    }
+
+    private ChestManager getChestManager() {
+        return plugin.getChestManager();
     }
 
     @EventHandler
@@ -56,7 +56,7 @@ public class ChestRestockListener implements Listener {
             return;
         }
         InventoryHolder holder = (InventoryHolder) block.getState();
-        CRChest rChest = chestManager.getChest(block);
+        CRChest rChest = getChestManager().getChest(block);
         if (rChest == null) {
             Logging.finest("chest not configured");
             return;
@@ -114,14 +114,14 @@ public class ChestRestockListener implements Listener {
         if (!(block.getState() instanceof InventoryHolder)) {
             return;
         }
-        CRChest rChest = chestManager.getChest(block);
+        CRChest rChest = getChestManager().getChest(block);
         if (rChest == null) {
             Boolean autoCreate = plugin.getDefaults(block.getWorld().getName()).get(CRDefaults.AUTO_CREATE);
             if (autoCreate == null) {
                 autoCreate = plugin.getDefaults(null).get(CRDefaults.AUTO_CREATE);
             }
             if (autoCreate) {
-                rChest = chestManager.createChest(block);
+                rChest = getChestManager().createChest(block);
             }
             if (rChest == null) {
                 Logging.finest("chest not configured");
@@ -140,6 +140,8 @@ public class ChestRestockListener implements Listener {
 
         if (chestBreak(event.getBlock(), null)) {
             event.setCancelled(true);
+        } else {
+            chestDestroyed(event.getBlock());
         }
     }
 
@@ -151,6 +153,8 @@ public class ChestRestockListener implements Listener {
 
         if (chestBreak(event.getBlock(), null)) {
             event.setCancelled(true);
+        } else {
+            chestDestroyed(event.getBlock());
         }
     }
 
@@ -162,6 +166,8 @@ public class ChestRestockListener implements Listener {
 
         if (chestBreak(event.getBlock(), null)) {
             event.setCancelled(true);
+        } else {
+            chestDestroyed(event.getBlock());
         }
     }
 
@@ -198,6 +204,8 @@ public class ChestRestockListener implements Listener {
             if (chestBreak(block, null)) {
                 event.setCancelled(true);
                 break;
+            } else {
+                chestDestroyed(block);
             }
         }
     }
@@ -210,6 +218,8 @@ public class ChestRestockListener implements Listener {
 
         if (chestBreak(event.getBlock(), null)) {
             event.setCancelled(true);
+        } else {
+            chestDestroyed(event.getBlock());
         }
     }
 
@@ -232,6 +242,8 @@ public class ChestRestockListener implements Listener {
 
         if (chestBreak(event.getBlock(), event.getPlayer())) {
             event.setCancelled(true);
+        } else {
+            chestDestroyed(event.getBlock());
         }
     }
     
@@ -239,8 +251,7 @@ public class ChestRestockListener implements Listener {
         if (!(block.getState() instanceof InventoryHolder)) {
             return false;
         }
-        InventoryHolder invHolder = (InventoryHolder) block.getState();
-        CRChest rChest = chestManager.getChest(block);
+        CRChest rChest = getChestManager().getChest(block);
         if (rChest == null) {
             return false;
         }
@@ -259,5 +270,13 @@ public class ChestRestockListener implements Listener {
             return true;
         }
         return false;
+    }
+
+    private void chestDestroyed(Block block) {
+        CRChest rChest = getChestManager().getChest(block);
+        if (rChest == null) {
+            return;
+        }
+        getChestManager().removeChest(BlockLocation.get(block));
     }
 }
