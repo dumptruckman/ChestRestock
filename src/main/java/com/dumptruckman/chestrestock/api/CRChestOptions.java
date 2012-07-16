@@ -13,6 +13,14 @@ import com.dumptruckman.minecraft.pluginbase.locale.Message;
 public interface CRChestOptions extends Config {
 
     /**
+     * Whether or not the chest options for this chest are actually enabled.
+     */
+    ConfigEntry<Boolean> ENABLED = new EntryBuilder<Boolean>(Boolean.class, "enabled").def(true)
+            .comment("# When set to true, the chest functions as a chest for this plugin.  Very rarely would you manually set this to false.")
+            .comment("# When set to false, the chest will behave exactly as a normal chest!")
+            .description(Language.ENABLED_DESC).stringSerializer().build();
+
+    /**
      * The name of the chest.
      */
     ConfigEntry<String> NAME = new EntryBuilder<String>(String.class, "name").def("")

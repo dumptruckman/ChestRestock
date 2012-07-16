@@ -21,6 +21,7 @@ import org.bukkit.event.block.BlockFadeEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
@@ -59,6 +60,10 @@ public class ChestRestockListener implements Listener {
         CRChest rChest = getChestManager().getChest(block);
         if (rChest == null) {
             Logging.finest("chest not configured");
+            return;
+        }
+        if (!rChest.get(CRChest.ENABLED)) {
+            Logging.finest("chest is disabled");
             return;
         }
         if (rChest.get(CRChest.REDSTONE)) {
@@ -102,6 +107,34 @@ public class ChestRestockListener implements Listener {
         return null;
     }
 
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void blockPlace(BlockPlaceEvent event) {
+        if (event.isCancelled()) {
+            return;
+        }
+        Block block = event.getBlockPlaced();
+        if (!(block.getState() instanceof InventoryHolder)) {
+            return;
+        }
+        CRChest rChest = getChestManager().getChest(block);
+        if (rChest == null) {
+            Boolean autoCreate = plugin.getDefaults(block.getWorld().getName()).get(CRDefaults.AUTO_CREATE);
+            if (autoCreate == null) {
+                autoCreate = plugin.getDefaults(null).get(CRDefaults.AUTO_CREATE);
+            }
+            Boolean autoCreateNew = plugin.getDefaults(block.getWorld().getName()).get(CRDefaults.AUTO_CREATE_NEW);
+            if (autoCreateNew == null) {
+                autoCreateNew = plugin.getDefaults(null).get(CRDefaults.AUTO_CREATE_NEW);
+            }
+            if (autoCreate) {
+                rChest = getChestManager().createChest(block);
+                if (!autoCreateNew) {
+                    rChest.set(CRChest.ENABLED, false);
+                }
+            }
+        }
+    }
+
     @EventHandler(priority = EventPriority.HIGH)
     public void inventoryOpen(PlayerInteractEvent event) {
         if (event.isCancelled()) {
@@ -127,6 +160,10 @@ public class ChestRestockListener implements Listener {
                 Logging.finest("chest not configured");
                 return;
             }
+        }
+        if (!rChest.get(CRChest.ENABLED)) {
+            Logging.finest("chest is disabled");
+            return;
         }
         event.setCancelled(true);
         rChest.openInventory(event.getPlayer());
@@ -255,6 +292,9 @@ public class ChestRestockListener implements Listener {
         if (rChest == null) {
             return false;
         }
+        if (!rChest.get(CRChest.ENABLED)) {
+            return false;
+        }
         if (rChest.get(CRChest.INDESTRUCTIBLE)) {
             if (player != null) {
                 if (!rChest.get(CRChest.NAME).isEmpty()) {
@@ -273,6 +313,9 @@ public class ChestRestockListener implements Listener {
     }
 
     private void chestDestroyed(Block block) {
+        if (!(block.getState() instanceof InventoryHolder)) {
+            return;
+        }
         CRChest rChest = getChestManager().getChest(block);
         if (rChest == null) {
             return;

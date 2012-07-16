@@ -337,7 +337,7 @@ class DefaultChestManager implements ChestManager {
             if (name != null && !chest.get(CRChest.NAME).equalsIgnoreCase(name)) {
                 continue;
             }
-            if (chest.isValid()) {
+            if (chest.isValid() && chest.get(CRChest.ENABLED)) {
                 count++;
                 chest.restockAllInventories();
             }

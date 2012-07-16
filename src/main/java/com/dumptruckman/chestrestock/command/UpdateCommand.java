@@ -30,6 +30,10 @@ public class UpdateCommand extends TargetedChestRestockCommand {
             messager.normal(Language.CMD_NOT_RCHEST, player);
             return;
         }
+        if (!rChest.get(CRChest.ENABLED)) {
+            messager.normal(Language.CMD_CHEST_DISABLED, player);
+            return;
+        }
         rChest.update(player);
         messager.good(Language.CMD_UPDATE_SUCCESS, player);
     }

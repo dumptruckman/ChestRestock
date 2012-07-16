@@ -11,6 +11,8 @@ public class Language {
             "You must be targeting a chest to use this command!");
     public static final Message CMD_NOT_RCHEST = new Message("cmd.not_restock_chest",
             "The targeted chest is not managed by ChestRestock.");
+    public static final Message CMD_CHEST_DISABLED = new Message("cmd.chest_disabled",
+            "The targeted is managed by ChestRestock but is disabled! (use &6/cr set enabled true&f to enable)");
     public static final Message CMD_INVALID_WORLD = new Message("cmd.invalid_world",
             "%1 is not a valid world name!");
     public static final Message CMD_PATIENCE = new Message("cmd.patience",
@@ -121,6 +123,8 @@ public class Language {
             "1 (or greater) = number of times a chest will restock for a player.");
     public static final Message UNIQUE_DESC = new Message("props.unique.desc",
             "Ensures that the chest is unique per player.  This means, they will each see a different set of items per chest");
+    public static final Message ENABLED_DESC = new Message("props.enabled.desc",
+            "Whether this chest is enabled with ChestRestock properties.  A setting of false makes the chest behave as a NORMAL chest.");
     public static final Message NAME_DESC = new Message("props.name.desc",
             "A name for this chest.  This is used for giving specific permissions for a chest.");
     public static final Message REDSTONE_DESC = new Message("props.redstone.desc",
@@ -136,6 +140,8 @@ public class Language {
 
     public static final Message AUTO_CREATE_DESC = new Message("props.other.auto_create.desc",
             "Automatically initializes chests, when opened, as if you created them with /cr create.");
+    public static final Message AUTO_CREATE_NEW_DESC = new Message("props.other.auto_create_new.desc",
+            "Automatically initializes chests, when placed, as if you created them with /cr create but only if auto_create is enabled.  Most useful when set to false so auto_create only affects chests previously on the map and not ones places by players.");
     public static final Message EMPTY_LOOT_TABLE_DESC = new Message("props.other.empty_loot_table.desc",
             "The loot table to use for empty chests.");
 
