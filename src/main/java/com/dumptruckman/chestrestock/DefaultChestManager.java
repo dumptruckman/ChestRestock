@@ -310,7 +310,9 @@ class DefaultChestManager implements ChestManager {
                 it.remove();
                 continue;
             }
-            chest.openInventory(null);
+            if (chest.get(CRChest.ENABLED)) {
+                chest.openInventory(null);
+            }
         }
     }
 

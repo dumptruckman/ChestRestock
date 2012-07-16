@@ -130,6 +130,7 @@ public class ChestRestockListener implements Listener {
                 rChest = getChestManager().createChest(block);
                 if (!autoCreateNew) {
                     rChest.set(CRChest.ENABLED, false);
+                    rChest.save();
                 }
             }
         }
