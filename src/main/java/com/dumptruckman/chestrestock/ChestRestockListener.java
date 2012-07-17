@@ -321,6 +321,9 @@ public class ChestRestockListener implements Listener {
         if (rChest == null) {
             return;
         }
+        if (getChestManager().getOtherSide(block) != null) {
+            return;
+        }
         getChestManager().removeChest(BlockLocation.get(block));
     }
 }
