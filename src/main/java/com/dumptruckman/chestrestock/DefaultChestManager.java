@@ -200,7 +200,8 @@ class DefaultChestManager implements ChestManager {
             }
         }
 
-        rChest.set(CRChest.LAST_RESTOCK, System.currentTimeMillis());
+        rChest.set(CRChest.LAST_RESTOCK, 0L);
+        //rChest.set(CRChest.CREATION_TIME, System.currentTimeMillis());
         rChest.update(null);
         pollingCheckIn(rChest);
         chestsMap.put(rChest.getLocation(), rChest);

@@ -92,7 +92,7 @@ class DefaultCRChest extends AbstractYamlConfig<CRChest> implements CRChest {
                     Logging.finer("Created new other inventory for: " + player);
                     */
                 }
-                inventory.setContents(getInventoryHolder().getInventory().getContents());
+                //inventory.setContents(getInventoryHolder().getInventory().getContents());
                 playerInventories.put(player.getName(), inventory);
             } else {
                 Logging.finer("Got existing unique inventory for: " + player);
@@ -141,9 +141,9 @@ class DefaultCRChest extends AbstractYamlConfig<CRChest> implements CRChest {
         }
         if (crPlayer != null && get(UNIQUE)) {
             lastRestock = crPlayer.getLastRestockTime();
-            if (lastRestock == 0) {
-                lastRestock = get(LAST_RESTOCK);
-            }
+            //if (lastRestock == 0) {
+            //    lastRestock = get(LAST_RESTOCK);
+            //}
         }
         if (player == null || get(PLAYER_LIMIT) < 0 || hasLootBypass(player) || crPlayer.getLootCount() < get(PLAYER_LIMIT)) {
             Logging.finer("Last restock (unique: " + get(UNIQUE) + "): " + lastRestock + "  Access time: " + accessTime + "  Time diff: " + (accessTime - lastRestock));

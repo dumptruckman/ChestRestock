@@ -130,6 +130,7 @@ public interface CRChest extends Config, CRChestOptions {
      */
     ConfigEntry<Long> LAST_RESTOCK = new EntryBuilder<Long>(Long.class, "lastRestockTime").def(0L).stringSerializer().build();
 
+    //ConfigEntry<Long> CREATION_TIME = new EntryBuilder<Long>(Long.class, "creationTime").def(0L).stringSerializer().build();
     /**
      * @return The location of this chest.
      */
