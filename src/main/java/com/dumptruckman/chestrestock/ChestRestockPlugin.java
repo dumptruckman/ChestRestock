@@ -5,21 +5,11 @@ import com.dumptruckman.chestrestock.api.CRConfig;
 import com.dumptruckman.chestrestock.api.CRDefaults;
 import com.dumptruckman.chestrestock.api.ChestManager;
 import com.dumptruckman.chestrestock.api.ChestRestock;
-import com.dumptruckman.chestrestock.command.CheckCommand;
-import com.dumptruckman.chestrestock.command.CreateCommand;
-import com.dumptruckman.chestrestock.command.DefaultCommand;
-import com.dumptruckman.chestrestock.command.DefaultsCommand;
-import com.dumptruckman.chestrestock.command.DisableCommand;
-import com.dumptruckman.chestrestock.command.RestockAllCommand;
-import com.dumptruckman.chestrestock.command.RestockCommand;
-import com.dumptruckman.chestrestock.command.SetCommand;
-import com.dumptruckman.chestrestock.command.UpdateCommand;
-import com.dumptruckman.chestrestock.util.CommentedConfig;
-import com.dumptruckman.chestrestock.util.DefaultsConfig;
 import com.dumptruckman.chestrestock.util.Language;
+import com.dumptruckman.minecraft.pluginbase.logging.Logging;
 import com.dumptruckman.minecraft.pluginbase.plugin.AbstractBukkitPlugin;
 import com.dumptruckman.minecraft.pluginbase.plugin.command.HelpCommand;
-import com.dumptruckman.minecraft.pluginbase.util.Logging;
+import com.dumptruckman.minecraft.pluginbase.properties.Properties;
 import loottables.LootConfig;
 import loottables.LootTables;
 import org.bukkit.block.Block;
@@ -29,15 +19,14 @@ import org.bukkit.plugin.PluginManager;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public class ChestRestockPlugin extends AbstractBukkitPlugin<CRConfig> implements ChestRestock {
+public class ChestRestockPlugin extends AbstractBukkitPlugin implements ChestRestock {
 
-    private final List<String> cmdPrefixes = Arrays.asList("cr");
+    private final static String CMD_PREFIX = "cr";
 
     private ChestManager chestManager = null;
     private LootConfig lootConfig = null;
@@ -46,8 +35,18 @@ public class ChestRestockPlugin extends AbstractBukkitPlugin<CRConfig> implement
     private File defaultsFile;
 
     @Override
-    protected CRConfig newConfigInstance() throws IOException {
-        return new CommentedConfig(this, true, new File(getDataFolder(), "config.yml"), CRConfig.class);
+    protected Properties getNewConfig() throws IOException {
+        return new YamlChestRestockConfig(new File(getDataFolder(), "config.yml"));
+    }
+
+    @Override
+    public String getCommandPrefix() {
+        return CMD_PREFIX;
+    }
+
+    @Override
+    protected boolean useDatabase() {
+        return false;
     }
 
     private CRDefaults newDefaultsConfig(File file) throws IOException {
@@ -59,11 +58,11 @@ public class ChestRestockPlugin extends AbstractBukkitPlugin<CRConfig> implement
         if (parent != null && !parent.exists()) {
             file.getParentFile().mkdirs();
         }
-        return new DefaultsConfig(this, autoDefault, file);
+        return new YamlDefaultsConfig(autoDefault, file);
     }
 
     @Override
-    public void preEnable() {
+    public void onPluginLoad() {
         defaultsFolder = new File(getDataFolder(), "world_defaults");
         defaultsFile = new File(getDataFolder(), "global_defaults.yml");
         defaultsFolder.mkdirs();
@@ -72,7 +71,8 @@ public class ChestRestockPlugin extends AbstractBukkitPlugin<CRConfig> implement
     }
 
     @Override
-    public void postEnable() {
+    public void onPluginEnable() {
+        initializeConfigObjects();
         if (getDefaults(null) == null) {
             Logging.severe("Cannot continue without global_defaults.yml!");
             getServer().getPluginManager().disablePlugin(this);
@@ -84,6 +84,12 @@ public class ChestRestockPlugin extends AbstractBukkitPlugin<CRConfig> implement
         if (pm.getPlugin("Multiverse-Adventure") != null) {
             pm.registerEvents(new AdventureListener(this), this);
         }
+        initializeTasks();
+    }
+
+    @Override
+    protected void registerCommands() {
+        /*
         getCommandHandler().registerCommand(new CreateCommand(this));
         getCommandHandler().registerCommand(new UpdateCommand(this));
         getCommandHandler().registerCommand(new CheckCommand(this));
@@ -93,17 +99,22 @@ public class ChestRestockPlugin extends AbstractBukkitPlugin<CRConfig> implement
         getCommandHandler().registerCommand(new RestockAllCommand(this));
         getCommandHandler().registerCommand(new DefaultCommand(this));
         getCommandHandler().registerCommand(new DefaultsCommand(this));
+        */
     }
 
-    @Override
-    public void preReload() {
-        chestManager = null;
-        lootConfig = null;
-        defaultsMap = null;
+    private void initializeConfigObjects() {
+        chestManager = new DefaultChestManager(this);
+        lootConfig = LootTables.newLootConfig(this, Logging.getLogger());
+        defaultsMap = new HashMap<String, CRDefaults>();
+        try {
+            CRChest.Constants.setMaxInventorySize(config().get(CRConfig.MAX_INVENTORY_SIZE));
+        } catch (IllegalArgumentException e) {
+            Logging.warning(e.getMessage());
+        }
     }
 
-    @Override
-    public void postReload() {
+    private void initializeTasks() {
+        getServer().getScheduler().cancelTasks(this);
         long ticks = config().get(CRConfig.RESTOCK_TASK) * 20;
         if (ticks > 0) {
             getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
@@ -113,13 +124,14 @@ public class ChestRestockPlugin extends AbstractBukkitPlugin<CRConfig> implement
                 }
             }, ticks, ticks);
         }
-        getLootConfig();
-        try {
-            CRChest.Constants.setMaxInventorySize(config().get(CRConfig.MAX_INVENTORY_SIZE));
-        } catch (IllegalArgumentException e) {
-            Logging.warning(e.getMessage());
-        }
     }
+
+    @Override
+    protected void onReloadConfig() {
+        initializeConfigObjects();
+        initializeTasks();
+    }
+
 
     private void migrateDefaults() {
         if (config().get(CRConfig.NAME) != null) {
@@ -161,29 +173,17 @@ public class ChestRestockPlugin extends AbstractBukkitPlugin<CRConfig> implement
     }
 
     @Override
-    public void onDisable() {
+    protected void onPluginDisable() {
         getServer().getScheduler().cancelTasks(this);
-        super.onDisable();
-    }
-
-    @Override
-    public List<String> getCommandPrefixes() {
-        return cmdPrefixes;
     }
 
     @Override
     public ChestManager getChestManager() {
-        if (chestManager == null) {
-            chestManager = new DefaultChestManager(this);
-        }
         return chestManager;
     }
 
     @Override
     public CRDefaults getDefaults(String world) {
-        if (defaultsMap == null) {
-            defaultsMap = new HashMap<String, CRDefaults>();
-        }
         File file;
         if (world != null) {
             file = new File(defaultsFolder, world + ".yml");
@@ -209,9 +209,6 @@ public class ChestRestockPlugin extends AbstractBukkitPlugin<CRConfig> implement
 
     @Override
     public LootConfig getLootConfig() {
-        if (lootConfig == null) {
-            lootConfig = LootTables.newLootConfig(this, Logging.getLog());
-        }
         return lootConfig;
     }
 

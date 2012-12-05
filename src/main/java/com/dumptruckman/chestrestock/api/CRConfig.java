@@ -3,12 +3,12 @@ package com.dumptruckman.chestrestock.api;
 import com.dumptruckman.chestrestock.api.CRChest.Constants;
 import com.dumptruckman.chestrestock.util.Language;
 import com.dumptruckman.minecraft.pluginbase.config.BaseConfig;
-import com.dumptruckman.minecraft.pluginbase.config.ConfigEntry;
-import com.dumptruckman.minecraft.pluginbase.config.EntryBuilder;
-import com.dumptruckman.minecraft.pluginbase.config.EntryValidator;
-import com.dumptruckman.minecraft.pluginbase.config.ListConfigEntry;
-import com.dumptruckman.minecraft.pluginbase.locale.Message;
-import com.dumptruckman.minecraft.pluginbase.util.Null;
+import com.dumptruckman.minecraft.pluginbase.messaging.Message;
+import com.dumptruckman.minecraft.pluginbase.properties.ListProperty;
+import com.dumptruckman.minecraft.pluginbase.properties.NullProperty;
+import com.dumptruckman.minecraft.pluginbase.properties.PropertyFactory;
+import com.dumptruckman.minecraft.pluginbase.properties.PropertyValidator;
+import com.dumptruckman.minecraft.pluginbase.properties.SimpleProperty;
 
 import java.util.Arrays;
 
@@ -20,7 +20,7 @@ public interface CRConfig extends BaseConfig {
     /**
      * The interval at which a task performs restock polling on all chests set to {@link CRChest#ACCEPT_POLL}.
      */
-    ConfigEntry<Integer> RESTOCK_TASK = new EntryBuilder<Integer>(Integer.class, "settings.restock_task_interval").def(60)
+    SimpleProperty<Integer> RESTOCK_TASK = PropertyFactory.newProperty(Integer.class, "settings.restock_task_interval", 60)
             .comment("# This is the interval (in seconds) at which a timer task will poll all 'accept_poll' chests to see if it should update.")
             .comment("# This could potentially affect performance if you have LOTS of chests set to accept polling")
             .comment("# To disable this polling feature, set this to 0").build();
@@ -28,28 +28,20 @@ public interface CRConfig extends BaseConfig {
     /**
      * A list of worlds for chests to be restocked in when they are reset by Multiverse-Adventure.
      */
-    ListConfigEntry<String> RESET_WORLDS = new EntryBuilder<String>(String.class, "settings.restock_chests_reset_worlds")
-            .defList(Arrays.asList("hungergames"))
+    ListProperty<String> RESET_WORLDS = PropertyFactory.newListProperty(String.class, "settings.restock_chests_reset_worlds", Arrays.asList("hungergames"))
             .comment("# These are worlds that all ChestRestock chests will be restocked in when Multiverse-Adventure resets the worlds.")
-            .comment("# Ignore this if you're not using Multiverse-Adventure").buildList();
+            .comment("# Ignore this if you're not using Multiverse-Adventure").build();
 
     /**
      * The maximum size of any inventory.  This is used for inventory mod support.
      */
-    ConfigEntry<Integer> MAX_INVENTORY_SIZE = new EntryBuilder<Integer>(Integer.class, "settings.max_inventory_size")
-            .def(CRChest.Constants.getMaxInventorySize())
+    SimpleProperty<Integer> MAX_INVENTORY_SIZE = PropertyFactory.newProperty(Integer.class, "settings.max_inventory_size", CRChest.Constants.getMaxInventorySize())
             .comment("# This is the maximum size of any inventory.  The default (54) is the size of a standard double chest.")
             .comment("# You should only adjust this value if you are using mods that allow larger inventories.")
-            .validator(new EntryValidator() {
+            .validator(new PropertyValidator<Integer>() {
                 @Override
-                public boolean isValid(Object o) {
-                    if (o instanceof String) {
-                        try {
-                            o = Integer.valueOf((String) o);
-                        } catch (NumberFormatException ignore) {
-                        }
-                    }
-                    return o instanceof Integer && ((Integer) o) >= Constants.MIN_MAX_INVENTORY_SIZE;
+                public boolean isValid(final Integer o) {
+                    return o >= Constants.MIN_MAX_INVENTORY_SIZE;
                 }
 
                 @Override
@@ -63,7 +55,7 @@ public interface CRConfig extends BaseConfig {
      * This just adds a comment to a parent node in the config.
      */
     @Deprecated
-    ConfigEntry<Null> DEFAULTS = new EntryBuilder<Null>(Null.class, "defaults")
+    NullProperty DEFAULTS = PropertyFactory.newNullProperty("defaults")
             .comment("# All defaults have been moved to global_defaults.yml.  You may delete this section!").build();
 
 
@@ -71,60 +63,59 @@ public interface CRConfig extends BaseConfig {
      * @deprecated as of release 2.3.  Moved to {@link CRChestOptions}
      */
     @Deprecated
-    ConfigEntry<Boolean> PRESERVE_SLOTS = new EntryBuilder<Boolean>(Boolean.class, "defaults.preserve_slots").def(true)
+    SimpleProperty<Boolean> PRESERVE_SLOTS = PropertyFactory.newProperty(Boolean.class, "defaults.preserve_slots", true)
             .deprecated().build();
 
     /**
      * @deprecated as of release 2.3.  Moved to {@link CRChestOptions}
      */
     @Deprecated
-    ConfigEntry<Boolean> INDESTRUCTIBLE = new EntryBuilder<Boolean>(Boolean.class, "defaults.indestructible").def(true)
+    SimpleProperty<Boolean> INDESTRUCTIBLE = PropertyFactory.newProperty(Boolean.class, "defaults.indestructible", true)
             .deprecated().build();
 
     /**
      * @deprecated as of release 2.3.  Moved to {@link CRChestOptions}
      */
     @Deprecated
-    ConfigEntry<Integer> PLAYER_LIMIT = new EntryBuilder<Integer>(Integer.class, "defaults.player_loot_limit").def(-1)
+    SimpleProperty<Integer> PLAYER_LIMIT = PropertyFactory.newProperty(Integer.class, "defaults.player_loot_limit", -1)
             .deprecated().build();
 
     /**
      * @deprecated as of release 2.3.  Moved to {@link CRChestOptions}
      */
     @Deprecated
-    ConfigEntry<Boolean> UNIQUE = new EntryBuilder<Boolean>(Boolean.class, "defaults.unique").def(true)
+    SimpleProperty<Boolean> UNIQUE = PropertyFactory.newProperty(Boolean.class, "defaults.unique", true)
             .deprecated().build();
 
     /**
      * @deprecated as of release 2.3.  Moved to {@link CRChestOptions}
      */
     @Deprecated
-    ConfigEntry<Boolean> REDSTONE = new EntryBuilder<Boolean>(Boolean.class, "defaults.redstone").def(false)
+    SimpleProperty<Boolean> REDSTONE = PropertyFactory.newProperty(Boolean.class, "defaults.redstone", false)
             .deprecated().build();
 
     /**
      * @deprecated as of release 2.3.  Moved to {@link CRChestOptions}
      */
     @Deprecated
-    ConfigEntry<Boolean> ACCEPT_POLL = new EntryBuilder<Boolean>(Boolean.class, "defaults.accept_poll").def(false)
+    SimpleProperty<Boolean> ACCEPT_POLL = PropertyFactory.newProperty(Boolean.class, "defaults.accept_poll", false)
             .deprecated().build();
 
     /**
      * @deprecated as of release 2.3.  Moved to {@link CRChestOptions}
      */
     @Deprecated
-    ConfigEntry<Integer> PERIOD = new EntryBuilder<Integer>(Integer.class, "defaults.period").def(900)
+    SimpleProperty<Integer> PERIOD = PropertyFactory.newProperty(Integer.class, "defaults.period", 900)
             .deprecated().build();
 
     /**
      * @deprecated as of release 2.3.  Moved to {@link CRChestOptions}
      */
     @Deprecated
-    ConfigEntry<String> PERIOD_MODE = new EntryBuilder<String>(String.class, "defaults.period_mode").def("player")
-            .validator(new EntryValidator() {
+    SimpleProperty<String> PERIOD_MODE = PropertyFactory.newProperty(String.class, "defaults.period_mode", "player")
+            .validator(new PropertyValidator<String>() {
                 @Override
-                public boolean isValid(Object o) {
-                    String value = o.toString();
+                public boolean isValid(final String value) {
                     return value.equalsIgnoreCase("player") || value.equalsIgnoreCase("fixed");
                 }
 
@@ -138,11 +129,10 @@ public interface CRConfig extends BaseConfig {
      * @deprecated as of release 2.3.  Moved to {@link CRChestOptions}
      */
     @Deprecated
-    ConfigEntry<String> RESTOCK_MODE = new EntryBuilder<String>(String.class, "defaults.restock_mode").def("replace")
-            .validator(new EntryValidator() {
+    SimpleProperty<String> RESTOCK_MODE = PropertyFactory.newProperty(String.class, "defaults.restock_mode", "replace")
+            .validator(new PropertyValidator<String>() {
                 @Override
-                public boolean isValid(Object o) {
-                    String value = o.toString();
+                public boolean isValid(final String value) {
                     return value.equalsIgnoreCase("add") || value.equalsIgnoreCase("replace");
                 }
 
@@ -156,14 +146,14 @@ public interface CRConfig extends BaseConfig {
      * @deprecated as of release 2.3.  Moved to {@link CRChestOptions}
      */
     @Deprecated
-    ConfigEntry<String> NAME = new EntryBuilder<String>(String.class, "defaults.name").def("")
+    SimpleProperty<String> NAME = PropertyFactory.newProperty(String.class, "defaults.name", "")
             .deprecated().build();
 
     /**
      * @deprecated as of release 2.3.  Moved to {@link CRChestOptions}
      */
     @Deprecated
-    ConfigEntry<String> LOOT_TABLE = new EntryBuilder<String>(String.class, "loot_table").def("")
+    SimpleProperty<String> LOOT_TABLE = PropertyFactory.newProperty(String.class, "loot_table", "")
             .comment("# This value has been moved to global_defaults.yml.  You may delete this entry.")
             .deprecated().build();
 
@@ -171,7 +161,7 @@ public interface CRConfig extends BaseConfig {
      * @deprecated as of release 2.3.  Moved to {@link CRChestOptions}
      */
     @Deprecated
-    ConfigEntry<String> GLOBAL_MESSAGE = new EntryBuilder<String>(String.class, "global_message").def("")
+    SimpleProperty<String> GLOBAL_MESSAGE = PropertyFactory.newProperty(String.class, "global_message", "")
             .comment("# This value has been moved to global_defaults.yml.  You may delete this entry.")
             .deprecated().build();
 }

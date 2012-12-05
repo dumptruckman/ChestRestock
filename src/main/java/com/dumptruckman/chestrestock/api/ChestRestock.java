@@ -10,7 +10,7 @@ import org.bukkit.plugin.Plugin;
  * The main interface of the ChestRestock plugin.  You can use this for casting Plugin when got from Bukkit's
  * plugin manager.
  */
-public interface ChestRestock extends BukkitPlugin<CRConfig>, Plugin {
+public interface ChestRestock extends BukkitPlugin, Plugin {
 
     /**
      * @return The chest manager for this plugin.  This is where most of the business starts.

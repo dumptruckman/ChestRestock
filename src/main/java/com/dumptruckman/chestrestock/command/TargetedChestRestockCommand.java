@@ -1,40 +1,30 @@
 package com.dumptruckman.chestrestock.command;
 
-import com.dumptruckman.chestrestock.api.ChestManager;
 import com.dumptruckman.chestrestock.api.ChestRestock;
 import com.dumptruckman.chestrestock.util.Language;
-import com.dumptruckman.minecraft.pluginbase.locale.Messages;
+import com.dumptruckman.minecraft.pluginbase.entity.BasePlayer;
+import com.sk89q.minecraft.util.commands.CommandContext;
 import org.bukkit.block.Block;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
-import java.util.List;
 
 public abstract class TargetedChestRestockCommand extends CRCommand {
 
-    protected ChestManager chestManager;
-
-    public TargetedChestRestockCommand(ChestRestock plugin) {
-        super(plugin);
-        chestManager = plugin.getChestManager();
-    }
-
     @Override
-    public void runCommand(CommandSender sender, List<String> args) {
-        if (!(sender instanceof Player)) {
-            messager.bad(Language.IN_GAME_ONLY, sender);
-            return;
+    public boolean runCommand(final ChestRestock p, final BasePlayer sender, final CommandContext commandContext) {
+        if (!sender.isPlayer()) {
+            p.getMessager().message(sender, Language.IN_GAME_ONLY);
+            return true;
         }
         Player player = (Player) sender;
         Block holder = null;
         try {
-            holder = plugin.getTargetedInventoryHolder(player);
+            holder = p.getTargetedInventoryHolder(player);
         } catch (IllegalStateException e) {
-            messager.sendMessage(sender, "\u00a7c" + messager.getMessage(Messages.GENERIC_ERROR) + " " + e.getMessage());
-            return;
+            p.getMessager().message(sender, e.getMessage());
+            return true;
         }
-        runCommand(player, holder, args);
+        return runCommand(p, sender, holder, commandContext);
     }
 
-    public abstract void runCommand(Player player, Block holder, List<String> args);
+    public abstract boolean runCommand(final ChestRestock p, final BasePlayer sender, final Block holder, final CommandContext commandContext);
 }

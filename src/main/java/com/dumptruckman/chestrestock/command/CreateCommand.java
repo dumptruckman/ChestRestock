@@ -4,37 +4,44 @@ import com.dumptruckman.chestrestock.api.CRChest;
 import com.dumptruckman.chestrestock.api.ChestRestock;
 import com.dumptruckman.chestrestock.util.Language;
 import com.dumptruckman.chestrestock.util.Perms;
+import com.dumptruckman.minecraft.pluginbase.entity.BasePlayer;
+import com.dumptruckman.minecraft.pluginbase.messaging.Message;
+import com.dumptruckman.minecraft.pluginbase.permission.Perm;
+import com.dumptruckman.minecraft.pluginbase.plugin.command.CommandInfo;
+import com.sk89q.minecraft.util.commands.CommandContext;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
 
-import java.util.List;
-
+@CommandInfo(
+        primaryAlias = "create",
+        desc = "Initiates targeted chest for restocking.",
+        max = 0
+)
 public class CreateCommand extends TargetedChestRestockCommand {
 
-    public CreateCommand(ChestRestock plugin) {
-        super(plugin);
-        this.setName(messager.getMessage(Language.CMD_CREATE_NAME));
-        this.setCommandUsage("/" + plugin.getCommandPrefixes().get(0) + " create");
-        this.setArgRange(0, 0);
-        for (String prefix : plugin.getCommandPrefixes()) {
-            this.addKey(prefix + " create");
-        }
-        this.addCommandExample("/" + plugin.getCommandPrefixes().get(0) + " create");
-        this.setPermission(Perms.CMD_CREATE.getPermission());
+    @Override
+    public Perm getPerm() {
+        return Perms.CMD_CREATE;
     }
 
     @Override
-    public void runCommand(Player player, Block block, List<String> args) {
-        CRChest rChest = chestManager.getChest(block);
-        if (rChest != null) {
-            messager.normal(Language.CMD_CREATE_ALREADY_MADE, player);
-            return;
-        }
-        rChest = chestManager.createChest(block);
-        if (rChest == null) {
-            messager.bad(Language.CMD_CREATE_ERROR, player);
-        } else {
-            messager.good(Language.CMD_CREATE_SUCCESS, player, rChest.get(CRChest.PERIOD));
-        }
+    public Message getHelp() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
+
+    @Override
+    public boolean runCommand(ChestRestock p, BasePlayer sender, Block holder, CommandContext commandContext) {
+        CRChest rChest = p.getChestManager().getChest(holder);
+        if (rChest != null) {
+            p.getMessager().message(sender, Language.CMD_CREATE_ALREADY_MADE);
+            return true;
+        }
+        rChest = p.getChestManager().createChest(holder);
+        if (rChest == null) {
+            p.getMessager().message(sender, Language.CMD_CREATE_ERROR);
+        } else {
+            p.getMessager().message(sender, Language.CMD_CREATE_SUCCESS, rChest.get(CRChest.PERIOD));
+        }
+        return true;
+    }
+
 }

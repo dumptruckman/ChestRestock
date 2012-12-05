@@ -1,7 +1,7 @@
 package com.dumptruckman.chestrestock.util;
 
 import com.dumptruckman.chestrestock.api.DataStrings;
-import com.dumptruckman.minecraft.pluginbase.util.Logging;
+import com.dumptruckman.minecraft.pluginbase.logging.Logging;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 

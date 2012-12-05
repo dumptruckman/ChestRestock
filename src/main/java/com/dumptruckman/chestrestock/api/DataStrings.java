@@ -2,7 +2,7 @@ package com.dumptruckman.chestrestock.api;
 
 import com.dumptruckman.chestrestock.util.InventoryTools;
 import com.dumptruckman.chestrestock.util.ItemWrapper;
-import com.dumptruckman.minecraft.pluginbase.util.Logging;
+import com.dumptruckman.minecraft.pluginbase.logging.Logging;
 import org.bukkit.inventory.ItemStack;
 
 /**

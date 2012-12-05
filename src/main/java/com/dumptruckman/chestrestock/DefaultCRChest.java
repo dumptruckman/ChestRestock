@@ -6,8 +6,8 @@ import com.dumptruckman.chestrestock.api.ChestRestock;
 import com.dumptruckman.chestrestock.util.BlockLocation;
 import com.dumptruckman.chestrestock.util.InventoryTools;
 import com.dumptruckman.chestrestock.util.Perms;
-import com.dumptruckman.minecraft.pluginbase.config.AbstractYamlConfig;
-import com.dumptruckman.minecraft.pluginbase.util.Logging;
+import com.dumptruckman.minecraft.pluginbase.logging.Logging;
+import com.dumptruckman.minecraft.pluginbase.properties.YamlProperties;
 import loottables.LootTable;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -23,15 +23,15 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-class DefaultCRChest extends AbstractYamlConfig<CRChest> implements CRChest {
+class DefaultCRChest extends YamlProperties implements CRChest {
     
     private ChestRestock plugin;
     private BlockLocation location;
     
     private Map<String, Inventory> playerInventories = new HashMap<String, Inventory>();
 
-    DefaultCRChest(ChestRestock plugin, BlockLocation location, File configFile, Class<? extends CRChest>... configClasses) throws IOException {
-        super(plugin, false, true, configFile, configClasses);
+    DefaultCRChest(ChestRestock plugin, BlockLocation location, File configFile) throws IOException {
+        super(false, true, configFile, CRChest.class);
         this.plugin = plugin;
         this.location = location;
         Block block = location.getBlock();
@@ -44,7 +44,7 @@ class DefaultCRChest extends AbstractYamlConfig<CRChest> implements CRChest {
                 throw new IllegalStateException("The location '" + location.toString() + "' is not a inventory block!");
             }
         }
-        save();
+        flush();
         Logging.finer("Finished object initialization of " + this);
     }
 
@@ -111,13 +111,13 @@ class DefaultCRChest extends AbstractYamlConfig<CRChest> implements CRChest {
         ItemStack[] chestContents = inventory.getContents();
         System.arraycopy(chestContents, 0, items, 0, chestContents.length);
         set(ITEMS, items);
-        save();
+        flush();
     }
 
     @Override
     public CRPlayer getPlayerData(String name) {
         assert(name != null);
-        CRPlayer player = get(PLAYERS.specific(name));
+        CRPlayer player = get(PLAYERS, name);
         if (player == null) {
             player = Players.newCRPlayer();
         }
@@ -127,8 +127,8 @@ class DefaultCRChest extends AbstractYamlConfig<CRChest> implements CRChest {
     private void updatePlayerData(String name, CRPlayer player) {
         assert(name != null);
         assert(player != null);
-        set(PLAYERS.specific(name), player);
-        save();
+        set(PLAYERS, name, player);
+        flush();
     }
     
     private boolean maybeRestock(HumanEntity player, CRPlayer crPlayer, Inventory inventory) {
@@ -190,7 +190,7 @@ class DefaultCRChest extends AbstractYamlConfig<CRChest> implements CRChest {
         } else {
             Logging.finer("'" + player.getName() + "' no longer allowed to loot this chest!");
         }
-        save();
+        flush();
         return restock;
     }
     
@@ -244,7 +244,7 @@ class DefaultCRChest extends AbstractYamlConfig<CRChest> implements CRChest {
 
     private boolean hasLootBypass(HumanEntity player) {
         if (!get(NAME).isEmpty()) {
-            return Perms.BYPASS_LOOT_LIMIT.specific(get(NAME)).hasPermission(player);
+            return Perms.BYPASS_LOOT_LIMIT.hasPermission(player, get(NAME));
         } else {
             return Perms.BYPASS_LOOT_LIMIT_ANY.hasPermission(player);
         }

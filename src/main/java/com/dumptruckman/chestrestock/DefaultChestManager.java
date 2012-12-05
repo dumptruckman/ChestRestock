@@ -8,9 +8,8 @@ import com.dumptruckman.chestrestock.api.ChestManager;
 import com.dumptruckman.chestrestock.api.ChestRestock;
 import com.dumptruckman.chestrestock.util.BlockLocation;
 import com.dumptruckman.chestrestock.util.InventoryTools;
-import com.dumptruckman.minecraft.pluginbase.config.ConfigEntry;
-import com.dumptruckman.minecraft.pluginbase.util.Logging;
-import com.dumptruckman.minecraft.pluginbase.util.Null;
+import com.dumptruckman.minecraft.pluginbase.logging.Logging;
+import com.dumptruckman.minecraft.pluginbase.properties.SimpleProperty;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -173,14 +172,11 @@ class DefaultChestManager implements ChestManager {
         CRDefaults defaults = plugin.getDefaults(block.getWorld().getName());
         CRDefaults globals = plugin.getDefaults(null);
         for (Field field : CRChestOptions.class.getFields()) {
-            if (!ConfigEntry.class.isAssignableFrom(field.getType())) {
+            if (!SimpleProperty.class.isAssignableFrom(field.getType())) {
                 continue;
             }
             try {
-                ConfigEntry entry = (ConfigEntry) field.get(null);
-                if (entry.getType().equals(Null.class)) {
-                    continue;
-                }
+                SimpleProperty entry = (SimpleProperty) field.get(null);
                 Object obj = defaults.get(entry);
                 if (obj == null) {
                     obj = globals.get(entry);
@@ -247,7 +243,7 @@ class DefaultChestManager implements ChestManager {
                 Logging.warning("Block location could not be parsed from file name: " + chestFile.getName());
                 return null;
             }
-            return new DefaultCRChest(plugin, location, chestFile, CRChest.class);
+            return new DefaultCRChest(plugin, location, chestFile);
         } catch (IOException e) {
             e.printStackTrace();
             return null;

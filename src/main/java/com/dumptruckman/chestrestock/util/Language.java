@@ -1,7 +1,7 @@
 package com.dumptruckman.chestrestock.util;
 
 import com.dumptruckman.chestrestock.api.CRChest.Constants;
-import com.dumptruckman.minecraft.pluginbase.locale.Message;
+import com.dumptruckman.minecraft.pluginbase.messaging.Message;
 
 public class Language {
     

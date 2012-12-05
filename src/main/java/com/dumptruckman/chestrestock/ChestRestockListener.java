@@ -6,7 +6,7 @@ import com.dumptruckman.chestrestock.api.ChestManager;
 import com.dumptruckman.chestrestock.api.ChestRestock;
 import com.dumptruckman.chestrestock.util.BlockLocation;
 import com.dumptruckman.chestrestock.util.Perms;
-import com.dumptruckman.minecraft.pluginbase.util.Logging;
+import com.dumptruckman.minecraft.pluginbase.logging.Logging;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
@@ -130,7 +130,7 @@ public class ChestRestockListener implements Listener {
                 rChest = getChestManager().createChest(block);
                 if (!autoCreateNew) {
                     rChest.set(CRChest.ENABLED, false);
-                    rChest.save();
+                    rChest.flush();
                 }
             }
         }
@@ -299,7 +299,7 @@ public class ChestRestockListener implements Listener {
         if (rChest.get(CRChest.INDESTRUCTIBLE)) {
             if (player != null) {
                 if (!rChest.get(CRChest.NAME).isEmpty()) {
-                    if (Perms.CAN_BREAK.specific(rChest.get(CRChest.NAME)).hasPermission(player)) {
+                    if (Perms.CAN_BREAK.hasPermission(player, rChest.get(CRChest.NAME))) {
                         return false;
                     }
                 } else {

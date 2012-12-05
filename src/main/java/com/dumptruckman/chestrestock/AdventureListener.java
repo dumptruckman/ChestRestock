@@ -2,7 +2,7 @@ package com.dumptruckman.chestrestock;
 
 import com.dumptruckman.chestrestock.api.CRConfig;
 import com.dumptruckman.chestrestock.api.ChestRestock;
-import com.dumptruckman.minecraft.pluginbase.util.Logging;
+import com.dumptruckman.minecraft.pluginbase.logging.Logging;
 import com.onarandombox.MultiverseAdventure.event.MVAResetFinishedEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -23,7 +23,7 @@ public class AdventureListener implements Listener {
     @EventHandler
     public void worldReset(MVAResetFinishedEvent event) {
         World world = Bukkit.getWorld(event.getWorld());
-        if (world != null && plugin.config().getList(CRConfig.RESET_WORLDS).contains(world.getName())) {
+        if (world != null && plugin.config().get(CRConfig.RESET_WORLDS).contains(world.getName())) {
             Logging.info("Restocking all chests for reset world.. This may take a moment");
             plugin.getChestManager().restockAllChests(world, null);
         }

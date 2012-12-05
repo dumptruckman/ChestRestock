@@ -2,12 +2,12 @@ package com.dumptruckman.chestrestock.api;
 
 import com.dumptruckman.chestrestock.Players;
 import com.dumptruckman.chestrestock.util.BlockLocation;
-import com.dumptruckman.minecraft.pluginbase.config.Config;
-import com.dumptruckman.minecraft.pluginbase.config.ConfigEntry;
-import com.dumptruckman.minecraft.pluginbase.config.EntryBuilder;
-import com.dumptruckman.minecraft.pluginbase.config.EntrySerializer;
-import com.dumptruckman.minecraft.pluginbase.config.MappedConfigEntry;
-import com.dumptruckman.minecraft.pluginbase.util.Logging;
+import com.dumptruckman.minecraft.pluginbase.logging.Logging;
+import com.dumptruckman.minecraft.pluginbase.properties.MappedProperty;
+import com.dumptruckman.minecraft.pluginbase.properties.Properties;
+import com.dumptruckman.minecraft.pluginbase.properties.PropertyFactory;
+import com.dumptruckman.minecraft.pluginbase.properties.PropertySerializer;
+import com.dumptruckman.minecraft.pluginbase.properties.SimpleProperty;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.inventory.Inventory;
@@ -20,7 +20,7 @@ import java.util.Map;
 /**
  * An interface that represents a ChestRestock "chest".  Chest being any sort of block based inventory.
  */
-public interface CRChest extends Config, CRChestOptions {
+public interface CRChest extends Properties, CRChestOptions {
 
     /**
      * Constants related to CRChest.
@@ -65,8 +65,9 @@ public interface CRChest extends Config, CRChestOptions {
     /**
      * The items this chest restocks with.
      */
-    ConfigEntry<ItemStack[]> ITEMS = new EntryBuilder<ItemStack[]>(ItemStack[].class, "items")
-            .def(new ItemStack[Constants.MAX_INVENTORY_SIZE]).serializer(new EntrySerializer<ItemStack[]>() {
+    SimpleProperty<ItemStack[]> ITEMS = PropertyFactory.newProperty(ItemStack[].class, "items",
+            new ItemStack[Constants.MAX_INVENTORY_SIZE])
+            .serializer(new PropertySerializer<ItemStack[]>() {
                 @Override
                 public ItemStack[] deserialize(Object o) {
                     return DataStrings.parseInventory(o.toString(), Constants.MAX_INVENTORY_SIZE);
@@ -81,8 +82,8 @@ public interface CRChest extends Config, CRChestOptions {
     /**
      * Data pertaining to players interacting with this chest.  See {@link CRPlayer}
      */
-    MappedConfigEntry<CRPlayer> PLAYERS = new EntryBuilder<CRPlayer>(CRPlayer.class, "players")
-            .serializer(new EntrySerializer<CRPlayer>() {
+    MappedProperty<CRPlayer> PLAYERS = PropertyFactory.newMappedProperty(CRPlayer.class, "players")
+            .serializer(new PropertySerializer<CRPlayer>() {
 
                 @Override
                 public CRPlayer deserialize(Object o) {
@@ -123,12 +124,12 @@ public interface CRChest extends Config, CRChestOptions {
                     map.put("lastRestockTime", crPlayer.getLastRestockTime());
                     return map;
                 }
-            }).buildMap();
+            }).build();
 
     /**
      * The last time this chest was restocked (when not {@link CRChest#UNIQUE}).
      */
-    ConfigEntry<Long> LAST_RESTOCK = new EntryBuilder<Long>(Long.class, "lastRestockTime").def(0L).stringSerializer().build();
+    SimpleProperty<Long> LAST_RESTOCK = PropertyFactory.newProperty(Long.class, "lastRestockTime", 0L).build();
 
     //ConfigEntry<Long> CREATION_TIME = new EntryBuilder<Long>(Long.class, "creationTime").def(0L).stringSerializer().build();
     /**
