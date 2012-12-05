@@ -5,7 +5,6 @@ import com.dumptruckman.chestrestock.api.CRConfig;
 import com.dumptruckman.chestrestock.api.CRDefaults;
 import com.dumptruckman.chestrestock.api.ChestManager;
 import com.dumptruckman.chestrestock.api.ChestRestock;
-import com.dumptruckman.chestrestock.api.LootConfig;
 import com.dumptruckman.chestrestock.command.CheckCommand;
 import com.dumptruckman.chestrestock.command.CreateCommand;
 import com.dumptruckman.chestrestock.command.DefaultCommand;
@@ -21,6 +20,8 @@ import com.dumptruckman.chestrestock.util.Language;
 import com.dumptruckman.minecraft.pluginbase.plugin.AbstractBukkitPlugin;
 import com.dumptruckman.minecraft.pluginbase.plugin.command.HelpCommand;
 import com.dumptruckman.minecraft.pluginbase.util.Logging;
+import loottables.LootConfig;
+import loottables.LootTables;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryHolder;
@@ -209,7 +210,7 @@ public class ChestRestockPlugin extends AbstractBukkitPlugin<CRConfig> implement
     @Override
     public LootConfig getLootConfig() {
         if (lootConfig == null) {
-            lootConfig = new DefaultLootConfig(this);
+            lootConfig = LootTables.newLootConfig(this, Logging.getLog());
         }
         return lootConfig;
     }

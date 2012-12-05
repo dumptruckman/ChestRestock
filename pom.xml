@@ -167,12 +167,17 @@ and adjust the build number accordingly -->
                             <artifactSet>
                                 <includes>
                                     <include>com.dumptruckman.minecraft:BukkitPlugin</include>
+                                    <include>com.dumptruckman.minecraft:LootTables</include>
                                 </includes>
                             </artifactSet>
                             <relocations>
                                 <relocation>
                                     <pattern>com.dumptruckman.minecraft.pluginbase</pattern>
                                     <shadedPattern>com.dumptruckman.chestrestock.pluginbase</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>loottables</pattern>
+                                    <shadedPattern>com.dumptruckman.chestrestock.loottables</shadedPattern>
                                 </relocation>
                             </relocations>
                         </configuration>
@@ -200,6 +205,15 @@ and adjust the build number accordingly -->
             <scope>compile</scope>
         </dependency>
         <!-- End of PluginBase Dependency -->
+        <!-- Start of loottables Dependency -->
+        <dependency>
+            <groupId>com.dumptruckman.minecraft</groupId>
+            <artifactId>LootTables</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <!-- End of loottables Dependency -->
         <!-- Start of Multiverse-Adventure Dependency -->
         <dependency>
             <groupId>com.onarandombox.multiverseadventure</groupId>

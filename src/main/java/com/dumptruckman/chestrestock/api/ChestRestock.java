@@ -1,6 +1,7 @@
 package com.dumptruckman.chestrestock.api;
 
 import com.dumptruckman.minecraft.pluginbase.plugin.BukkitPlugin;
+import loottables.LootConfig;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
