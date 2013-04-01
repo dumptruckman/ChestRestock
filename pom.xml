@@ -208,7 +208,7 @@ and adjust the build number accordingly -->
         <!-- Start of loottables Dependency -->
         <dependency>
             <groupId>com.dumptruckman.minecraft</groupId>
-            <artifactId>LootTables</artifactId>
+            <artifactId>loottables</artifactId>
             <version>1.0-SNAPSHOT</version>
             <type>jar</type>
             <scope>compile</scope>
