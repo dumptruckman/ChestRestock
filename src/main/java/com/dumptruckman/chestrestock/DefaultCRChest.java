@@ -110,7 +110,9 @@ class DefaultCRChest extends AbstractYamlConfig<CRChest> implements CRChest {
         ItemStack[] items = InventoryTools.fillWithAir(new ItemStack[CRChest.Constants.getMaxInventorySize()]);
         ItemStack[] chestContents = inventory.getContents();
         for (int i = 0; i < chestContents.length; i++) {
-            items[i] = new ItemStack(chestContents[i]);
+            if (chestContents[i] != null) {
+                items[i] = new ItemStack(chestContents[i]);
+            }
         }
         set(ITEMS, items);
         save();
