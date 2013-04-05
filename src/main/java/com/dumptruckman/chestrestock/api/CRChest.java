@@ -15,6 +15,7 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -69,12 +70,19 @@ public interface CRChest extends Config, CRChestOptions {
             .def(new ItemStack[Constants.MAX_INVENTORY_SIZE]).serializer(new EntrySerializer<ItemStack[]>() {
                 @Override
                 public ItemStack[] deserialize(Object o) {
-                    return DataStrings.parseInventory(o.toString(), Constants.MAX_INVENTORY_SIZE);
+                    if (o instanceof List) {
+                        List<ItemStack> list = (List<ItemStack>) o;
+                        return list.toArray(new ItemStack[list.size()]);
+                    } else if (o instanceof ItemStack[]) {
+                        return (ItemStack[]) o;
+                    } else {
+                        return new ItemStack[0];
+                    }
                 }
 
                 @Override
                 public Object serialize(ItemStack[] itemStacks) {
-                    return DataStrings.valueOf(itemStacks);
+                    return itemStacks;
                 }
             }).build();
 
