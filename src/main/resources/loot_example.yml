@@ -1,45 +1,49 @@
-# In this example, when the chest using loot_table 'justaname' restocks, there is a guaranteed diamond pickaxe with silk touch enchant,
-# there is a 50% chance for: either a diamond/iron sword with up to 2 enchants (sharpness I-V, knockback I, or fire aspect II) OR a wood sword with silk touch,
-# and a 10% chance for: a 20 stack of mossy stone blocks.
-# Further, '3' is rolled 10 times, with a 10% chance of EITHER 1 diamond or 5 gold, but not both.  (And the diamond is 5 times more likely!)
-# There is also a 10% chance for 20 cracked stone brick (as indicated in '4').
+# In this example, when the chest using loot_table 'justaname' restocks, there is a guaranteed diamond pickaxe with silk 
+# touch enchant, there is a 50% chance for: either a diamond/iron sword with up to 2 enchants (sharpness I-V, knockback I,
+# or fire aspect II) OR a wood sword with silk touch, and a 10% chance for: a 20 stack of mossy stone blocks.
+# Further, section '3' is rolled 10 times, with a 10% chance of EITHER 1 diamond or 5 gold, but not both.  (And the
+# diamond is 5 times more likely!) There is also a 10% chance for 20 cracked stone brick (as indicated in '4').
 # An additional note, the numbers used as headings can be any number or word as long as they are not the key words
-# such as chance, id, amount, data, rolls, name, safe, level, or enchant.  They should be unique headings though as if they are the same, errors may occur.
+# such as chance, id, amount, data, rolls, name, safe, level, or enchant.  They should be unique headings though as if
+# they are the same, errors may occur.
 justaname:
-  1:
+  1: # This is just one of the sections that will be included in the loot. The number is meaningless. 
+     # It serves to separate this loot section. This section lacks a chance so it always gives the listed item.
     id: 278
-    enchant:
+    enchant: # enchant sections give the above items an enchantment. no chance is listed so it is 100% likely.
       name: silk_touch
-  2:
+  2: # Again, just a section of loot labeled with a meaningless number. This section has a 50% chance to be used.
     chance: .50
-    split: true
-    diamond:
+    split: true # split means that only one of the items below will be selected when section '2' is rolled.
+    diamond: # this is just a name to represent a new section of loot. This section gives a diamond sword.
       id: 276
-    iron:
+    iron: # again just a name to represent the iron sword that is given by id: 267.
       id: 267
-    wood:
+    wood: # a wooden sword with silk touch is the alternative to the diamond or iron sword above.
       id: 268
       enchant:
         safe: false
         name: silk_touch
-    enchant:
+    enchant: # this enchant section will be applied to the above item twice.
       rolls: 2
-      split: true
-      safe: false
+      split: true # since it's split only one of the below enchant will be chosen on each of the 2 passes.
+      safe: false # this causes enchants to apply even if they're not valid for the given item.
       sharpness:
         name: damage_all
-        level: -5
+        level: -5 #the level of the enchant
       knockback:
         name: knockback
       fire:
         name: fire_aspect
         level: 2
-  3:
+  3: # This section is rolled 10 times and has a 10% chance to be selected.
     rolls: 10
     chance: .10
-    split: true
+    split: true # This means that only one sub section will be chosen per roll.
     1:
-      chance: 5
+      chance: 5 # Due to the parent section being 'split: true' this is a weight rather than a percent chance.
+                # Weights are relative to the weight of all other sections. In this case, the chance of 5 means
+                # the weight is 5 times more than the chance of 1 in the below section.
       id: 264
     2:
       chance: 1
@@ -48,5 +52,5 @@ justaname:
   4:
     chance: .10
     id: 98
-    data: 2
+    data: 2 # item data
     amount: 20
