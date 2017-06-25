@@ -10,6 +10,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Map;
 import java.util.WeakHashMap;
 
@@ -46,7 +47,7 @@ class DefaultLootConfig implements LootConfig {
                 + nl + "Refer to loot_example.yml for a complete example!");
         try {
             config.save(configFile);
-            YamlConfiguration.loadConfiguration(plugin.getResource("loot_example.yml"))
+            YamlConfiguration.loadConfiguration(new InputStreamReader(plugin.getResource("loot_example.yml")))
                     .save(new File(plugin.getDataFolder(), "loot_example.yml"));
         } catch (IOException e) {
             Logging.severe("Could not save loot_tables.yml!");

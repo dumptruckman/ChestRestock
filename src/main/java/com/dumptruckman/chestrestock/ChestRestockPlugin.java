@@ -21,6 +21,7 @@ import com.dumptruckman.chestrestock.util.Language;
 import com.dumptruckman.minecraft.pluginbase.plugin.AbstractBukkitPlugin;
 import com.dumptruckman.minecraft.pluginbase.plugin.command.HelpCommand;
 import com.dumptruckman.minecraft.pluginbase.util.Logging;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryHolder;
@@ -33,6 +34,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class ChestRestockPlugin extends AbstractBukkitPlugin<CRConfig> implements ChestRestock {
 
@@ -225,7 +227,7 @@ public class ChestRestockPlugin extends AbstractBukkitPlugin<CRConfig> implement
 
     @Override
     public Block getTargetedInventoryHolder(Player player) throws IllegalStateException {
-        Block block = player.getTargetBlock(null, 100);
+        Block block = player.getTargetBlock((Set<Material>) null, 100);
         if (block == null || !(block.getState() instanceof InventoryHolder)) {
             throw new IllegalStateException(getMessager().getMessage(Language.TARGETING));
         }
