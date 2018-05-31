@@ -1,16 +1,11 @@
 package com.dumptruckman.chestrestock.api;
 
 import com.dumptruckman.chestrestock.util.Language;
-import com.dumptruckman.minecraft.pluginbase.config.Config;
-import com.dumptruckman.minecraft.pluginbase.config.ConfigEntry;
-import com.dumptruckman.minecraft.pluginbase.config.EntryBuilder;
-import com.dumptruckman.minecraft.pluginbase.config.EntryValidator;
-import com.dumptruckman.minecraft.pluginbase.locale.Message;
 
 /**
  * These class contains all of the properties of a CRChest.
  */
-public interface CRChestOptions extends Config {
+public interface CRChestOptions {
 
     /**
      * Whether or not the chest options for this chest are actually enabled.

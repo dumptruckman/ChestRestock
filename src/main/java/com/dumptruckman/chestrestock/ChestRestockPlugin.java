@@ -18,25 +18,31 @@ import com.dumptruckman.chestrestock.command.UpdateCommand;
 import com.dumptruckman.chestrestock.util.CommentedConfig;
 import com.dumptruckman.chestrestock.util.DefaultsConfig;
 import com.dumptruckman.chestrestock.util.Language;
-import com.dumptruckman.minecraft.pluginbase.plugin.AbstractBukkitPlugin;
-import com.dumptruckman.minecraft.pluginbase.plugin.command.HelpCommand;
-import com.dumptruckman.minecraft.pluginbase.util.Logging;
 import org.bukkit.block.Block;
+import org.bukkit.command.defaults.HelpCommand;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.java.JavaPlugin;
+import pluginbase.config.SerializationRegistrar;
+import pluginbase.logging.Logging;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public class ChestRestockPlugin extends AbstractBukkitPlugin<CRConfig> implements ChestRestock {
+public class ChestRestockPlugin extends JavaPlugin implements ChestRestock {
 
-    private final List<String> cmdPrefixes = Arrays.asList("cr");
+    static {
+        SerializationRegistrar.registerClass(DefaultChestOptions.class);
+        SerializationRegistrar.registerClass(DefaultWorldOptions.class);
+    }
+
+    private static final String COMMAND_PREFIX = "cr";
+    private static final String PERMISSION_PREFIX = "chestrestock";
 
     private ChestManager chestManager = null;
     private LootConfig lootConfig = null;

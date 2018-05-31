@@ -1,7 +1,7 @@
 package com.dumptruckman.chestrestock.util;
 
 import com.dumptruckman.chestrestock.api.CRChest.Constants;
-import com.dumptruckman.minecraft.pluginbase.locale.Message;
+import pluginbase.messages.Message;
 
 public class Language {
     
@@ -138,11 +138,14 @@ public class Language {
     public static final Message ONLY_RESTOCK_EMPTY_DESC = new Message("props.only_restock_empty.desc",
             "When true, only empty chests will restock.");
 
-    public static final Message AUTO_CREATE_DESC = new Message("props.other.auto_create.desc",
+    public static final String LKEY_AUTO_CREATE_DESC = "props.other.auto_create.desc";
+    public static final Message AUTO_CREATE_DESC = new Message(LKEY_AUTO_CREATE_DESC,
             "Automatically initializes chests, when opened, as if you created them with /cr create.");
-    public static final Message AUTO_CREATE_NEW_DESC = new Message("props.other.auto_create_new.desc",
+    public static final String LKEY_AUTO_CREATE_NEW_DESC = "props.other.auto_create_new.desc";
+    public static final Message AUTO_CREATE_NEW_DESC = new Message(LKEY_AUTO_CREATE_NEW_DESC,
             "Automatically initializes chests, when placed, as if you created them with /cr create but only if auto_create is enabled.  Most useful when set to false so auto_create only affects chests previously on the map and not ones places by players.");
-    public static final Message EMPTY_LOOT_TABLE_DESC = new Message("props.other.empty_loot_table.desc",
+    public static final String LKEY_EMPTY_LOOT_TABLE_DESC = "props.other.empty_loot_table.desc";
+    public static final Message EMPTY_LOOT_TABLE_DESC = new Message(LKEY_EMPTY_LOOT_TABLE_DESC,
             "The loot table to use for empty chests.");
 
     public static final Message MAX_INVENTORY_SIZE_INVALID = new Message("settings.max_inventory_size.invalid",
