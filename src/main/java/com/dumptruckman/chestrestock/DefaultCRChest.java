@@ -1,6 +1,8 @@
 package com.dumptruckman.chestrestock;
 
 import com.dumptruckman.chestrestock.api.CRChest;
+import com.dumptruckman.chestrestock.api.CRChestOpenEvent;
+import com.dumptruckman.chestrestock.api.CRChestRestockEvent;
 import com.dumptruckman.chestrestock.api.CRPlayer;
 import com.dumptruckman.chestrestock.api.ChestRestock;
 import com.dumptruckman.chestrestock.api.LootTable;
@@ -236,6 +238,8 @@ class DefaultCRChest extends AbstractYamlConfig<CRChest> implements CRChest {
         if (!get(GLOBAL_MESSAGE).isEmpty()) {
             Bukkit.broadcastMessage(get(GLOBAL_MESSAGE));
         }
+
+        Bukkit.getPluginManager().callEvent(new CRChestRestockEvent(this, inventory, restockItems, lootTable));
     }
 
     @Override
@@ -256,14 +260,18 @@ class DefaultCRChest extends AbstractYamlConfig<CRChest> implements CRChest {
 
     @Override
     public boolean openInventory(HumanEntity player) {
+        Inventory inventory;
+        boolean result;
         if (player != null) {
             CRPlayer crPlayer = getPlayerData(player.getName());
-            Inventory inventory = getInventory(player);
-            boolean result = maybeRestock(player, crPlayer, inventory);
+            inventory = getInventory(player);
+            result = maybeRestock(player, crPlayer, inventory);
             player.openInventory(inventory);
-            return result;
         } else {
-            return maybeRestock(null, null, getInventory(null));
+            inventory = getInventory(null);
+            result = maybeRestock(null, null, inventory);
         }
+        Bukkit.getPluginManager().callEvent(new CRChestOpenEvent(this, inventory, player, result));
+        return result;
     }
 }
