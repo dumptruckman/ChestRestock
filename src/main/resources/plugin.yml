@@ -1,5 +1,5 @@
 name: ChestRestock
-main: com.dumptruckman.chestrestock.ChestRestockPlugin
+main: com.dumptruckman.chestrestock.ChestRestock
 version: maven-version-number
 author: dumptruckman
 softdepend: [Multiverse-Adventure]
