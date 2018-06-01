@@ -7,8 +7,9 @@
 # netbeans
 /nbproject
 
-# we use maven!
+# gradle
 /build.xml
+/.gradle
 
 # maven
 /target
