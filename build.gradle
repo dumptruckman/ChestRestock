@@ -25,10 +25,12 @@ repositories {
 
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+    compile "com.dumptruckman.minecraft:HoconConfiguration:0.2.0-SNAPSHOT"
     compile("com.dumptruckman.minecraft:BukkitPlugin:1.3-SNAPSHOT") {
         exclude group: 'org.bukkit'
     }
-    compile("com.onarandombox.multiverseadventure:Multiverse-Adventure:2.4") {
+    compileOnly("com.onarandombox.multiverseadventure:Multiverse-Adventure:2.4") {
         exclude group: 'org.bukkit'
         exclude group: 'com.onarandombox.multiverseportals'
     }
