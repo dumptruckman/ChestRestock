@@ -37,14 +37,33 @@ class KonfigTest {
     }
 
     @Test
+    fun testExtendedConfig() {
+        val config = HoconConfiguration()
+        val konfig = RestockableChestDefaults(config)
+
+        assertEquals(-1, konfig.player_limit)
+        assertEquals(-1, config.getInt("player_limit"))
+        konfig.player_limit = 5
+        assertEquals(5, konfig.player_limit)
+        assertEquals(5, config.getInt("player_limit"))
+
+        konfig.trySet("player_limit", "10")
+        assertEquals(10, konfig.player_limit)
+        assertEquals(10, config.getInt("player_limit"))
+    }
+
+    @Test
     fun testDefaultsConfig() {
-        konfig.settings.restock_task_interval = 1
-        assertEquals(1, konfig.settings.restock_task_interval)
-        assertEquals(1, config.getInt("settings.restock_task_interval"))
+        val config = HoconConfiguration()
+        val konfig = RestockableChestDefaults(config)
+
+        konfig.player_limit = 1
+        assertEquals(1, konfig.player_limit)
+        assertEquals(1, config.getInt("player_limit"))
 
         val dependentConfig = HoconConfiguration()
-        val dependentKonfig = ChestRestockConfig(dependentConfig, konfig)
-        assertEquals(1, dependentKonfig.settings.restock_task_interval)
-        assertEquals(1, dependentConfig.getInt("settings.restock_task_interval"))
+        val dependentKonfig = RestockableChestOptions(dependentConfig, konfig)
+        assertEquals(1, dependentKonfig.player_limit)
+        assertEquals(1, dependentConfig.getInt("player_limit"))
     }
 }
