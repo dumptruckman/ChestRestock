@@ -8,11 +8,19 @@ import kotlin.reflect.KMutableProperty
 import kotlin.reflect.KProperty
 
 open class Konfig(private val config: Configuration,
+                  private val defaults: Konfig? = null,
                   private val delegateMap: MutableMap<String, KonfigValueDelegate<*>> = mutableMapOf(),
                   private val node: String = "") {
 
+    init {
+        if (defaults != null) {
+            config.defaults = defaults.config
+        }
+    }
+
     constructor (parent: Konfig, node: String) :
             this(parent.config,
+                    parent.defaults,
                     parent.delegateMap,
                     if (parent.node.isEmpty())
                         node
@@ -45,7 +53,7 @@ open class Konfig(private val config: Configuration,
             val config = konfig.config
             val path = konfig.getPath(property)
 
-            if (defaultValue != null) {
+            if (konfig.defaults == null && defaultValue != null) {
                 config.addDefault(path, defaultValue)
             }
 

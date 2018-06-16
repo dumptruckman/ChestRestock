@@ -35,4 +35,16 @@ class KonfigTest {
     fun testConfigValidator() {
         konfig.settings.max_inventory_size = 1
     }
+
+    @Test
+    fun testDefaultsConfig() {
+        konfig.settings.restock_task_interval = 1
+        assertEquals(1, konfig.settings.restock_task_interval)
+        assertEquals(1, config.getInt("settings.restock_task_interval"))
+
+        val dependentConfig = HoconConfiguration()
+        val dependentKonfig = ChestRestockConfig(dependentConfig, konfig)
+        assertEquals(1, dependentKonfig.settings.restock_task_interval)
+        assertEquals(1, dependentConfig.getInt("settings.restock_task_interval"))
+    }
 }

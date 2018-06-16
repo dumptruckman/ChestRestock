@@ -3,7 +3,7 @@ package com.dumptruckman.chestrestock
 import com.dumptruckman.bukkit.configuration.hocon.HoconConfiguration
 import com.dumptruckman.chestrestock.config.Konfig
 
-class ChestRestockConfig(config: HoconConfiguration) : Konfig(config) {
+class ChestRestockConfig(config: HoconConfiguration, defaults: ChestRestockConfig? = null) : Konfig(config, defaults) {
 
     val settings: Settings = Settings()
 
