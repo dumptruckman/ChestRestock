@@ -1,14 +1,12 @@
 package com.dumptruckman.chestrestock.i18n
 
 import org.bukkit.ChatColor
+import java.text.MessageFormat
 
 class LocalizedMessage(private val messageSource: MessageSource, val key: CharSequence) {
 
     operator fun invoke(vararg args: Any?): String {
-        var message = ChatColor.translateAlternateColorCodes('&', messageSource.getString(key))
-        args.forEachIndexed({
-            i, arg -> message = message.replace("{$i}", arg.toString())
-        })
-        return message
+        val message = ChatColor.translateAlternateColorCodes('&', messageSource.getString(key))
+        return MessageFormat.format(message, *args)
     }
 }
