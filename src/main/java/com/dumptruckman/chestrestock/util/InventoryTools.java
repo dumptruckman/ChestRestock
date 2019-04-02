@@ -13,7 +13,7 @@ public class InventoryTools {
      */
     public static ItemStack[] fillWithAir(ItemStack[] items) {
         for (int i = 0; i < items.length; i++) {
-            items[i] = new ItemStack(0);
+            items[i] = new ItemStack(Material.AIR);
         }
         return items;
     }
