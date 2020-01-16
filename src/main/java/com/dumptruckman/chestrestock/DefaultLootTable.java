@@ -103,17 +103,10 @@ class DefaultLootTable implements LootTable, ItemSection {
         if (enchantment != null && enchantLevel != 0) {
             if (enchantLevel < 0) {
                 enchantLevel = -enchantLevel;
-                if (enchantSection.isSafe() && enchantLevel > enchantment.getMaxLevel()) {
-                    enchantLevel = enchantment.getMaxLevel();
-                }
                 enchantLevel = randGen.nextInt(enchantLevel) + 1;
                 Logging.finest("Using random enchant level for " + enchantment + ": " + enchantLevel);
             }
-            if (enchantSection.isSafe()) {
-                item.addEnchantment(enchantment, enchantLevel);
-            } else {
-                item.addUnsafeEnchantment(enchantment, enchantLevel);
-            }
+            item.addUnsafeEnchantment(enchantment, enchantLevel);
         }
         Logging.finest("Total weight of '" + enchantSection + "': " + enchantSection.getTotalWeight());
         float splitPicker = randGen.nextFloat() * enchantSection.getTotalWeight();
@@ -216,7 +209,6 @@ class DefaultLootTable implements LootTable, ItemSection {
         // Related to enchants
         protected String enchantName = "";
         protected int enchantLevel = 1;
-        protected boolean enchantSafe = true;
 
         DefaultLootSection(String name, ConfigurationSection section) {
             this.name = name;
@@ -242,8 +234,6 @@ class DefaultLootTable implements LootTable, ItemSection {
                     enchantName = section.getString("name", "");
                 } else if (key.equalsIgnoreCase("level")) {
                     enchantLevel = section.getInt("level", 1);
-                } else if (key.equalsIgnoreCase("safe")) {
-                    enchantSafe = section.getBoolean("safe", true);
                 } else {
                     try {
                         ConfigurationSection newSection = section.getConfigurationSection(key);
@@ -362,11 +352,6 @@ class DefaultLootTable implements LootTable, ItemSection {
         @Override
         public int getLevel() {
             return enchantLevel;
-        }
-
-        @Override
-        public boolean isSafe() {
-            return enchantSafe;
         }
 
         @Override
