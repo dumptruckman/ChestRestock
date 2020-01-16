@@ -6,12 +6,12 @@ Here are some samples of what you could put in the file:
 
 ```
 apples:
-  id: 260
+  id: APPLE
   chance: .5
   rolls: 4
   amount: 3
 a_sword:
-  id: 267
+  id: IRON_SWORD
   chance: .3
   rolls: 1
 ```
