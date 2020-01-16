@@ -220,7 +220,7 @@ class DefaultLootTable implements LootTable, ItemSection {
             for (String key : section.getKeys(false)) {
                 if (key.equalsIgnoreCase("rolls")) {
                     rolls = section.getInt("rolls", 1);
-                } else if (key.equalsIgnoreCase("durability")) {
+                } else if (key.equalsIgnoreCase("damage")) {
                     itemDamage = (short) section.getInt("damage", 0);
                 } else if (key.equalsIgnoreCase("id")) {
                     itemId = section.getString("id", "AIR");
