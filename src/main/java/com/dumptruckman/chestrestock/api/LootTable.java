@@ -81,10 +81,5 @@ public interface LootTable {
          * @return The level of the enchantment.
          */
         int getLevel();
-
-        /**
-         * @return true if the enchantment should be applied safely.
-         */
-        boolean isSafe();
     }
 }

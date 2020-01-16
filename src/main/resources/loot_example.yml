@@ -9,25 +9,24 @@
 justaname:
   1: # This is just one of the sections that will be included in the loot. The number is meaningless. 
      # It serves to separate this loot section. This section lacks a chance so it always gives the listed item.
-    id: 278
+    id: DIAMOND_PICKAXE
     enchant: # enchant sections give the above items an enchantment. no chance is listed so it is 100% likely.
       name: silk_touch
+    durability: 60
   2: # Again, just a section of loot labeled with a meaningless number. This section has a 50% chance to be used.
     chance: .50
     split: true # split means that only one of the items below will be selected when section '2' is rolled.
     diamond: # this is just a name to represent a new section of loot. This section gives a diamond sword.
-      id: 276
+      id: DIAMOMD
     iron: # again just a name to represent the iron sword that is given by id: 267.
-      id: 267
+      id: IRON_INGOT
     wood: # a wooden sword with silk touch is the alternative to the diamond or iron sword above.
-      id: 268
+      id: WOODEN_SWORD
       enchant:
-        safe: false
         name: silk_touch
     enchant: # this enchant section will be applied to the above item twice.
       rolls: 2
       split: true # since it's split only one of the below enchant will be chosen on each of the 2 passes.
-      safe: false # this causes enchants to apply even if they're not valid for the given item.
       sharpness:
         name: damage_all
         level: -5 #the level of the enchant
@@ -44,13 +43,12 @@ justaname:
       chance: 5 # Due to the parent section being 'split: true' this is a weight rather than a percent chance.
                 # Weights are relative to the weight of all other sections. In this case, the chance of 5 means
                 # the weight is 5 times more than the chance of 1 in the below section.
-      id: 264
+      id: DIAMOND
     2:
       chance: 1
-      id: 266
+      id: GOLD_INGOT
       amount: 5
   4:
     chance: .10
-    id: 98
-    data: 2 # item data
+    id: BRICK
     amount: 20
