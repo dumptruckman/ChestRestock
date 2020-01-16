@@ -1,5 +1,5 @@
 # In this example, when the chest using loot_table 'justaname' restocks, there is a guaranteed diamond pickaxe with silk 
-# touch enchant, there is a 50% chance for: either a diamond/unbreakable wooden sword with up to 2 enchants (sharpness I-V, knockback I,
+# touch enchant, there is a 50% chance for: either a diamond/iron sword with up to 2 enchants (sharpness I-V, knockback I,
 # or fire aspect II) OR an unbreakable wood sword with silk touch, and a 10% chance for: a 20 stack of mossy stone blocks.
 # Further, section '3' is rolled 10 times, with a 10% chance of EITHER 1 diamond or 5 gold, but not both.  (And the
 # diamond is 5 times more likely!) There is also a 10% chance for 20 cracked stone brick (as indicated in '4').
@@ -7,49 +7,57 @@
 # such as chance, id, amount, damage, rolls, name, level, or enchant.  They should be unique headings though as if
 # they are the same, errors may occur.
 justaname:
-  1: # This is just one of the sections that will be included in the loot. The number is meaningless. 
-     # It serves to separate this loot section. This section lacks a chance so it always gives the listed item.
+  '1':
     id: DIAMOND_PICKAXE
-    enchant: # enchant sections give the above items an enchantment. no chance is listed so it is 100% likely.
+    enchant:
       name: silk_touch
     damage: 60
-  2: # Again, just a section of loot labeled with a meaningless number. This section has a 50% chance to be used.
-    chance: .50
-    split: true # split means that only one of the items below will be selected when section '2' is rolled.
-    diamond: # this is just a name to represent a new section of loot. This section gives a diamond sword.
-      id: DIAMOMD
-    iron: # again just a name to represent the iron sword that is given by id: 267.
-      id: IRON_INGOT
-    wood: # a wooden sword with silk touch is the alternative to the diamond or iron sword above.
+  '2':
+    chance: 0.5
+    split: true
+    diamond:
+      id: DIAMOND_SWORD
+      enchant:
+        rolls: 2
+        split: true
+        sharpness:
+          name: damage_all
+          level: -5
+        knockback:
+          name: knockback
+        fire:
+          name: fire_aspect
+          level: 2
+    iron:
+      id: IRON_SWORD
+      enchant:
+        rolls: 2
+        split: true
+        sharpness:
+          name: damage_all
+          level: -5
+        knockback:
+          name: knockback
+        fire:
+          name: fire_aspect
+          level: 2
+    wood:
       id: WOODEN_SWORD
-      damage: -1 # a damage value of -1 makes the item unbreakable
+      damage: -1
       enchant:
         name: silk_touch
-    enchant: # this enchant section will be applied to the above item twice.
-      rolls: 2
-      split: true # since it's split only one of the below enchant will be chosen on each of the 2 passes.
-      sharpness:
-        name: damage_all
-        level: -5 #the level of the enchant
-      knockback:
-        name: knockback
-      fire:
-        name: fire_aspect
-        level: 2
-  3: # This section is rolled 10 times and has a 10% chance to be selected.
+  '3':
     rolls: 10
-    chance: .10
-    split: true # This means that only one sub section will be chosen per roll.
-    1:
-      chance: 5 # Due to the parent section being 'split: true' this is a weight rather than a percent chance.
-                # Weights are relative to the weight of all other sections. In this case, the chance of 5 means
-                # the weight is 5 times more than the chance of 1 in the below section.
+    chance: 0.1
+    split: true
+    '1':
+      chance: 5
       id: DIAMOND
-    2:
+    '2':
       chance: 1
       id: GOLD_INGOT
       amount: 5
-  4:
-    chance: .10
+  '4':
+    chance: 0.1
     id: BRICK
     amount: 20
