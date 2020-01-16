@@ -203,7 +203,7 @@ class DefaultLootTable implements LootTable, ItemSection {
 
         // Related to items
         protected Material itemId = Material.AIR;
-        protected short itemDurability = -1;
+        protected short itemDamage = 0;
         protected int itemAmount = 1;
 
         // Related to enchants
@@ -220,7 +220,7 @@ class DefaultLootTable implements LootTable, ItemSection {
                 if (key.equalsIgnoreCase("rolls")) {
                     rolls = section.getInt("rolls", 1);
                 } else if (key.equalsIgnoreCase("durability")) {
-                    itemDurability = (short) section.getInt("durability", -1);
+                    itemDamage = (short) section.getInt("damage", 0);
                 } else if (key.equalsIgnoreCase("id")) {
                     String type = section.getString("id");
                     itemId = parseMaterial(type);
@@ -311,13 +311,15 @@ class DefaultLootTable implements LootTable, ItemSection {
         public ItemStack getItem() {
             if (isItemCreatable()) {
                 ItemStack result = new ItemStack(itemId, itemAmount);
-                if(itemDurability != -1) {
-                    ItemMeta meta = result.getItemMeta();
-                    if(meta instanceof Damageable) {
-                        ((Damageable) meta).setDamage(itemDurability);
-                        result.setItemMeta(meta);
+                ItemMeta meta = result.getItemMeta();
+                if (meta instanceof Damageable) {
+                    if(itemDamage != -1) {
+                        ((Damageable) meta).setDamage(itemDamage);
+                    } else {
+                        meta.setUnbreakable(true);
                     }
                 }
+                result.setItemMeta(meta);
                 return result;
             }
             return null;
