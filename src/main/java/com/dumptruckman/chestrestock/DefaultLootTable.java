@@ -204,7 +204,7 @@ class DefaultLootTable implements LootTable, ItemSection {
 
         // Related to items
         protected String itemId = "AIR";
-        protected short itemDurability = -1;
+        protected short itemDamage = 0;
         protected int itemAmount = 1;
 
         // Related to enchants
@@ -221,7 +221,7 @@ class DefaultLootTable implements LootTable, ItemSection {
                 if (key.equalsIgnoreCase("rolls")) {
                     rolls = section.getInt("rolls", 1);
                 } else if (key.equalsIgnoreCase("durability")) {
-                    itemDurability = (short) section.getInt("durability", -1);
+                    itemDamage = (short) section.getInt("damage", 0);
                 } else if (key.equalsIgnoreCase("id")) {
                     itemId = section.getString("id", "AIR");
                 } else if (key.equalsIgnoreCase("amount")) {
@@ -301,18 +301,25 @@ class DefaultLootTable implements LootTable, ItemSection {
 
         @Override
         public ItemStack getItem() {
-        	Material item = Material.valueOf(itemId);
+        	Material item = Material.getMaterial(itemId);
             if (item != null && itemAmount > 0) {
                 ItemStack result = new ItemStack(item, itemAmount);
-                if(itemDurability != -1)
+                ItemMeta meta = result.getItemMeta();
+                if(itemDamage != -1)
                 {
-                	ItemMeta meta = result.getItemMeta();
                 	if(meta instanceof Damageable)
                 	{
-                		((Damageable) meta).setDamage(itemDurability);
-                		result.setItemMeta(meta);
+                		((Damageable) meta).setDamage(itemDamage);
                 	}
                 }
+                else
+                {
+                	if(meta instanceof Damageable)
+                	{
+                		meta.setUnbreakable(true);
+                	}
+                }
+                result.setItemMeta(meta);
                 return result;
             }
             return new ItemStack(Material.AIR, 1);

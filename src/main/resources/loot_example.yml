@@ -1,10 +1,10 @@
 # In this example, when the chest using loot_table 'justaname' restocks, there is a guaranteed diamond pickaxe with silk 
-# touch enchant, there is a 50% chance for: either a diamond/iron sword with up to 2 enchants (sharpness I-V, knockback I,
-# or fire aspect II) OR a wood sword with silk touch, and a 10% chance for: a 20 stack of mossy stone blocks.
+# touch enchant, there is a 50% chance for: either a diamond/unbreakable wooden sword with up to 2 enchants (sharpness I-V, knockback I,
+# or fire aspect II) OR an unbreakable wood sword with silk touch, and a 10% chance for: a 20 stack of mossy stone blocks.
 # Further, section '3' is rolled 10 times, with a 10% chance of EITHER 1 diamond or 5 gold, but not both.  (And the
 # diamond is 5 times more likely!) There is also a 10% chance for 20 cracked stone brick (as indicated in '4').
 # An additional note, the numbers used as headings can be any number or word as long as they are not the key words
-# such as chance, id, amount, data, rolls, name, safe, level, or enchant.  They should be unique headings though as if
+# such as chance, id, amount, damage, rolls, name, level, or enchant.  They should be unique headings though as if
 # they are the same, errors may occur.
 justaname:
   1: # This is just one of the sections that will be included in the loot. The number is meaningless. 
@@ -12,7 +12,7 @@ justaname:
     id: DIAMOND_PICKAXE
     enchant: # enchant sections give the above items an enchantment. no chance is listed so it is 100% likely.
       name: silk_touch
-    durability: 60
+    damage: 60
   2: # Again, just a section of loot labeled with a meaningless number. This section has a 50% chance to be used.
     chance: .50
     split: true # split means that only one of the items below will be selected when section '2' is rolled.
@@ -22,6 +22,7 @@ justaname:
       id: IRON_INGOT
     wood: # a wooden sword with silk touch is the alternative to the diamond or iron sword above.
       id: WOODEN_SWORD
+      damage: -1 # a damage value of -1 makes the item unbreakable
       enchant:
         name: silk_touch
     enchant: # this enchant section will be applied to the above item twice.
