@@ -35,14 +35,13 @@ class DefaultLootConfig implements LootConfig {
                 + nl + "chance - the chance at which the section will be picked (as a fraction: 0.25 == 25%).  default: 1"
                 + nl + "rolls - the number of times the section will be considered.  default: 1"
                 + nl + "split (true/false) - if true, chance will be used as section weight and only 1 section will be picked.  default: false"
-                + nl + "id - the item id (number).  default: none"
-                + nl + "data - the item data value (number).  default: none"
+                + nl + "id - the item id (See https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html for possibilities).  default: none"
+                + nl + "damage - the amount the item has been damaged. -1 for unbreakable item.  default: 0"
                 + nl + "amount - the amount of the item.  default: 1"
                 + nl + "==================="
                 + nl + "enchant - This indicates there is an enchantment for the item selected for this section.  The following values must be defined under enchant:"
-                + nl + "name - the name of the enchantment.  default: none.  (possible values: http://jd.bukkit.org/apidocs/org/bukkit/enchantments/Enchantment.html)"
+                + nl + "name - the name of the enchantment.  default: none.  (possible values: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/enchantments/Enchantment.html)"
                 + nl + "level - the level of the enchantment.  Negative values indicate random level from 1 to -level.  default: 1"
-                + nl + "safe - whether or not to only allow safe enchantments.  default: true.  This means only appropriate enchantment/level for the item."
                 + nl + "PLEASE NOTE: The enchant section can have all the normal properties but cannot indicate items.  This means, you can do random sets of enchants!"
                 + nl + "Refer to loot_example.yml for a complete example!");
         try {
