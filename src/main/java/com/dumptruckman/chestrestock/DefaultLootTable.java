@@ -8,6 +8,8 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -207,8 +209,8 @@ class DefaultLootTable implements LootTable, ItemSection {
         protected String name;
 
         // Related to items
-        protected Material itemType = Material.AIR;
-        protected short itemData = 0;
+        protected Material itemId = Material.AIR;
+        protected short itemDurability = -1;
         protected int itemAmount = 1;
 
         // Related to enchants
@@ -225,11 +227,11 @@ class DefaultLootTable implements LootTable, ItemSection {
             for (String key : section.getKeys(false)) {
                 if (key.equalsIgnoreCase("rolls")) {
                     rolls = section.getInt("rolls", 1);
-                } else if (key.equalsIgnoreCase("type")) {
-                    String type = section.getString("type");
-                    itemType = parseMaterial(type);
-                } else if (key.equalsIgnoreCase("data")) {
-                    itemData = (short) section.getInt("data", 0);
+                } else if (key.equalsIgnoreCase("durability")) {
+                    itemDurability = (short) section.getInt("durability", -1);
+                } else if (key.equalsIgnoreCase("id")) {
+                    String type = section.getString("id");
+                    itemId = parseMaterial(type);
                 } else if (key.equalsIgnoreCase("amount")) {
                     itemAmount = (short) section.getInt("amount", 1);
                 } else if (key.equalsIgnoreCase("chance")) {
@@ -317,10 +319,22 @@ class DefaultLootTable implements LootTable, ItemSection {
 
         @Override
         public ItemStack getItem() {
-            if (itemType != Material.AIR && itemAmount > 0 && itemData >= 0) {
-                return new ItemStack(itemType, itemAmount, itemData);
+            if (isItemCreatable()) {
+                ItemStack result = new ItemStack(itemId, itemAmount);
+                if(itemDurability != -1) {
+                    ItemMeta meta = result.getItemMeta();
+                    if(meta instanceof Damageable) {
+                        ((Damageable) meta).setDamage(itemDurability);
+                        result.setItemMeta(meta);
+                    }
+                }
+                return result;
             }
             return null;
+        }
+
+        private boolean isItemCreatable() {
+            return itemId != null && itemId != Material.AIR && itemAmount > 0;
         }
 
         @Override
