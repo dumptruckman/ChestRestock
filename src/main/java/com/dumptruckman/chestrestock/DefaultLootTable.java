@@ -3,6 +3,7 @@ package com.dumptruckman.chestrestock;
 import com.dumptruckman.chestrestock.api.LootTable;
 import com.dumptruckman.chestrestock.api.LootTable.ItemSection;
 import com.dumptruckman.minecraft.pluginbase.util.Logging;
+import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
@@ -206,7 +207,7 @@ class DefaultLootTable implements LootTable, ItemSection {
         protected String name;
 
         // Related to items
-        protected int itemId = 0;
+        protected Material itemType = Material.AIR;
         protected short itemData = 0;
         protected int itemAmount = 1;
 
@@ -224,8 +225,9 @@ class DefaultLootTable implements LootTable, ItemSection {
             for (String key : section.getKeys(false)) {
                 if (key.equalsIgnoreCase("rolls")) {
                     rolls = section.getInt("rolls", 1);
-                } else if (key.equalsIgnoreCase("id")) {
-                    itemId = section.getInt("id", 0);
+                } else if (key.equalsIgnoreCase("type")) {
+                    String type = section.getString("type");
+                    itemType = parseMaterial(type);
                 } else if (key.equalsIgnoreCase("data")) {
                     itemData = (short) section.getInt("data", 0);
                 } else if (key.equalsIgnoreCase("amount")) {
@@ -273,6 +275,14 @@ class DefaultLootTable implements LootTable, ItemSection {
             }
         }
 
+        private Material parseMaterial(String typeString) {
+            Material itemType = Material.getMaterial(typeString);
+            if (itemType == null) {
+                itemType = Material.getMaterial(typeString, true);
+            }
+            return itemType;
+        }
+
         @Override
         public int getRolls() {
             return rolls;
@@ -307,8 +317,8 @@ class DefaultLootTable implements LootTable, ItemSection {
 
         @Override
         public ItemStack getItem() {
-            if (itemId > 0 && itemAmount > 0 && itemData >= 0) {
-                return new ItemStack(itemId, itemAmount, itemData);
+            if (itemType != Material.AIR && itemAmount > 0 && itemData >= 0) {
+                return new ItemStack(itemType, itemAmount, itemData);
             }
             return null;
         }
