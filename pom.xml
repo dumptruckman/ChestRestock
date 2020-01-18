@@ -8,7 +8,7 @@
     <description>Chest Restocking plugin</description>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.build.number>1</project.build.number>
+        <project.build.number>UNKNOWN</project.build.number>
     </properties>
 
     <repositories>
