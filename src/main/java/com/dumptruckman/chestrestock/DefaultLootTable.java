@@ -8,6 +8,8 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -101,17 +103,10 @@ class DefaultLootTable implements LootTable, ItemSection {
         if (enchantment != null && enchantLevel != 0) {
             if (enchantLevel < 0) {
                 enchantLevel = -enchantLevel;
-                if (enchantSection.isSafe() && enchantLevel > enchantment.getMaxLevel()) {
-                    enchantLevel = enchantment.getMaxLevel();
-                }
                 enchantLevel = randGen.nextInt(enchantLevel) + 1;
                 Logging.finest("Using random enchant level for " + enchantment + ": " + enchantLevel);
             }
-            if (enchantSection.isSafe()) {
-                item.addEnchantment(enchantment, enchantLevel);
-            } else {
-                item.addUnsafeEnchantment(enchantment, enchantLevel);
-            }
+            item.addUnsafeEnchantment(enchantment, enchantLevel);
         }
         Logging.finest("Total weight of '" + enchantSection + "': " + enchantSection.getTotalWeight());
         float splitPicker = randGen.nextFloat() * enchantSection.getTotalWeight();
@@ -207,14 +202,13 @@ class DefaultLootTable implements LootTable, ItemSection {
         protected String name;
 
         // Related to items
-        protected Material itemType = Material.AIR;
-        protected short itemData = 0;
+        protected Material itemId = Material.AIR;
+        protected short itemDamage = 0;
         protected int itemAmount = 1;
 
         // Related to enchants
         protected String enchantName = "";
         protected int enchantLevel = 1;
-        protected boolean enchantSafe = true;
 
         DefaultLootSection(String name, ConfigurationSection section) {
             this.name = name;
@@ -225,11 +219,11 @@ class DefaultLootTable implements LootTable, ItemSection {
             for (String key : section.getKeys(false)) {
                 if (key.equalsIgnoreCase("rolls")) {
                     rolls = section.getInt("rolls", 1);
-                } else if (key.equalsIgnoreCase("type")) {
-                    String type = section.getString("type");
-                    itemType = parseMaterial(type);
-                } else if (key.equalsIgnoreCase("data")) {
-                    itemData = (short) section.getInt("data", 0);
+                } else if (key.equalsIgnoreCase("damage")) {
+                    itemDamage = (short) section.getInt("damage", 0);
+                } else if (key.equalsIgnoreCase("id")) {
+                    String type = section.getString("id");
+                    itemId = parseMaterial(type);
                 } else if (key.equalsIgnoreCase("amount")) {
                     itemAmount = (short) section.getInt("amount", 1);
                 } else if (key.equalsIgnoreCase("chance")) {
@@ -240,8 +234,6 @@ class DefaultLootTable implements LootTable, ItemSection {
                     enchantName = section.getString("name", "");
                 } else if (key.equalsIgnoreCase("level")) {
                     enchantLevel = section.getInt("level", 1);
-                } else if (key.equalsIgnoreCase("safe")) {
-                    enchantSafe = section.getBoolean("safe", true);
                 } else {
                     try {
                         ConfigurationSection newSection = section.getConfigurationSection(key);
@@ -317,10 +309,24 @@ class DefaultLootTable implements LootTable, ItemSection {
 
         @Override
         public ItemStack getItem() {
-            if (itemType != Material.AIR && itemAmount > 0 && itemData >= 0) {
-                return new ItemStack(itemType, itemAmount, itemData);
+            if (isItemCreatable()) {
+                ItemStack result = new ItemStack(itemId, itemAmount);
+                ItemMeta meta = result.getItemMeta();
+                if (meta instanceof Damageable) {
+                    if(itemDamage != -1) {
+                        ((Damageable) meta).setDamage(itemDamage);
+                    } else {
+                        meta.setUnbreakable(true);
+                    }
+                }
+                result.setItemMeta(meta);
+                return result;
             }
             return null;
+        }
+
+        private boolean isItemCreatable() {
+            return itemId != null && itemId != Material.AIR && itemAmount > 0;
         }
 
         @Override
@@ -348,11 +354,6 @@ class DefaultLootTable implements LootTable, ItemSection {
         @Override
         public int getLevel() {
             return enchantLevel;
-        }
-
-        @Override
-        public boolean isSafe() {
-            return enchantSafe;
         }
 
         @Override
